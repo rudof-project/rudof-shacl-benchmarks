@@ -1,0 +1,9 @@
+[submodule "data/era-benchmark"]
+	path = data/era-benchmark
+	url = https://github.com/oeg-upm/ERA-SHACL-Benchmark.git
+[submodule "data/icdd-benchmark"]
+	path = data/icdd-benchmark
+	url = https://github.com/philhag/icdd-shacl-validation.git
+[submodule "data/lubm-benchmark"]
+	path = data/lubm-benchmark
+	url = https://github.com/wouterbeek/lubm.git
