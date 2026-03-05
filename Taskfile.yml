@@ -1,0 +1,146 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+vars:
+  DATA_DIR: data
+  DIST_DIR: "{{ .DATA_DIR }}/dist"
+
+# TODO - Move data generation logic to Docker, so it can be run in Windows and to avoid dependency issues on host machine.
+tasks:
+  bench:
+    desc: Run the benchmarks
+    silent: true
+    cmds:
+      # TODO - Re-enable when data generation is marked as dirty after generation to prevent unnecessary regeneration
+      # - task: generate_data
+      - cargo bench
+
+  dependency_check:
+    desc: Check for required dependencies
+    silent: true
+    internal: true
+    cmds:
+      - for: { var: DEPS }
+        cmd: command -v {{ .ITEM }} >/dev/null 2>&1 || { echo >&2 "{{ .ITEM }} is required but not installed. Aborting."; exit 1; }
+
+  init:
+    # TODO - Prevent reinitialization if the submodules are already initialized
+    desc: Initialize git submodules
+    silent: true
+    cmd: git submodule update --init --recursive
+
+  generate_data:
+    desc: Generates the datasets for benchmarks
+    silent: true
+    platforms: [ linux, darwin ]
+    cmds:
+      - task: init
+      - task: generate_parallel_data
+      - task: init_dist
+      - task: copy_parallel_data
+
+  generate_parallel_data:
+    desc: Generates data in parallel
+    internal: true
+    silent: true
+    failfast: false
+    deps:
+      - generate_era_data
+      - generate_lubm_data
+
+  generate_lubm_data:
+    desc: Generates data for the LUBM benchmark
+    silent: true
+    internal: true
+    preconditions:
+      - sh: "[ -z \"$(ls -A \"{{ .DATA_DIR }}/lubm-benchmark\")\" ]"
+    dir: "{{ .DATA_DIR }}/lubm-benchmark"
+    # TODO - Generate dotfile at end of script to avoid regeneration
+#    sources:
+#      - "{{ .DATA_DIR }}/lubm-benchmark/*.sh"
+#      - "{{ .DATA_DIR }}/lubm-benchmark/*.xml"
+#      - "{{ .DATA_DIR }}/lubm-benchmark/src/**"
+#      - "{{ .DATA_DIR }}/lubm-benchmark/query/**"
+#      - "{{ .DATA_DIR }}/lubm-benchmark/data/**"
+#    generates:
+#      - "{{ .DATA_DIR }}/lubm-benchmark/out.nt"
+    cmds:
+      - task: dependency_check
+        vars:
+          DEPS: [ "java", "ant", "gzip", "rapper", "bash" ]
+      - ant -f build.xml
+      - bash run.sh 10 out.nt.gz
+      - gzip -d out.nt.gz
+
+  generate_era_data:
+    desc: Generates data for the ERA benchmark
+    silent: true
+    internal: true
+    preconditions:
+      - sh: "[ -z \"$(ls -A \"{{ .DATA_DIR }}/era-benchmark\")\" ]"
+    dir: "{{ .DATA_DIR }}/era-benchmark"
+    # TODO - Generate dotfile at end of script to avoid regeneration
+#    generates: [ "{{ .DATA_DIR }}/era-benchmark/data/*.ttl" ]
+    cmds:
+      - task: dependency_check
+        vars:
+          DEPS: [ "sed", "curl", "xz", "rev", "cut", "bash", "ant" ]
+      - bash get_data.sh
+
+  init_dist:
+    desc: Initializes the dist folder
+    silent: true
+    internal: true
+    cmd: mkdir -p {{ .DIST_DIR }}
+
+  copy_parallel_data:
+    desc: Copies generated data to the dist folder in parallel
+    silent: true
+    internal: true
+    failfast: false
+    deps:
+      - copy_era_data
+      - copy_lubm_data
+      - copy_icdd_data
+
+  copy_lubm_data:
+    desc: Copies LUBM data to the dist folder
+    internal: true
+    silent: true
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/lubm
+      - cp {{ .DATA_DIR }}/lubm-benchmark/out.nt {{ .DIST_DIR }}/lubm/data.nt
+      - rm {{ .DATA_DIR }}/lubm-benchmark/out.nt
+      - echo "TODO - Generate with shexer or copy shape file from utils folder"
+
+  copy_era_data:
+    desc: Copies ERA data to the dist folder
+    internal: true
+    silent: true
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/era
+      - cp {{ .DATA_DIR }}/era-benchmark/data/ERA.ttl {{ .DIST_DIR }}/era/era-data.ttl
+      - cp {{ .DATA_DIR }}/era-benchmark/data/ES.ttl {{ .DIST_DIR }}/era/es-data.ttl
+      - cp {{ .DATA_DIR }}/era-benchmark/data/FR.ttl {{ .DIST_DIR }}/era/fr-data.ttl
+      - cp {{ .DATA_DIR }}/era-benchmark/shapes/core_shapes.ttl {{ .DIST_DIR }}/era/core-shapes.ttl
+      - cp {{ .DATA_DIR }}/era-benchmark/shapes/era_shapes.ttl {{ .DIST_DIR }}/era/era-shapes.ttl
+      - cp {{ .DATA_DIR }}/era-benchmark/shapes/tds_shapes.ttl {{ .DIST_DIR }}/era/tds-shapes.ttl
+
+  copy_icdd_data:
+    desc: Copies ICDD data to the dist folder
+    internal: true
+    silent: true
+    vars:
+      BASE_PATH: data/icdd-benchmark/sourcecode/src/main/resources/benchmark
+      TYPES: [ "binary", "directed1ton", "directedbinary" ]
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/icdd
+      - cmd: cp {{ .BASE_PATH }}/datasets/{{ .ITEM.IDX }}/dataset-{{ .ITEM.TYPE }}.ttl {{ .DIST_DIR }}/icdd/data-{{ .ITEM.TYPE }}-{{ .ITEM.IDX }}.ttl
+        for:
+          matrix:
+            IDX: [ 1, 2, 3, 4 ]
+            TYPE:
+              ref: .TYPES
+      - cmd: cp {{ .BASE_PATH }}/rulesets/predicates_{{ .ITEM }}.ttl {{ .DIST_DIR }}/icdd/shapes-{{ .ITEM }}.ttl
+        for: { var: TYPES }
