@@ -2,11 +2,9 @@
 <h1>Rudof SHACL validator Benchmarks</h1>
 </div>
 
----
+## Usage instructions
 
-# Usage instructions
-
-## Clone the repository
+### Clone the repository
 
 In order to run the benchmarks, you need to clone the repository with recursive submodules:
 
@@ -20,8 +18,7 @@ git clone --recursive
 >task init
 >```
 
-
-## Datasets generation
+### Datasets generation
 
 The datasets used in the benchmarks can be generated with the following command:
 
@@ -44,7 +41,7 @@ task generate_data
 >- rev 
 >- cut
 
-## Running the benchmarks
+### Running the benchmarks
 
 The benchmarks can be run with the following command:
 
@@ -54,7 +51,7 @@ task bench
 
 The results can be accessed in the `target/criterion/report/index.html` file.
 
-### Profiling data
+#### Profiling data
 
 In order to generate the flamegraphs for the benchmarks, you can run the following command:
 
