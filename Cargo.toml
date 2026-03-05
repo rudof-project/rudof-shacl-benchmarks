@@ -1,0 +1,17 @@
+[package]
+name = "rudof-shacl-benchmarks"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rudof_old = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "11d8d7e8634244a9676c08ce6528dee346eabcdc" } # rudof v0.1.146
+rudof_new = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "4ec53004c012d9c13cadae8ff6f86c7f17719097" } # rudof v0.2.6
+
+[dev-dependencies]
+criterion = { version = "0.8.2", features = ["csv_output", "html_reports"] }
+pprof = { version = "0.15.0", features = ["flamegraph"] }
+
+[[bench]]
+name = "validator_benchmark"
+harness = false
+
