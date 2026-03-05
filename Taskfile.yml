@@ -85,7 +85,7 @@ tasks:
     cmds:
       - task: dependency_check
         vars:
-          DEPS: [ "sed", "curl", "xz", "rev", "cut", "bash", "ant" ]
+          DEPS: [ "sed", "curl", "xz", "rev", "cut", "bash" ]
       - bash get_data.sh
 
   init_dist:
