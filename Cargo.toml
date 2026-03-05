@@ -12,6 +12,6 @@ criterion = { version = "0.8.2", features = ["csv_output", "html_reports"] }
 pprof = { version = "0.15.0", features = ["flamegraph"] }
 
 [[bench]]
-name = "validator_benchmark"
+name = "icdd_bench"
 harness = false
 
