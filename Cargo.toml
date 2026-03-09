@@ -15,3 +15,7 @@ pprof = { version = "0.15.0", features = ["flamegraph"] }
 name = "icdd_bench"
 harness = false
 
+[[bench]]
+name = "era_bench"
+harness = false
+

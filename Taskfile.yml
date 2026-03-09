@@ -144,3 +144,4 @@ tasks:
               ref: .TYPES
       - cmd: cp {{ .BASE_PATH }}/rulesets/predicates_{{ .ITEM }}.ttl {{ .DIST_DIR }}/icdd/shapes-{{ .ITEM }}.ttl
         for: { var: TYPES }
+
