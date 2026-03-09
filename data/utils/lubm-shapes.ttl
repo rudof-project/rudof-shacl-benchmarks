@@ -1,0 +1,60 @@
+@prefix : <http://weso.es/shapes> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix data: <file:///data/univ-bench.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:Department a sh:NodeShape ;
+  sh:targetClass data:Department ;
+  sh:property [
+    sh:path data:name ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path data:subOrganizationOf ;
+    sh:node :University ;
+  ] .
+
+:University a sh:NodeShape ;
+  sh:targetClass data:University .
+
+:FullProfessor a sh:NodeShape ;
+  sh:targetClass data:FullProfessor ;
+  sh:property [
+    sh:path data:name ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path data:worksFor ;
+    sh:node :Department ;
+  ] ;
+  sh:property [
+    sh:path data:emailAddress ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path data:telephone ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path data:researchInterest ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path data:teacherOf ;
+  ] ;
+  sh:property [
+    sh:path data:undergraduateDegreeFrom ;
+    # sh:minInclusive 1 ;
+  ] ;
+  sh:property [
+    sh:path data:mastersDegreeFrom ;
+    # sh:minInclusive 1 ;
+  ] ;
+  sh:property [
+    sh:path data:doctoralDegreeFrom ;
+    # sh:minInclusive 1 ;
+  ] ;
+  sh:property [
+    sh:path data:headOf ;
+    sh:node :Department;
+  ] .

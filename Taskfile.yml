@@ -65,13 +65,19 @@ tasks:
 #      - "{{ .DATA_DIR }}/lubm-benchmark/data/**"
 #    generates:
 #      - "{{ .DATA_DIR }}/lubm-benchmark/out.nt"
+    vars:
+      SIZES: [ 5, 10, 50, 100, 500 ]
     cmds:
       - task: dependency_check
         vars:
-          DEPS: [ "java", "ant", "gzip", "rapper", "bash" ]
+          DEPS: [ "java", "ant", "gzip", "rapper", "bash", "perl" ]
       - ant -f build.xml
-      - bash run.sh 10 out.nt.gz
-      - gzip -d out.nt.gz
+      - cmd: bash ../utils/spinner.sh "bash run.sh {{ .ITEM }} data-{{ .ITEM }}.nt.gz"
+        for: { var: SIZES }
+      - cmd: gzip -d data-{{ .ITEM }}.nt.gz
+        for: { var: SIZES }
+      - perl -pi -e 's/<(?!(file|http):\/\/)([^>]+)>/<file:\/\/\/\2>/g' data-*.nt
+      - perl -pi -e "s|file://$PWD|file://|g" data-*.nt
 
   generate_era_data:
     desc: Generates data for the ERA benchmark
@@ -110,9 +116,10 @@ tasks:
     silent: true
     cmds:
       - mkdir -p {{ .DIST_DIR }}/lubm
-      - cp {{ .DATA_DIR }}/lubm-benchmark/out.nt {{ .DIST_DIR }}/lubm/data.nt
-      - rm {{ .DATA_DIR }}/lubm-benchmark/out.nt
-      - echo "TODO - Generate with shexer or copy shape file from utils folder"
+      - cp {{ .DATA_DIR }}/lubm-benchmark/data-*.nt {{ .DIST_DIR }}/lubm
+      - rm {{ .DATA_DIR }}/lubm-benchmark/data-*.nt
+      # TODO - Generate SHACL shapes with shexer when fixed (https://github.com/weso/shexer/issues/209)
+      - cp {{ .DATA_DIR }}/utils/lubm-shapes.ttl {{ .DIST_DIR }}/lubm/shapes.ttl
 
   copy_era_data:
     desc: Copies ERA data to the dist folder
