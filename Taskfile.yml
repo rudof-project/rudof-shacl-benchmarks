@@ -10,7 +10,21 @@ vars:
 tasks:
   bench:
     desc: Run the benchmarks
+  clean:
+    desc: Cleans the generated reports and optionally the generated datasets
     silent: true
+    platforms: [ linux, darwin ]
+    requires:
+      vars:
+        - name: CLEAN_DATASETS
+          enum: [ "true", "false" ]
+    env:
+      CLEAN_DATASETS: "{{ .CLEAN_DATASETS }}"
+    cmds:
+      - rm -rf target/criterion
+      - cmd: rm -rf {{ .DIST_DIR }}
+        if: '[ "$CLEAN_DATASETS" = "true" ]'
+
     cmds:
       # TODO - Re-enable when data generation is marked as dirty after generation to prevent unnecessary regeneration
       # - task: generate_data
