@@ -40,13 +40,14 @@ task generate_data
 >- xz 
 >- rev 
 >- cut
+>- perl
 
 ### Running the benchmarks
 
 The benchmarks can be run with the following command:
 
 ```bash
-task bench
+task bench_rudof
 ```
 
 The results can be accessed in the `target/criterion/report/index.html` file.
@@ -56,10 +57,10 @@ The results can be accessed in the `target/criterion/report/index.html` file.
 In order to generate the flamegraphs for the benchmarks, you can run the following command:
 
 ```bash
-cargo bench -- --profile-time <duration>
+task perf_rudof TIME=<duration>
 ```
 
-Where `<duration>` is the duration of the benchmark in seconds.
+Where `<duration>` is the duration of the benchmark in seconds. If `TIME` is not provied, the profiler runs 20 seconds.
 
 The flamegraphs can be accessed in the `target/criterion/<benchmark_name>/<benchmark_variant>/profile/flamegraph.svg` file.
 
@@ -67,3 +68,4 @@ The flamegraphs can be accessed in the `target/criterion/<benchmark_name>/<bench
 
 >[!NOTE]
 >In order to run the `task` commands, you need to have the [Taskfile](https://taskfile.dev) runner installed.
+
