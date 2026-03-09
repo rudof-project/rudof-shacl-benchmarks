@@ -8,8 +8,6 @@ vars:
 
 # TODO - Move data generation logic to Docker, so it can be run in Windows and to avoid dependency issues on host machine.
 tasks:
-  bench:
-    desc: Run the benchmarks
   clean:
     desc: Cleans the generated reports and optionally the generated datasets
     silent: true
@@ -25,10 +23,20 @@ tasks:
       - cmd: rm -rf {{ .DIST_DIR }}
         if: '[ "$CLEAN_DATASETS" = "true" ]'
 
+  bench_rudof:
+    desc: Run the rudof benchmark comparative
+    silent: true
     cmds:
       # TODO - Re-enable when data generation is marked as dirty after generation to prevent unnecessary regeneration
       # - task: generate_data
       - cargo bench
+
+  perf_rudof:
+    desc: Run profiler for rudof
+    silent: true
+    vars:
+      TIME: 20
+    cmd: cargo bench -- --profile-time {{ .TIME }}
 
   dependency_check:
     desc: Check for required dependencies
