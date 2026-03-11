@@ -1,0 +1,11 @@
+[versions]
+corese-core = "4.6.5"
+kotlin = "2.2.21"
+johnrengelman-shadow = "7.0.0"
+
+[libraries]
+corese-core = { module = "fr.inria.corese:corese-core", version.ref = "corese-core" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }
