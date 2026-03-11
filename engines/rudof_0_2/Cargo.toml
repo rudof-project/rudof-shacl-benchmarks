@@ -1,0 +1,7 @@
+[package]
+name = "rudof_0_2"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rudof_lib = { git = "https://github.com/rudof-project/rudof.git", rev = "7af9f28f718c42b4c244be3a5272d0bfb8a7eb4c" } # v0.2.7
