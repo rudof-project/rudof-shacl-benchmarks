@@ -1,0 +1,12 @@
+[versions]
+kotlin = "2.2.21"
+johnrengelman-shadow = "7.0.0"
+jena = "6.0.0"
+
+[libraries]
+jena-shacl = { module = "org.apache.jena:jena-shacl", version.ref = "jena" }
+jena-geosparql = { module = "org.apache.jena:jena-geosparql", version.ref = "jena" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }
