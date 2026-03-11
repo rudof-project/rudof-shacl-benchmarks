@@ -1,0 +1,14 @@
+[versions]
+kotlin = "2.2.21"
+johnrengelman-shadow = "7.0.0"
+jena = "3.7.0"
+rdfunit = "0.8.21"
+
+[libraries]
+jena-core = { module = "org.apache.jena:jena-core", version.ref = "jena" }
+jena-arq = { module = "org.apache.jena:jena-arq", version.ref = "jena" }
+rdfunit-core = { module = "org.aksw.rdfunit:rdfunit-core", version.ref = "rdfunit" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }
