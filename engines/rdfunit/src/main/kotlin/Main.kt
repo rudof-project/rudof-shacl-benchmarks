@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
         else -> throw Exception("Format not supported")
     }
     val shapesPath = args.getOrNull(2) ?: throw Exception("Missing shapes graph path")
-    // Missing shapes format
+    args.getOrNull(3) ?: throw Exception("Missing shapes format")
     val csvPath = args.getOrNull(4) ?: throw Exception("Missing csv report path")
     val runs = args.getOrNull(5)?.toInt() ?: 20
     val warmUp = args.getOrNull(6)?.toInt() ?: 10

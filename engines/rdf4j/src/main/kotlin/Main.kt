@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
         .use { conn ->
             conn.apply {
                 begin(IsolationLevels.NONE)
-                add(File(shapesPath), "http://example.com/", shapesFormat, RDF4J.SHACL_SHAPE_GRAPH)
+                add(File(shapesPath), shapesFormat, RDF4J.SHACL_SHAPE_GRAPH)
                 commit()
             }
 
@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
                 conn.apply {
                     begin(IsolationLevels.NONE, ShaclSail.TransactionSettings.ValidationApproach.Disabled)
                     clear()
-                    add(File(dataPath), "http://example.com", dataFormat)
+                    add(File(dataPath), dataFormat)
                     commit()
 
                     val result = measureTimedValue {

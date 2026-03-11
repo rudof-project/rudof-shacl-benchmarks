@@ -9,10 +9,12 @@ import kotlin.time.measureTimedValue
 
 fun main(args: Array<String>) {
     val dataPath = args.getOrNull(0) ?: throw Exception("Missing data graph path")
-    val shapesPath = args.getOrNull(1) ?: throw Exception("Missing shapes graph path")
-    val csvPath = args.getOrNull(2) ?: throw Exception("Missing csv report path")
-    val runs = args.getOrNull(3)?.toInt() ?: 20
-    val warmUp = args.getOrNull(4)?.toInt() ?: 10
+    args.getOrNull(1) ?: throw Exception("Missing data format")
+    val shapesPath = args.getOrNull(2) ?: throw Exception("Missing shapes graph path")
+    args.getOrNull(3) ?: throw Exception("Missing shapes format")
+    val csvPath = args.getOrNull(4) ?: throw Exception("Missing csv report path")
+    val runs = args.getOrNull(5)?.toInt() ?: 20
+    val warmUp = args.getOrNull(6)?.toInt() ?: 10
     val results = mutableListOf<String>()
 
     val dataGraph = RDFDataMgr.loadGraph("file:$dataPath")
