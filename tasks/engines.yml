@@ -1,0 +1,142 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+includes:
+  utils:
+    optional: false
+    taskfile: utils.yml
+
+output: prefixed
+
+vars:
+  DIST_DIR: dist
+  KT_ENGINES: [ corese, jena, rdf4j, rdfunit, topbraid ]
+  RUST_ENGINES: [ rudof_0_1, rudof_0_2 ]
+
+# TODO - Add sources / generates / status / excludes to prevent re-generation
+
+tasks:
+  compile:base: &base_compile
+    silent: true
+    internal: true
+    dir: "{{ .SRC_DIR }}"
+    requires: { vars: [ SRC_DIR ] }
+
+  compile:kt:
+    <<: *base_compile
+    desc: Compiles a Kotlin Project
+    prefix: compile:kt:{{ .SRC_DIR }}
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ gradle ] }
+      - gradle shadowJar
+
+  compile:rust:
+    <<: *base_compile
+    desc: Compiles a Rust Project
+    prefix: compile:rust:{{ .SRC_DIR }}
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ cargo, rustc ] }
+      - cargo build --release
+
+  compile:
+    desc: Compiles all the engines 
+    silent: true
+    requires: { vars: [ KT_ENGINES, RUST_ENGINES ] }
+    deps:
+      - for: { var: KT_ENGINES } 
+        task: compile:kt
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+      - for: { var: RUST_ENGINES }
+        task: compile:rust
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+    cmds:
+      - task: generate:dist
+      - for: { var: KT_ENGINES }
+        task: move:kt
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+      - for: { var: RUST_ENGINES }
+        task: move:rust
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+
+  generate:dist:
+    desc: Generate dist folder
+    silent: true
+    internal: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ DIST_DIR ] }
+    cmd: mkdir -p {{ .DIST_DIR }}
+
+  move:base: &base_move
+    silent: true
+    internal: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ SRC_DIR, DIST_DIR ] }
+
+  move:kt:
+    <<: *base_move
+    desc: Moves the generated Kotlin artifact to the dist folder
+    vars:
+      PROJECT_NAME: { ref: .SRC_DIR }
+      ARTIFACT: "{{ .PROJECT_NAME }}-1.0-SNAPSHOT.jar"
+    cmd: cp {{ .SRC_DIR }}/build/libs/{{ .ARTIFACT }} {{ .DIST_DIR }}/{{ .PROJECT_NAME }}.jar
+
+  move:rust:
+    <<: *base_move
+    desc: Moves the generated Rust artifact to the dist folder
+    vars:
+      PROJECT_NAME: { ref: .SRC_DIR }
+      ARTIFACT: { ref: .PROJECT_NAME }
+    cmd: cp {{ .SRC_DIR }}/target/release/{{ .ARTIFACT }} {{ .DIST_DIR }}/{{ .ARTIFACT }}
+
+  clean:
+    desc: Cleans both artifacts and dist folder
+    silent: true
+    deps:
+      - clean:dist
+      - clean:artifacts
+
+  clean:dist:
+    desc: Cleans the dist folder
+    silent: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ DIST_DIR ] }
+    cmd: rm -rf {{ .DIST_DIR }} 
+
+  clean:artifacts:
+    desc: Cleans the generated artifacts
+    silent: true
+    requires: { vars: [ KT_ENGINES, RUST_ENGINES ] }
+    deps:
+      - for: { var: KT_ENGINES }
+        task: clean:artifacts:kt
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+      - for: { var: RUST_ENGINES }
+        task: clean:artifacts:rust
+        vars: { SRC_DIR: "{{ .ITEM }}" }
+
+  clean:artifacts:base: &base_clean_artifacts
+    silent: true
+    internal: true
+    dir: "{{ .SRC_DIR }}"
+    requires: { vars: [ SRC_DIR ] }
+
+  clean:artifacts:kt:
+    <<: *base_clean_artifacts
+    desc: Cleans a Kotlin project
+    prefix: clean:artifacts:kt:{{ .SRC_DIR }}
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ gradle ] }
+      - gradle clean
+
+  clean:artifacts:rust:
+    <<: *base_clean_artifacts
+    desc: Cleans a Rust project
+    prefix: clean:artifacts:rust:{{ .SRC_DIR }}
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ cargo ] }
+      - cargo clean

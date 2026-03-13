@@ -1,0 +1,193 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+includes:
+  utils:
+    optional: false
+    taskfile: utils.yml
+
+vars:
+  RESULTS_DIR: results
+  ENGINES_DIR: engines/dist
+  DATASETS_DIR: data/dist
+  CRITERION_DIR: target/criterion
+  GLOBAL_RUNS: 20
+  GLOBAL_WARM_UP: 10
+
+output: prefixed
+
+tasks:
+  criterion:
+    desc: Runs Criterion benchmarks on Rudof v0.1 and Rudof v0.2
+    silent: true
+    cmd: cargo bench
+
+  profiler:
+    desc: Runs a profiler to generate Rudof v0.1 and Rudof v0.2 flamegraphs
+    silent: true
+    requires:
+      vars:
+        - PROFILE_TIME
+    cmds:
+      - cargo bench --bench=icdd_bench -- --profile-time {{ .PROFILE_TIME }}
+      # - cargo bench --bench=era_bench -- --profile-time {{ .PROFILE_TIME }}
+      - cargo bench --bench=lubm_bench -- --profile-time {{ .PROFILE_TIME }}
+
+  all:
+    desc: Runs benchmarks for all engines availables on "engines" folder
+    platforms: [ linux, darwin ]
+    requires:
+      vars:
+        - DATASETS
+    cmds:
+      - task: generate:results
+      - task: run:benchmark:{{ .ITEM }}
+        for: { var: DATASETS }
+
+  generate:results:
+    desc: Generates the results folder
+    silent: true
+    internal: true
+    requires:
+      vars:
+        - DATASETS
+        - RESULTS_DIR
+    cmds:
+      - for: { var: DATASETS }
+        cmd: mkdir -p {{ .RESULTS_DIR }}/{{ .ITEM }}
+
+  clean:
+    desc: Cleans both Criterion results and results folder
+    silent: true
+    deps:
+      - task: clean:criterion
+      - task: clean:results
+  clean:criterion:
+    desc: Cleans the Criterion folder
+    silent: true
+    platforms:
+      - linux
+      - darwin
+    requires:
+      vars:
+        - CRITERION_DIR
+    cmd: rm -rf {{ .CRITERION_DIR }}
+
+  clean:results:
+    desc: Cleans the results folder
+    silent: true
+    platforms: [ linux, darwin ]
+    requires:
+      vars:
+        - RESULTS_DIR
+    cmd: rm -rf {{ .RESULTS_DIR }}
+
+  run:benchmark:base: &base_benchmark_run
+    silent: true
+    internal: true
+    requires:
+      vars:
+        - KT_ENGINES
+        - RUST_ENGINES
+
+  run:benchmark:era:
+    <<: *base_benchmark_run
+    desc: Runs the ERA benchmarks on all engines
+    cmds:
+      - for:
+          matrix:
+            DATA: [ era, es, fr ]
+            SHAPES: [ core, era, tds ]
+            ENGINES: { ref: KT_ENGINES }
+        task: run:engine:kt
+        vars: &era_benchmark_vars
+          ENGINE: "{{ .ITEM.ENGINES }}"
+          SHAPES_PATH: "{{ .DATASETS_DIR }}/era/{{ .ITEM.SHAPES }}-shapes.ttl"
+          DATA_PATH: "{{ .DATASETS_DIR }}/era/{{ .ITEM.DATA }}-data.ttl"
+          CSV_PATH: "{{ .RESULTS_DIR }}/era/{{ .ITEM.ENGINES }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv"
+          RUNS: { ref: .GLOBAL_RUNS }
+          WARM_UP: { ref: .GLOBAL_WARM_UP }
+          DATA_FORMAT: turtle
+          SHAPES_FORMAT: turtle
+      - for: 
+          matrix:
+            DATA: [ era, es, fr ]
+            SHAPES: [ core, era, tds ]
+            ENGINES: { ref: RUST_ENGINES }
+        task: run:engine:rust
+        vars: *era_benchmark_vars
+
+  run:benchmark:icdd:
+    <<: *base_benchmark_run
+    desc: Runs the ICDD benchmarks on all engines
+    cmds:
+      - for:
+          matrix:
+            TYPES: [ binary, directed1ton, directedbinary ]
+            IDX: [ 1, 2, 3, 4 ]
+            ENGINES: { ref: .KT_ENGINES }
+        task: run:engine:kt
+        vars: &icdd_benchmark_vars
+          ENGINE: "{{ .ITEM.ENGINES }}"
+          SHAPES_PATH: "{{ .DATASETS_DIR }}/icdd/shapes-{{ .ITEM.TYPES }}.ttl"
+          DATA_PATH: "{{ .DATASETS_DIR }}/icdd/data-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl"
+          CSV_PATH: "{{ .RESULTS_DIR }}/icdd/{{ .ITEM.ENGINES }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv"
+          RUNS: { ref: .GLOBAL_RUNS }
+          WARM_UP: { ref: .GLOBAL_WARM_UP }
+          DATA_FORMAT: turtle
+          SHAPES_FORMAT: turtle
+      - for:
+          matrix: 
+            TYPES: [ binary, directed1ton, directedbinary ]
+            IDX: [ 1, 2, 3, 4 ]
+            ENGINES: { ref: .RUST_ENGINES }
+        task: run:engine:rust
+        vars: *icdd_benchmark_vars
+
+  run:benchmark:lubm:
+    <<: *base_benchmark_run
+    desc: Runs the LUBM benchmarks on all engines
+    cmds:
+      - for:
+          matrix:
+            IDX: [ 5, 10, 50, 100, 500 ]
+            ENGINES: { ref: .KT_ENGINES }
+        task: run:engine:kt
+        vars: &lubm_benchmarks_vars
+          ENGINE: "{{ .ITEM.ENGINES }}"
+          SHAPES_PATH: "{{ .DATASETS_DIR }}/lubm/shapes.ttl"
+          DATA_PATH: "{{ .DATASETS_DIR }}/lubm/data-{{ .ITEM.IDX }}.nt"
+          CSV_PATH: "{{ .RESULTS_DIR }}/lubm/{{ .ITEM.ENGINES }}-{{ .ITEM.IDX }}.csv"
+          RUNS: { ref: .GLOBAL_RUNS }
+          WARM_UP: { ref: .GLOBAL_WARM_UP }
+          DATA_FORMAT: ntriples
+          SHAPES_FORMAT: turtle
+      - for:
+          matrix:
+            IDX: [ 5, 10, 50, 100, 500 ]
+            ENGINES: { ref: .RUST_ENGINES }
+        task: run:engine:rust
+        vars: *lubm_benchmarks_vars
+            
+
+  run:engine:base: &base_engine_run
+    silent: true
+    internal: true
+    requires:
+      vars: [ ENGINE, SHAPES_PATH, DATA_PATH, CSV_PATH, RUNS, WARM_UP, DATA_FORMAT, SHAPES_FORMAT, ENGINES_DIR ]
+
+  run:engine:kt:
+    <<: *base_engine_run
+    desc: Runs the given Kotlin engine
+    prefix: run:engine:kt:{{ .ENGINE }}
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ java ] }
+      - java -jar {{ .ENGINES_DIR }}/{{ .ENGINE }}.jar {{ .DATA_PATH }} {{ .DATA_FORMAT }} {{ .SHAPES_PATH }} {{ .SHAPES_FORMAT }} {{ .CSV_PATH }} {{ .RUNS }} {{ .WARM_UP }}
+
+  run:engine:rust:
+    <<: *base_engine_run
+    desc: Runs the given Rust engine
+    prefix: run:engine:rust:{{ .ENGINE }}
+    cmd: "{{ .ENGINES_DIR }}/{{ .ENGINE }} {{ .DATA_PATH }} {{ .DATA_FORMAT }} {{ .SHAPES_PATH }} {{ .SHAPES_FORMAT }} {{ .CSV_PATH }} {{ .RUNS }} {{ .WARM_UP }}"

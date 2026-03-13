@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+includes:
+  utils:
+    optional: false
+    taskfile: utils.yml
+
+output: prefixed
+
+vars:
+  DIST_DIR: dist
+  ERA_DIR: era-benchmark
+  LUBM_DIR: lubm-benchmark
+  ICDD_DIR: icdd-benchmark
+  DATASETS: [ lubm, icdd ]
+  # DATASETS: [ era, lubm, icdd ]
+
+# TODO - Add sources / generates / status / exclude to prevent re-generation
+
+tasks:
+  clean:
+    desc: Cleans the generated datasets
+    silent: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ DIST_DIR ] }
+    cmd: rm -rf {{ .DIST_DIR }}
+
+  generate:
+    desc: Generates the datasets
+    silent: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ DATASETS ] }
+    deps:
+      - for: { var: DATASETS }
+        task: generate:data:{{ .ITEM }}
+    cmds:
+      - task: generate:dist
+      - task: copy:data
+
+  copy:data:
+    desc: Copies generated datasets into dist folder
+    silent: true
+    internal: true
+    requires: { vars: [ DATASETS ] }
+    deps:
+      - for: { var: DATASETS }
+        task: copy:data:{{ .ITEM }}
+
+  copy:data:lubm:
+    desc: Copies the generated LUBM data into dist folder
+    silent: true
+    internal: true
+    requires: { vars: [ DIST_DIR, LUBM_DIR ] }
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/lubm
+      - mv {{ .LUBM_DIR }}/data-*.nt {{ .DIST_DIR }}/lubm
+      # TODO - Generate SHACL shapes with shexer when fixed (https://github.com/weso/shexer/issues/209)
+      - cp utils/lubm-shapes.ttl {{ .DIST_DIR }}/lubm/shapes.ttl
+
+  copy:data:icdd:
+    desc: Copies the generated ICDD data into dist folder
+    silent: true
+    internal: true
+    vars:
+      SRC_PATH: "{{ .ICDD_DIR }}/sourcecode/src/main/resources/benchmark"
+      TYPES: [ binary, directed1ton, directedbinary ]
+    requires: { vars: [ DIST_DIR, ICDD_DIR ] }
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/icdd
+      - cmd: cp {{ .SRC_PATH }}/datasets/{{ .ITEM.IDX }}/dataset-{{ .ITEM.TYPE }}.ttl {{ .DIST_DIR }}/icdd/data-{{ .ITEM.TYPE }}-{{ .ITEM.IDX }}.ttl
+        for:
+          matrix:
+            IDX: [ 1, 2, 3, 4 ]
+            TYPE: { ref: .TYPES }
+      - cmd: cp {{ .SRC_PATH }}/rulesets/predicates_{{ .ITEM }}.ttl {{ .DIST_DIR }}/icdd/shapes-{{ .ITEM }}.ttl
+        for: { var: TYPES }
+
+  copy:data:era:
+    desc: Copies the generated ERA data into dist folder
+    silent: true
+    internal: true
+    requires: { vars: [ DIST_DIR, ERA_DIR ] }
+    cmds:
+      - mkdir -p {{ .DIST_DIR }}/era
+      - mv {{ .ERA_DIR }}/data/ERA.ttl {{ .DIST_DIR }}/era/era-data.ttl
+      - mv {{ .ERA_DIR }}/data/ES.ttl {{ .DIST_DIR }}/era/es-data.ttl
+      - mv {{ .ERA_DIR }}/data/FR.ttl {{ .DIST_DIR }}/era/fr-data.ttl
+      - cp {{ .ERA_DIR }}/shapes/core_shapes.ttl {{ .DIST_DIR }}/era/core-shapes.ttl
+      - cp {{ .ERA_DIR }}/shapes/era_shapes.ttl {{ .DIST_DIR }}/era/era-shapes.ttl
+      - cp {{ .ERA_DIR }}/shapes/tds_shapes.ttl {{ .DIST_DIR }}/era/tds-shapes.ttl
+
+  generate:data:base: &base_data_generate
+    silent: true
+    internal: true
+    preconditions:
+      - sh: "[ -z \"$(ls -A \"{{ .CURRENT_DIR }}\")\" ]"
+
+  generate:data:lubm:
+    <<: *base_data_generate
+    desc: Generates the LUBM dataset
+    requires: { vars: [ LUBM_DIR ] }
+    dir: "{{ .CURRENT_DIR }}"
+    vars:
+      SIZES: [ 5, 10, 50, 100, 500 ]
+      CURRENT_DIR: { ref: .LUBM_DIR }
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ java, ant, gzip, rapper, bash, perl ] }
+      - ant -f build.xml
+      - cmd: bash ../utils/spinner.sh "bash run.sh {{ .ITEM }} data-{{ .ITEM }}.nt.gz"
+        for: { var: SIZES }
+      - cmd: gzip -d data-{{ .ITEM }}.nt.gz
+        for: { var: SIZES }
+      - perl -pi -e 's/<(?!(file|http):\/\/)([^>]+)>/<file:\/\/\/\2>/g' data-*.nt
+      - perl -pi -e "s|file://$PWD|file://|g" data-*.nt
+
+  generate:data:era:
+    <<: *base_data_generate
+    desc: Generates the ERA dataset
+    requires: { vars: [ ERA_DIR ] }
+    dir: "{{ .CURRENT_DIR }}"
+    vars: { CURRENT_DIR: { ref: .ERA_DIR } }
+    cmds:
+      - task: utils:dependency_check
+        vars: { DEPS: [ sed, curl, xz, rev, cut, bash ] }
+      - bash get_data.sh
+
+  # Added to avoid generate loop failure, ICDD already comes generated
+  generate:data:icdd:
+    <<: *base_data_generate
+    desc: Generates the ICDD dataset
+    requires: { vars: [ ICDD_DIR ] }
+    dir: "{{ .CURRENT_DIR }}"
+    vars: { CURRENT_DIR: { ref: .ICDD_DIR } }
+
+  generate:dist:
+    desc: Generate dist folder
+    silent: true
+    internal: true
+    platforms: [ linux, darwin ]
+    requires: { vars: [ DIST_DIR ] }
+    cmd: mkdir -p {{ .DIST_DIR }}
+

@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+tasks:
+  dependency_check: 
+    desc: Check for required dependencies
+    silent: true
+    internal: true
+    platforms: [ linux, darwin ]
+    requires:
+      vars: [ DEPS ]
+    if: '[ $SKIP_DEPS_CHECK = "true" ]'
+    cmds:
+      - for: { var: DEPS }
+        cmd: command -v {{ .ITEM }} >/dev/null 2>&1 || { echo >&2 "{{ .ITEM }} is required but not installed. Aborting."; exit 1; }
