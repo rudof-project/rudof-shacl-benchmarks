@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+tasks:
+  docker:build:
+    desc: Builds all toolchain images
+    silent: true
+    cmd: 'docker buildx bake'
+
+  docker:build:*:
+    desc: Builds a specific toolchain image
+    silent: true
+    cmd: 'docker buildx bake {{ index .MATCH 0}}'
+
+  docker:pull:
+    desc: Pulls all toolchain images
+    silent: true
+    cmd: 'docker buildx bake --pull'
+
+  docker:pull:*:
+    desc: Pulls a specific toolchain image
+    silent: true
+    cmd: 'docker buildx bake {{ index .MATCH 0 }} --pull'
+
+  nix:update:
+    desc: Updates all the flakes
+    silent: true
+    cmd: 'for d in */ ; do [ -f "$d/flake.nix" ] && (cd "$d" && nix flake update); done'
+
+  nix:update:*:
+    desc: Updates a specific flake
+    silent: true
+    cmd: 'cd {{ index .MATCH 0 }} && nix flake update'
