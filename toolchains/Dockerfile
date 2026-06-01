@@ -10,4 +10,6 @@ ENV NIX_CONFIG="experimental-features = nix-command flakes"
 
 RUN nix build . --out-link /toolchain
 
+ENV PATH="/toolchain/bin:$PATH"
+
 WORKDIR /app
