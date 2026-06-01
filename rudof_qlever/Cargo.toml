@@ -1,0 +1,6 @@
+[package]
+name = "rudof_qlever"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

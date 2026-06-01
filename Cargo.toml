@@ -1,0 +1,26 @@
+[workspace.package]
+name = "rudof_benches_shacl_benchmarks"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+resolver = "2"
+members = [
+    "common",
+    "rudof_v1",
+    "rudof_v2",
+    "rudof_qlever",
+    "runner"
+]
+
+default-members = [ "runner" ]
+
+[workspace.dependencies]
+common = { version = "0.1.0", path = "./common" }
+rudof_v1 = { version = "0.1.0", path = "./rudof_v1" }
+rudof_v2 = { version = "0.1.0", path = "./rudof_v2" }
+rudof_qlever = { version = "0.1.0", path = "./rudof_qlever" }
+runner = { version = "0.1.0", path = "./runner" }
+
+criterion = { version = "0.8.2", features = [ "csv_output", "html_reports" ] }
+pprof = { version = "0.15.0", features = [ "flamegraph" ] }

@@ -1,0 +1,20 @@
+[package]
+name = "runner"
+version.workspace = true
+edition.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+pprof.workspace = true
+
+[[bench]]
+name = "icdd"
+harness = false
+
+[[bench]]
+name = "era"
+harness = false
+
+[[bench]]
+name = "lubm"
+harness = false
