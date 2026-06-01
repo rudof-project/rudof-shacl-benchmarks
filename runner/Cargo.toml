@@ -3,6 +3,12 @@ name = "runner"
 version.workspace = true
 edition.workspace = true
 
+[dependencies]
+common.workspace = true
+rudof_v1.workspace = true
+rudof_v2.workspace = true
+rudof_qlever.workspace = true
+
 [dev-dependencies]
 criterion.workspace = true
 pprof.workspace = true
