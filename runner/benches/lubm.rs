@@ -10,6 +10,8 @@ use std::hint::black_box;
 
 fn lubm_bench_validation(c: &mut Criterion) {
     let cfg = load_config().lubm;
+    if cfg.disabled { return }
+
     let mut group = c.benchmark_group("LUBM Validation");
 
     let shapes_path: String = format!("{}/shapes.ttl", cfg.path);

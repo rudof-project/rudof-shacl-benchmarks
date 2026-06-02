@@ -10,6 +10,8 @@ use std::hint::black_box;
 
 fn era_bench_validation(c: &mut Criterion) {
     let cfg = load_config().era;
+    if cfg.disabled { return }
+
     let mut group = c.benchmark_group("ERA Validation");
 
     for d in &cfg.data {

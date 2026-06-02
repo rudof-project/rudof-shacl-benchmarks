@@ -10,6 +10,8 @@ use std::hint::black_box;
 
 fn icdd_bench_validation(c: &mut Criterion) {
     let cfg = load_config().icdd;
+    if cfg.disabled { return }
+
     let mut group = c.benchmark_group("ICDD Validation");
 
     for t in &cfg.types {
