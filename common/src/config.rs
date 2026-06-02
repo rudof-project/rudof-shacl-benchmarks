@@ -25,6 +25,8 @@ pub struct IcddBenchmarkConfig {
     pub data_format: RdfFormat,
     #[serde(rename = "disabled", default = "defaults::disabled")]
     pub disabled: bool,
+    #[serde(rename = "engines", default = "defaults::engines")]
+    pub engines: Vec<String>,
 }
 
 impl Default for IcddBenchmarkConfig {
@@ -36,6 +38,7 @@ impl Default for IcddBenchmarkConfig {
             shapes_format: defaults::icdd_shapes_format(),
             data_format: defaults::icdd_data_format(),
             disabled: defaults::disabled(),
+            engines: defaults::engines(),
         }
     }
 }
@@ -54,6 +57,8 @@ pub struct EraBenchmarkConfig {
     pub data_format: RdfFormat,
     #[serde(rename = "disabled", default = "defaults::disabled")]
     pub disabled: bool,
+    #[serde(rename = "engines", default = "defaults::engines")]
+    pub engines: Vec<String>,
 }
 
 impl Default for EraBenchmarkConfig {
@@ -65,6 +70,7 @@ impl Default for EraBenchmarkConfig {
             shapes_format: defaults::era_shapes_format(),
             data_format: defaults::era_data_format(),
             disabled: defaults::disabled(),
+            engines: defaults::engines(),
         }
     }
 }
@@ -81,6 +87,8 @@ pub struct LubmBenchmarkConfig {
     pub data_format: RdfFormat,
     #[serde(rename = "disabled", default = "defaults::disabled")]
     pub disabled: bool,
+    #[serde(rename = "engines", default = "defaults::engines")]
+    pub engines: Vec<String>,
 }
 
 impl Default for LubmBenchmarkConfig {
@@ -91,6 +99,7 @@ impl Default for LubmBenchmarkConfig {
             shapes_format: defaults::lubm_shapes_format(),
             data_format: defaults::lubm_data_format(),
             disabled: defaults::disabled(),
+            engines: defaults::engines(),
         }
     }
 }
@@ -116,6 +125,7 @@ mod defaults {
     pub(super) fn lubm_data_format() -> RdfFormat { RdfFormat::NTriples }
 
     pub(super) fn disabled() -> bool { false }
+    pub(super) fn engines() -> Vec<String> { cnv_list(vec![ "rudof_v1", "rudof_v2", "rudof_qlever" ]) }
 
     fn cnv_list(l: Vec<&str>) -> Vec<String> {
         l.iter()
