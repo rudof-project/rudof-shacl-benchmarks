@@ -8,6 +8,7 @@ pub struct RudofV2Engine(Rudof);
 
 impl RudofEngine for RudofV2Engine {
     const DISPLAY_VERSION: &'static str = "rudof v0.3";
+    const ID: &'static str = "rudof_v2";
 
     fn new() -> Self {
         let config = RudofConfig::default();

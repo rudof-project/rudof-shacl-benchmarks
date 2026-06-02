@@ -7,7 +7,8 @@ use std::hint::black_box;
 pub struct RudofQleverEngine(Rudof);
 
 impl RudofEngine for RudofQleverEngine {
-    const DISPLAY_VERSION: &'static str = "rudof v0.3.2 (qlever)";
+    const DISPLAY_VERSION: &'static str = "rudof v0.3 (qlever)";
+    const ID: &'static str = "rudof_qlever";
 
     fn new() -> Self {
         // TODO - Load config file for qlever
