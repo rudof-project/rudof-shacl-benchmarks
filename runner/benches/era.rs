@@ -23,44 +23,50 @@ fn era_bench_validation(c: &mut Criterion) {
             let shapes_path = format!("{}/{shapes_file}", cfg.path);
             let variant = format!("{data_file} ({shapes_file})");
 
-            group.bench_function(BenchmarkId::new(RudofV1Engine::DISPLAY_VERSION, variant.as_str()), |b| {
-                b.iter_batched(|| {
-                    let mut rudof = RudofV1Engine::new();
+            if cfg.engines.contains(&RudofV1Engine::ID.to_string()) {
+                group.bench_function(BenchmarkId::new(RudofV1Engine::DISPLAY_VERSION, variant.as_str()), |b| {
+                    b.iter_batched(|| {
+                        let mut rudof = RudofV1Engine::new();
 
-                    rudof.load_data(data_path.clone(), cfg.data_format);
-                    rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
+                        rudof.load_data(data_path.clone(), cfg.data_format);
+                        rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
 
-                    rudof
-                }, |mut rudof| {
-                    black_box(rudof.validate())
-                }, BatchSize::PerIteration);
-            });
+                        rudof
+                    }, |mut rudof| {
+                        black_box(rudof.validate())
+                    }, BatchSize::PerIteration);
+                });
+            }
 
-            group.bench_function(BenchmarkId::new(RudofV2Engine::DISPLAY_VERSION, variant.as_str()), |b| {
-                b.iter_batched(|| {
-                    let mut rudof = RudofV2Engine::new();
+            if cfg.engines.contains(&RudofV2Engine::ID.to_string()) {
+                group.bench_function(BenchmarkId::new(RudofV2Engine::DISPLAY_VERSION, variant.as_str()), |b| {
+                    b.iter_batched(|| {
+                        let mut rudof = RudofV2Engine::new();
 
-                    rudof.load_data(data_path.clone(), cfg.data_format);
-                    rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
+                        rudof.load_data(data_path.clone(), cfg.data_format);
+                        rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
 
-                    rudof
-                }, |mut rudof| {
-                    black_box(rudof.validate())
-                }, BatchSize::PerIteration);
-            });
+                        rudof
+                    }, |mut rudof| {
+                        black_box(rudof.validate())
+                    }, BatchSize::PerIteration);
+                });
+            }
 
-            group.bench_function(BenchmarkId::new(RudofQleverEngine::DISPLAY_VERSION, variant.as_str()), |b| {
-                b.iter_batched(|| {
-                    let mut rudof = RudofQleverEngine::new();
+            if cfg.engines.contains(&RudofQleverEngine::ID.to_string()) {
+                group.bench_function(BenchmarkId::new(RudofQleverEngine::DISPLAY_VERSION, variant.as_str()), |b| {
+                    b.iter_batched(|| {
+                        let mut rudof = RudofQleverEngine::new();
 
-                    rudof.load_data(data_path.clone(), cfg.data_format);
-                    rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
+                        rudof.load_data(data_path.clone(), cfg.data_format);
+                        rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
 
-                    rudof
-                }, |mut rudof| {
-                    black_box(rudof.validate())
-                }, BatchSize::PerIteration);
-            });
+                        rudof
+                    }, |mut rudof| {
+                        black_box(rudof.validate())
+                    }, BatchSize::PerIteration);
+                });
+            }
         }
     }
 }
