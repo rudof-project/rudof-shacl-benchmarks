@@ -1,6 +1,9 @@
+use serde::Deserialize;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub enum RdfFormat {
+    #[default]
     Turtle,
     NTriples,
     RdfXml,

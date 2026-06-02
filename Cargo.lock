@@ -778,6 +778,9 @@ dependencies = [
 [[package]]
 name = "common"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "const_format"
@@ -1047,7 +1050,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -1063,7 +1066,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -3429,7 +3432,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -3445,7 +3448,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -3460,7 +3463,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "yaml-rust2",
 ]
@@ -3476,7 +3479,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "yaml-rust2",
 ]
@@ -3675,7 +3678,7 @@ dependencies = [
  "shex_ast 0.3.2",
  "thiserror",
  "tokio",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "tracing-subscriber",
 ]
@@ -3728,7 +3731,7 @@ dependencies = [
  "srdf",
  "termtree",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -3763,7 +3766,7 @@ dependencies = [
  "termtree",
  "thiserror",
  "tokio",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -3813,7 +3816,7 @@ dependencies = [
  "testcontainers",
  "thiserror",
  "tokio",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -3846,6 +3849,7 @@ dependencies = [
  "rudof_qlever",
  "rudof_v1",
  "rudof_v2",
+ "toml 1.1.2+spec-1.1.0",
 ]
 
 [[package]]
@@ -4310,7 +4314,7 @@ dependencies = [
  "serde",
  "sparql_service 0.3.2",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4385,7 +4389,7 @@ dependencies = [
  "srdf",
  "tabled",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "tracing-subscriber",
 ]
@@ -4448,7 +4452,7 @@ dependencies = [
  "srdf",
  "tempfile",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4474,7 +4478,7 @@ dependencies = [
  "sparql_service 0.3.2",
  "tempfile",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4513,7 +4517,7 @@ dependencies = [
  "tabled",
  "term_size",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4542,7 +4546,7 @@ dependencies = [
  "tabled",
  "term_size",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4563,7 +4567,7 @@ dependencies = [
  "srdf",
  "termtree",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -4585,7 +4589,7 @@ dependencies = [
  "shex_ast 0.3.2",
  "termtree",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -4759,7 +4763,7 @@ dependencies = [
  "sparesults",
  "srdf",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4784,7 +4788,7 @@ dependencies = [
  "serde_json",
  "sparesults",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
 ]
 
@@ -4828,7 +4832,7 @@ dependencies = [
  "tabled",
  "tempfile",
  "thiserror",
- "toml",
+ "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
 ]
@@ -5247,6 +5251,21 @@ dependencies = [
  "toml_parser",
  "toml_writer",
  "winnow 0.7.15",
+]
+
+[[package]]
+name = "toml"
+version = "1.1.2+spec-1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81f3d15e84cbcd896376e6730314d59fb5a87f31e4b038454184435cd57defee"
+dependencies = [
+ "indexmap 2.14.0",
+ "serde_core",
+ "serde_spanned",
+ "toml_datetime 1.1.1+spec-1.1.0",
+ "toml_parser",
+ "toml_writer",
+ "winnow 1.0.3",
 ]
 
 [[package]]
