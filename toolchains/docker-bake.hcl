@@ -27,3 +27,9 @@ target "python" {
   context = "./python"
   tags = [ "rudof/python_builder:latest" ]
 }
+
+target "dataset" {
+  inherits = [ "_common" ]
+  context = "./dataset"
+  tags = [ "rudof/dataset_builder:latest" ]
+}

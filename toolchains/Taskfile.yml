@@ -11,7 +11,7 @@ tasks:
   docker:build:*:
     desc: Builds a specific toolchain image
     silent: true
-    cmd: 'docker buildx bake {{ index .MATCH 0}}'
+    cmd: 'docker buildx bake {{ index .MATCH 0 }}'
 
   docker:pull:
     desc: Pulls all toolchain images
