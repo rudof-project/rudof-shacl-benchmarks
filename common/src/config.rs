@@ -23,6 +23,8 @@ pub struct IcddBenchmarkConfig {
     pub shapes_format: RdfFormat,
     #[serde(rename = "data_format", default = "defaults::icdd_data_format")]
     pub data_format: RdfFormat,
+    #[serde(rename = "disabled", default = "defaults::disabled")]
+    pub disabled: bool,
 }
 
 impl Default for IcddBenchmarkConfig {
@@ -33,6 +35,7 @@ impl Default for IcddBenchmarkConfig {
             path: defaults::icdd_path(),
             shapes_format: defaults::icdd_shapes_format(),
             data_format: defaults::icdd_data_format(),
+            disabled: defaults::disabled(),
         }
     }
 }
@@ -49,6 +52,8 @@ pub struct EraBenchmarkConfig {
     pub shapes_format: RdfFormat,
     #[serde(rename = "data_format", default = "defaults::era_data_format")]
     pub data_format: RdfFormat,
+    #[serde(rename = "disabled", default = "defaults::disabled")]
+    pub disabled: bool,
 }
 
 impl Default for EraBenchmarkConfig {
@@ -59,6 +64,7 @@ impl Default for EraBenchmarkConfig {
             path: defaults::era_path(),
             shapes_format: defaults::era_shapes_format(),
             data_format: defaults::era_data_format(),
+            disabled: defaults::disabled(),
         }
     }
 }
@@ -73,6 +79,8 @@ pub struct LubmBenchmarkConfig {
     pub shapes_format: RdfFormat,
     #[serde(rename = "data_format", default = "defaults::lubm_data_format")]
     pub data_format: RdfFormat,
+    #[serde(rename = "disabled", default = "defaults::disabled")]
+    pub disabled: bool,
 }
 
 impl Default for LubmBenchmarkConfig {
@@ -82,6 +90,7 @@ impl Default for LubmBenchmarkConfig {
             path: defaults::lubm_path(),
             shapes_format: defaults::lubm_shapes_format(),
             data_format: defaults::lubm_data_format(),
+            disabled: defaults::disabled(),
         }
     }
 }
@@ -105,6 +114,8 @@ mod defaults {
     pub(super) fn lubm_path() -> String { "data/dist/lubm".to_string() }
     pub(super) fn lubm_shapes_format() -> RdfFormat { RdfFormat::Turtle }
     pub(super) fn lubm_data_format() -> RdfFormat { RdfFormat::NTriples }
+
+    pub(super) fn disabled() -> bool { false }
 
     fn cnv_list(l: Vec<&str>) -> Vec<String> {
         l.iter()
