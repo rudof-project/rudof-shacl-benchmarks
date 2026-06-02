@@ -109,18 +109,18 @@ mod defaults {
 
     pub(super) fn icdd_sizes() -> Vec<String> { cnv_list(vec![ "1", "2", "3", "4" ]) }
     pub(super) fn icdd_types() -> Vec<String> { cnv_list(vec![ "binary", "directed1ton", "directedbinary" ]) }
-    pub(super) fn icdd_path() -> String { "data/dist/icdd".to_string() }
+    pub(super) fn icdd_path() -> String { "../data/dist/icdd".to_string() }
     pub(super) fn icdd_shapes_format() -> RdfFormat { RdfFormat::Turtle }
     pub(super) fn icdd_data_format() -> RdfFormat { RdfFormat::Turtle }
 
     pub(super) fn era_data() -> Vec<String> { cnv_list(vec![ "es", "fr", "era" ]) }
     pub(super) fn era_shapes() -> Vec<String> { cnv_list(vec![ "core", "era", "tds" ]) }
-    pub(super) fn era_path() -> String { "data/dist/era".to_string() }
+    pub(super) fn era_path() -> String { "../data/dist/era".to_string() }
     pub(super) fn era_shapes_format() -> RdfFormat { RdfFormat::Turtle }
     pub(super) fn era_data_format() -> RdfFormat { RdfFormat::Turtle }
 
     pub(super) fn lubm_sizes() -> Vec<String> { cnv_list(vec![ "5", "10", "50", "100", "500" ]) }
-    pub(super) fn lubm_path() -> String { "data/dist/lubm".to_string() }
+    pub(super) fn lubm_path() -> String { "../data/dist/lubm".to_string() }
     pub(super) fn lubm_shapes_format() -> RdfFormat { RdfFormat::Turtle }
     pub(super) fn lubm_data_format() -> RdfFormat { RdfFormat::NTriples }
 
