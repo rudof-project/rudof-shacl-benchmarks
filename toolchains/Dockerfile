@@ -12,4 +12,10 @@ RUN nix build . --out-link /toolchain
 
 ENV PATH="/toolchain/bin:$PATH"
 
+ENV CARGO_HOME=/cargo
+ENV RUSTUP_HOME=/rustup
+
+RUN mkdir -p /cargo /rustup && \
+    chmod 777 /cargo /rustup
+
 WORKDIR /app
