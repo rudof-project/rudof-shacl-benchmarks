@@ -22,6 +22,7 @@
     packages = with pkgs; [
       rustToolchain
       openssl
+      gcc
     ];
   in {
     devShells.${system}.default = pkgs.mkShell { inherit packages; };
