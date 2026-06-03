@@ -1,5 +1,5 @@
 group "default" {
-  targets = [ "kotlin", "rust", "python" ]
+  targets = [ "kotlin", "rust", "python", "dataset" ]
 }
 
 target "_common" {
