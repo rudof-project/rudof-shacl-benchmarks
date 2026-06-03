@@ -5,7 +5,7 @@ version: 3
 vars:
   DOCKER_IMAGE: rudof/dataset_builder:latest
   DOCKER_WKD: /app
-  DOCKER_SH_DIR: /toolchain/bin/bash
+  DOCKER_SH: /toolchain/bin/bash
   UID:
     sh: id -u
   GID:
@@ -28,7 +28,7 @@ tasks:
         --rm \
         -v {{ .TASK_DIR }}:{{ .DOCKER_WKD }} \
         -w {{ .DOCKER_WKD }} \
-        --entrypoint {{ .DOCKER_SH_DIR }} \
+        --entrypoint {{ .DOCKER_SH }} \
         --user {{ .UID }}:{{ .GID }} \
         --detach \
         {{ .DOCKER_IMAGE }} \
