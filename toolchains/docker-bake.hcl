@@ -1,5 +1,5 @@
 group "default" {
-  targets = [ "kotlin", "rust", "python", "dataset" ]
+  targets = [ "kotlin", "rust", "python", "dotnet", "dataset" ]
 }
 
 target "_common" {
@@ -28,8 +28,15 @@ target "python" {
   tags = [ "rudof/python_builder:latest" ]
 }
 
+target "dotnet" {
+  inherits = [ "_common" ]
+  context = "./dotnet"
+  tags = [ "rudof/dotnet_builder:latest" ]
+}
+
 target "dataset" {
   inherits = [ "_common" ]
   context = "./dataset"
   tags = [ "rudof/dataset_builder:latest" ]
 }
+
