@@ -18,11 +18,16 @@
     rustToolchain = with pkgs.fenix; combine [
       stable.cargo
       stable.rustc
+      targets.x86_64-unknown-linux-musl.stable.rust-std
     ];
     packages = with pkgs; [
       rustToolchain
       openssl
       gcc
+      bash
+      docker
+      zig
+      cargo-zigbuild
     ];
   in {
     devShells.${system}.default = pkgs.mkShell { inherit packages; };
