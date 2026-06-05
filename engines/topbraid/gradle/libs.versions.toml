@@ -1,0 +1,11 @@
+[versions]
+kotlin = "2.2.21"
+johnrengelman-shadow = "7.0.0"
+topbraid = "1.4.4"
+
+[libraries]
+topbraid = { module = "org.topbraid:shacl", version.ref = "topbraid" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }

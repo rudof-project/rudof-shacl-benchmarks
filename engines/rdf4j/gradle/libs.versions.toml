@@ -1,0 +1,15 @@
+[versions]
+kotlin = "2.2.21"
+johnrengelman-shadow = "7.0.0"
+rdf4j = "5.3.0-M2"
+
+[libraries]
+rdf4j-bom = { module = "org.eclipse.rdf4j:rdf4j-bom", version.ref = "rdf4j" }
+rdf4j-shacl = { module = "org.eclipse.rdf4j:rdf4j-shacl", version.ref = "rdf4j" }
+rdf4j-rio-turtle = { module = "org.eclipse.rdf4j:rdf4j-rio-turtle", version.ref = "rdf4j" }
+rdf4j-storage = { module = "org.eclipse.rdf4j:rdf4j-storage", version.ref = "rdf4j" }
+rdf4j-queryalgebra-geosparql = { module = "org.eclipse.rdf4j:rdf4j-queryalgebra-geosparql", version.ref = "rdf4j" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }
