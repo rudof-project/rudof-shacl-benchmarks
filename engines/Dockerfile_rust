@@ -1,0 +1,21 @@
+FROM rudof/rust_builder:latest AS builder
+
+WORKDIR /app
+
+COPY src ./src
+COPY Cargo.toml ./Cargo.toml
+COPY Cargo.lock ./Cargo.lock
+
+RUN cargo zigbuild --release --target x86_64-unknown-linux-musl
+
+FROM busybox:1.38-musl AS busybox
+
+FROM scratch
+
+ARG BINARY_NAME=rudof
+ENV BINARY=/${BINARY_NAME}
+
+COPY --from=busybox /bin/sh /bin/sh
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/${BINARY_NAME} /${BINARY_NAME}
+
+ENTRYPOINT [ "/bin/sh", "-c", "exec ${BINARY} \"$@\"", "--" ]
