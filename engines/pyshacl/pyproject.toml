@@ -1,0 +1,13 @@
+[project]
+name = "pyshacl-bench"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "nuitka[onefile]>=4.1.2",
+    "pyshacl>=0.31.0",
+]
+
+[dependency-groups]
+dev = []

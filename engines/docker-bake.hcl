@@ -87,3 +87,11 @@ target "jena" {
   tags = [ "rudof/jena:latest" ]
 }
 
+target "pyshacl" {
+  inherits = [ "_common_python" ]
+  args = {
+    BINARY_NAME = "pyshacl"
+  }
+  context = "./pyshacl"
+  tags = [ "rudof/pyshacl:latest" ]
+}
