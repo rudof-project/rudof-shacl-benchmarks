@@ -3,8 +3,7 @@ FROM nixos/nix:${NIX_VERSION}
 
 WORKDIR /flake
 
-COPY flake.nix ./
-COPY flake.lock ./
+COPY flake.nix flake.lock ./
 
 ENV NIX_CONFIG="experimental-features = nix-command flakes"
 
