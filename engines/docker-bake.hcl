@@ -19,6 +19,11 @@ target "_common_kt" {
   dockerfile = "../Dockerfile_kt"
 }
 
+target "_common_python" {
+  inherits = [ "_common" ]
+  dockerfile = "../Dockerfile_python"
+}
+
 target "rudof_v1" {
   inherits = [ "_common_rust" ]
   args = {
