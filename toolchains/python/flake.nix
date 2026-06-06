@@ -7,7 +7,11 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
     packages = with pkgs; [
-      # TODO
+      python3
+      uv
+      gcc
+      patchelf
+      glibc
     ];
   in {
     devShells.${system}.default = pkgs.mkShell { inherit packages; };
