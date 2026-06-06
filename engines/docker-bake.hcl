@@ -1,5 +1,17 @@
 group "default" {
-  targets = [ "rudof_v1", "rudof_v2", "corese", "rdf4j", "rdfunit", "topbraid", "jena" ]
+  targets = [ "rust", "kotlin", "python" ]
+}
+
+group "rust" {
+  targets = [ "rudof_v1", "rudof_v2" ]
+}
+
+group "kotlin" {
+  targets = [ "corese", "rdf4j", "rdfunit", "topbraid", "jena" ]
+}
+
+group "python" {
+  targets = [ "pyshacl" ]
 }
 
 target "_common" {
