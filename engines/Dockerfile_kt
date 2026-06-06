@@ -1,3 +1,5 @@
+ARG ROOTFS=busybox
+
 FROM rudof/kotlin_builder:latest AS builder
 
 WORKDIR /app
@@ -8,11 +10,13 @@ COPY gradle/libs.versions.toml ./gradle/libs.versions.toml
 
 RUN gradle shadowJar
 
-FROM eclipse-temurin:21-jre-alpine-3.23
+FROM ${ROOTFS} AS rootfs
+FROM gcr.io/distroless/java21-debian13
 
 ARG JAR_NAME=app
 ENV JAR=/${JAR_NAME}.jar
 
+COPY --from=rootfs /bin/sh /bin/sh
 COPY --from=builder /app/build/libs/${JAR_NAME}-1.0-SNAPSHOT.jar ${JAR}
 
 ENTRYPOINT [ "sh", "-c", "exec java -jar ${JAR} \"$@\"", "--" ]
