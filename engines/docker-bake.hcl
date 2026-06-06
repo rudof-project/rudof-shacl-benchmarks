@@ -4,6 +4,9 @@ group "default" {
 
 target "_common" {
   platforms = [ "linux/amd64" ]
+  args = {
+    ROOTFS = "busybox:1.38-musl"
+  }
 }
 
 target "_common_rust" {
