@@ -1,6 +1,15 @@
 import sys, time
 from maplib import Model
 
+# Usage: python maplib <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> [runs] [warm_up]
+#
+# - data_path: Path to an RDF file containing the data graph
+# - data_format: RDF format of the <data_path>
+# - shapes_path: Path to a SHACL shapes file
+# - shapes_format: RDF format of the <shapes_path>
+# - csv_path: Path to save the CSV report file
+# - runs: Number of benchmark runs (Result runs = runs - warm_up)
+# - warm_up: Number of runs for warm up
 def main() -> None:
     data_path = get_arg(1, "Missing data graph path")
     get_arg(2, "Missing data format")
