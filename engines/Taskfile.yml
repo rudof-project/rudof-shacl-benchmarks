@@ -8,7 +8,7 @@ tasks:
     silent: true
     cmd: 'docker buildx bake'
 
-  docker:*:build:
+  docker:build:*:
     desc: Builds a specific engine image
     silent: true
     cmd: 'docker buildx bake {{ index .MATCH 0 }}'
@@ -18,7 +18,7 @@ tasks:
     silent: true
     cmd: 'docker buildx bake --pull'
 
-  docker:*:pull:
+  docker:pull:*:
     desc: Pulls a specific engine image
     silent: true
     cmd: 'docker buildx bake {{ index .MATCH 0 }} --pull'
