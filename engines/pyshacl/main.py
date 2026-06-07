@@ -1,9 +1,7 @@
 import importlib.metadata
 import importlib.resources
 
-import time
-import rdflib
-import sys
+import time, rdflib, sys
 from pyshacl import validate
 
 # Usage: python pyshacl <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> [runs] [warm_up]
@@ -38,7 +36,7 @@ def main() -> None:
         validate(data_graph=data_graph, shacl_graph=shapes_graph, inference="")
         delta = time.time() - start
 
-        if (i >= warm_up):
+        if i >= warm_up:
             results.append(f"{delta}")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
