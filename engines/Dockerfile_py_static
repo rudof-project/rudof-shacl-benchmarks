@@ -4,10 +4,8 @@ FROM rudof/python_builder:latest AS builder
 
 WORKDIR /app
 
-COPY .python-version ./.python-version
-COPY main.py ./main.py
-COPY pyproject.toml ./pyproject.toml
-COPY uv.lock ./uv.lock
+COPY wheels ./wheels/
+COPY .python-version main.py pyproject.toml uv.lock ./
 
 RUN uv sync --no-cache
 

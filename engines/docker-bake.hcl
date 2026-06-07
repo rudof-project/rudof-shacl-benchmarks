@@ -11,7 +11,7 @@ group "kotlin" {
 }
 
 group "python" {
-  targets = [ "pyshacl" ]
+  targets = [ "pyshacl", "maplib" ]
 }
 
 target "_common" {
@@ -33,7 +33,7 @@ target "_common_kt" {
 
 target "_common_python" {
   inherits = [ "_common" ]
-  dockerfile = "../Dockerfile_python"
+  dockerfile = "../Dockerfile_py_static"
 }
 
 target "rudof_v1" {
@@ -106,4 +106,11 @@ target "pyshacl" {
   }
   context = "./pyshacl"
   tags = [ "rudof/pyshacl:latest" ]
+}
+
+target "maplib" {
+  inherits = [ "_common_python" ]
+  dockerfile = "../Dockerfile_py_native"
+  context = "./maplib"
+  tags = [ "rudof/maplib:latest" ]
 }

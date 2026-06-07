@@ -1,0 +1,20 @@
+ARG ROOTFS=busybox
+
+FROM rudof/python_builder:latest AS builder
+
+WORKDIR /app
+
+COPY wheels ./wheels/
+COPY .python-version main.py pyproject.toml uv.lock ./
+
+RUN uv sync --no-cache
+
+FROM ${ROOTFS} AS rootfs
+FROM gcr.io/distroless/python3-debian13
+
+COPY --from=rootfs /bin/sh /bin/sh
+COPY --from=builder /app /app
+
+ENV PYTHONPATH=/app/.venv/lib/python3.13/site-packages
+
+ENTRYPOINT [ "/bin/sh", "-c", "exec python3 /app/main.py \"$@\"", "--" ]
