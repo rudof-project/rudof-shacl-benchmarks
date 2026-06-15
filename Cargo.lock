@@ -1062,7 +1062,23 @@ dependencies = [
  "calamine",
  "csv",
  "itertools 0.14.0",
- "rudof_iri",
+ "rudof_iri 0.3.2",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
+name = "dctap"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "calamine",
+ "csv",
+ "itertools 0.14.0",
+ "rudof_iri 0.3.3",
  "serde",
  "serde_json",
  "thiserror",
@@ -2354,7 +2370,21 @@ version = "0.3.2"
 source = "git+https://github.com/rudof-project/rudof.git?rev=e98c1c2e675dd51ae98361caefde46be8fd8cc44#e98c1c2e675dd51ae98361caefde46be8fd8cc44"
 dependencies = [
  "hashlink",
- "rudof_iri",
+ "rudof_iri 0.3.2",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tracing",
+ "yaml-rust2",
+]
+
+[[package]]
+name = "mie"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "hashlink",
+ "rudof_iri 0.3.3",
  "serde",
  "serde_json",
  "thiserror",
@@ -2934,6 +2964,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "pgschema"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "anyhow",
+ "clap",
+ "clientele",
+ "colored 3.1.1",
+ "csv",
+ "either",
+ "itertools 0.14.0",
+ "regex",
+ "rustemo 0.9.1",
+ "rustemo-compiler 0.9.1",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "time",
+ "tracing",
+]
+
+[[package]]
 name = "pin-project"
 version = "1.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3060,7 +3112,20 @@ dependencies = [
  "colored 3.1.1",
  "indexmap 2.14.0",
  "proptest",
- "rudof_iri",
+ "rudof_iri 0.3.2",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "prefixmap"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "colored 3.1.1",
+ "indexmap 2.14.0",
+ "proptest",
+ "rudof_iri 0.3.3",
  "serde",
  "thiserror",
 ]
@@ -3453,6 +3518,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "rbe"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "hashbag",
+ "indexmap 2.14.0",
+ "itertools 0.14.0",
+ "pretty",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
 name = "rdf_config"
 version = "0.1.134"
 source = "git+https://github.com/rudof-project/rudof.git?rev=11d8d7e8634244a9676c08ce6528dee346eabcdc#11d8d7e8634244a9676c08ce6528dee346eabcdc"
@@ -3472,6 +3553,22 @@ dependencies = [
 name = "rdf_config"
 version = "0.3.2"
 source = "git+https://github.com/rudof-project/rudof.git?rev=e98c1c2e675dd51ae98361caefde46be8fd8cc44#e98c1c2e675dd51ae98361caefde46be8fd8cc44"
+dependencies = [
+ "hashlink",
+ "indexmap 2.14.0",
+ "itertools 0.14.0",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+ "yaml-rust2",
+]
+
+[[package]]
+name = "rdf_config"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
 dependencies = [
  "hashlink",
  "indexmap 2.14.0",
@@ -3669,13 +3766,41 @@ dependencies = [
  "rand 0.8.6",
  "rayon",
  "regex",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "rust_decimal",
  "serde",
  "serde_json",
- "shacl",
+ "shacl 0.3.2",
  "shex_ast 0.3.2",
+ "thiserror",
+ "tokio",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "rudof_generate"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "clap",
+ "futures",
+ "oxrdf",
+ "prefixmap 0.3.3",
+ "rand 0.8.6",
+ "rayon",
+ "regex",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "shacl 0.3.3",
+ "shex_ast 0.3.3",
  "thiserror",
  "tokio",
  "toml 0.9.12+spec-1.1.0",
@@ -3687,6 +3812,22 @@ dependencies = [
 name = "rudof_iri"
 version = "0.3.2"
 source = "git+https://github.com/rudof-project/rudof.git?rev=e98c1c2e675dd51ae98361caefde46be8fd8cc44#e98c1c2e675dd51ae98361caefde46be8fd8cc44"
+dependencies = [
+ "getrandom 0.3.4",
+ "indexmap 2.14.0",
+ "oxiri",
+ "oxrdf",
+ "proptest",
+ "reqwest",
+ "serde",
+ "thiserror",
+ "url",
+]
+
+[[package]]
+name = "rudof_iri"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
 dependencies = [
  "getrandom 0.3.4",
  "indexmap 2.14.0",
@@ -3751,17 +3892,51 @@ dependencies = [
  "rdf_config 0.3.2",
  "regex",
  "reqwest",
- "rudof_generate",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_generate 0.3.2",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "serde",
  "serde_json",
- "shacl",
+ "shacl 0.3.2",
  "shapes_comparator 0.3.2",
  "shapes_converter 0.3.2",
  "shex_ast 0.3.2",
  "shex_validation 0.3.2",
  "sparql_service 0.3.2",
+ "tabled",
+ "termtree",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "rudof_lib"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "colored 3.1.1",
+ "crossterm",
+ "dctap 0.3.3",
+ "either",
+ "oxrdf",
+ "pgschema 0.3.3",
+ "prefixmap 0.3.3",
+ "rdf_config 0.3.3",
+ "regex",
+ "reqwest",
+ "rudof_generate 0.3.3",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "serde",
+ "serde_json",
+ "shacl 0.3.3",
+ "shapes_comparator 0.3.3",
+ "shapes_converter 0.3.3",
+ "shex_ast 0.3.3",
+ "shex_validation 0.3.3",
+ "sparql_service 0.3.3",
  "tabled",
  "termtree",
  "thiserror",
@@ -3777,7 +3952,7 @@ version = "0.1.0"
 dependencies = [
  "common",
  "minijinja",
- "rudof_lib 0.3.2",
+ "rudof_lib 0.3.3",
 ]
 
 [[package]]
@@ -3785,12 +3960,9 @@ name = "rudof_rdf"
 version = "0.3.2"
 source = "git+https://github.com/rudof-project/rudof.git?rev=e98c1c2e675dd51ae98361caefde46be8fd8cc44#e98c1c2e675dd51ae98361caefde46be8fd8cc44"
 dependencies = [
- "bollard",
  "colored 3.1.1",
  "const_format",
- "futures",
  "getrandom 0.3.4",
- "nix 0.30.1",
  "once_cell",
  "oxigraph",
  "oxilangtag",
@@ -3805,7 +3977,47 @@ dependencies = [
  "prefixmap 0.3.2",
  "regex",
  "reqwest",
- "rudof_iri",
+ "rudof_iri 0.3.2",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "sparesults",
+ "spargebra",
+ "tabled",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "toml 0.9.12+spec-1.1.0",
+ "url",
+]
+
+[[package]]
+name = "rudof_rdf"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "bollard",
+ "colored 3.1.1",
+ "const_format",
+ "csv",
+ "futures",
+ "getrandom 0.3.4",
+ "nix 0.30.1",
+ "once_cell",
+ "oxigraph",
+ "oxilangtag",
+ "oxiri",
+ "oxjsonld",
+ "oxrdf",
+ "oxrdfio",
+ "oxrdfxml",
+ "oxsdatatypes",
+ "oxttl",
+ "paste",
+ "prefixmap 0.3.3",
+ "regex",
+ "reqwest",
+ "rudof_iri 0.3.3",
  "rust_decimal",
  "serde",
  "serde_json",
@@ -3816,6 +4028,7 @@ dependencies = [
  "testcontainers",
  "thiserror",
  "tokio",
+ "tokio-util",
  "toml 0.9.12+spec-1.1.0",
  "tracing",
  "url",
@@ -4309,10 +4522,31 @@ dependencies = [
  "petgraph 0.8.3",
  "prefixmap 0.3.2",
  "rayon",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "serde",
  "sparql_service 0.3.2",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
+name = "shacl"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "anyhow",
+ "dashmap",
+ "indoc",
+ "itertools 0.14.0",
+ "petgraph 0.8.3",
+ "prefixmap 0.3.3",
+ "rayon",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "serde",
+ "sparql_service 0.3.3",
  "thiserror",
  "toml 0.9.12+spec-1.1.0",
  "tracing",
@@ -4418,14 +4652,32 @@ version = "0.3.2"
 source = "git+https://github.com/rudof-project/rudof.git?rev=e98c1c2e675dd51ae98361caefde46be8fd8cc44#e98c1c2e675dd51ae98361caefde46be8fd8cc44"
 dependencies = [
  "prefixmap 0.3.2",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "serde",
  "serde_json",
- "shacl",
+ "shacl 0.3.2",
  "shex_ast 0.3.2",
  "shex_validation 0.3.2",
  "sparql_service 0.3.2",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "shapes_comparator"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "prefixmap 0.3.3",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "serde",
+ "serde_json",
+ "shacl 0.3.3",
+ "shex_ast 0.3.3",
+ "shex_validation 0.3.3",
+ "sparql_service 0.3.3",
  "thiserror",
  "tracing",
 ]
@@ -4468,14 +4720,40 @@ dependencies = [
  "minijinja",
  "prefixmap 0.3.2",
  "rdf_config 0.3.2",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "serde",
- "shacl",
+ "shacl 0.3.2",
  "shex_ast 0.3.2",
  "shex_validation 0.3.2",
  "spargebra",
  "sparql_service 0.3.2",
+ "tempfile",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
+name = "shapes_converter"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "chrono",
+ "dctap 0.3.3",
+ "either",
+ "mie 0.3.3",
+ "minijinja",
+ "prefixmap 0.3.3",
+ "rdf_config 0.3.3",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "serde",
+ "shacl 0.3.3",
+ "shex_ast 0.3.3",
+ "shex_validation 0.3.3",
+ "spargebra",
+ "sparql_service 0.3.3",
  "tempfile",
  "thiserror",
  "toml 0.9.12+spec-1.1.0",
@@ -4538,8 +4816,37 @@ dependencies = [
  "pretty",
  "rbe 0.3.2",
  "regex",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "tabled",
+ "term_size",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
+name = "shex_ast"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "colored 3.1.1",
+ "const_format",
+ "csv",
+ "itertools 0.14.0",
+ "lazy-regex",
+ "nom 8.0.0",
+ "nom_locate 5.0.0",
+ "petgraph 0.8.3",
+ "prefixmap 0.3.3",
+ "pretty",
+ "rbe 0.3.3",
+ "regex",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
  "rust_decimal",
  "serde",
  "serde_json",
@@ -4582,11 +4889,33 @@ dependencies = [
  "itertools 0.14.0",
  "prefixmap 0.3.2",
  "rbe 0.3.2",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
  "serde",
  "serde_json",
  "shex_ast 0.3.2",
+ "termtree",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "shex_validation"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "either",
+ "indexmap 2.14.0",
+ "itertools 0.14.0",
+ "prefixmap 0.3.3",
+ "rbe 0.3.3",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
+ "serde",
+ "serde_json",
+ "shex_ast 0.3.3",
  "termtree",
  "thiserror",
  "toml 0.9.12+spec-1.1.0",
@@ -4781,8 +5110,33 @@ dependencies = [
  "oxrdfio",
  "oxsdatatypes",
  "prefixmap 0.3.2",
- "rudof_iri",
- "rudof_rdf",
+ "rudof_iri 0.3.2",
+ "rudof_rdf 0.3.2",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "sparesults",
+ "thiserror",
+ "toml 0.9.12+spec-1.1.0",
+ "tracing",
+]
+
+[[package]]
+name = "sparql_service"
+version = "0.3.3"
+source = "git+https://github.com/rudof-project/rudof.git#d25e2c7a20b6d023ceaa042e92b83b05127fcd83"
+dependencies = [
+ "colored 3.1.1",
+ "const_format",
+ "itertools 0.14.0",
+ "mie 0.3.3",
+ "oxigraph",
+ "oxrdf",
+ "oxrdfio",
+ "oxsdatatypes",
+ "prefixmap 0.3.3",
+ "rudof_iri 0.3.3",
+ "rudof_rdf 0.3.3",
  "rust_decimal",
  "serde",
  "serde_json",
