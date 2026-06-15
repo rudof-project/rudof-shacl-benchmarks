@@ -2,15 +2,10 @@
 
 version: 3
 
-vars:
-  DOCKER_IMAGE: rudof/dataset_builder:latest
-  DOCKER_WKD: /app
-  DOCKER_SH: /toolchain/bin/bash
-  UID:
-    sh: id -u
-  GID:
-    sh: id -g
-  DATASETS: [ era, lubm, icdd ]
+includes:
+  vars:
+    taskfile: ../taskfiles/vars.yml
+    internal: true
 
 tasks:
   docker:generate:
@@ -26,10 +21,10 @@ tasks:
     cmd: >
       docker run \
         --rm \
-        -v {{ .TASK_DIR }}:{{ .DOCKER_WKD }} \
-        -w {{ .DOCKER_WKD }} \
-        --entrypoint {{ .DOCKER_SH }} \
+        -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+        -w {{ .DKR_WKD }} \
+        --entrypoint {{ .DKR_SH_BASH }} \
         --user {{ .UID }}:{{ .GID }} \
         --detach \
-        {{ .DOCKER_IMAGE }} \
+        {{ .DKR_BUILDER_DATASET }} \
         {{ index .MATCH 0 }}_entrypoint.sh

@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+vars:
+  DKR_BUILDER_RUST: rudof/rust_builder:latest
+  DKR_BUILDER_DATASET: rudof/dataset_builder:latest
+
+  DKR_SH_BASH: /toolchain/bin/bash
+  DKR_SH_CARGO: /toolchain/bin/cargo
+
+  DKR_WKD: /app
+  DKR_SOCKET: /var/run/docker.sock
+  DKR_GID: { sh: "stat -c '%g' {{ .DKR_SOCKET }}" }
+
+  UID: { sh: id -u }
+  GID: { sh: id -g }
+
+  PROFILE_TIME: 30
+  RUNS: 20
+  WARM_UP: 10
+
+  DATASETS:
+    - era
+    - lubm
+    - icdd
+
+  ERA_DATA_FORMAT: turtle
+  ERA_SHAPES_FORMAT: turtle
+  ERA_DATA:
+#    - era
+    - es
+    - fr
+  ERA_SHAPES:
+    - core
+#    - era
+#    - tds
+
+  ICDD_DATA_FORMAT: turtle
+  ICDD_SHAPES_FORMAT: turtle
+  ICDD_TYPES:
+    - binary
+    - directed1ton
+    - directedbinary
+  ICDD_IDX:
+    - 1
+    - 2
+    - 3
+    - 4
+
+  LUBM_DATA_FORMAT: ntriples
+  LUBM_SHAPES_FORMAT: turtle
+  LUBM_IDX:
+    - 5
+    - 10
+    - 50
+    - 100
+    - 500
+
+  ENGINES:
+    - corese
+    - jena
+    - maplib
+#    - dotnet_rdf
+    - pyshacl
+    - rdf4j
+    - rdfunit
+#    - rudof_qlever
+    - rudof_v1
+    - rudof_v2
+    - topbraid
+
+tasks: { _foo: { internal: true } }
