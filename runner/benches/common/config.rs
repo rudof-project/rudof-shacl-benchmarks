@@ -7,10 +7,14 @@ pub fn load_config() -> BenchmarkConfig {
     let cfg_path = env::var("RUDOF_BENCH_CFG")
         .unwrap_or("config.toml".to_string());
 
-    let mut f = File::open(cfg_path)
-        .expect("An error occured while opening the config file");
+    let f = File::open(cfg_path);
+
+    if f.is_err() {
+        return BenchmarkConfig::default();
+    }
+
     let mut s = String::new();
-    f.read_to_string(&mut s)
+    f.unwrap().read_to_string(&mut s)
         .expect("An error occured while reading the config file");
 
     let config: BenchmarkConfig = toml::from_str(s.as_str())
