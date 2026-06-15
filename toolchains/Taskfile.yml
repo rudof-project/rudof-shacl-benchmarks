@@ -2,27 +2,13 @@
 
 version: 3
 
+includes:
+  docker:
+    taskfile: ../taskfiles/docker.yml
+    dir: .
+    flatten: true
+
 tasks:
-  docker:build:
-    desc: Builds all toolchain images
-    silent: true
-    cmd: 'docker buildx bake'
-
-  docker:build:*:
-    desc: Builds a specific toolchain image
-    silent: true
-    cmd: 'docker buildx bake {{ index .MATCH 0 }}'
-
-  docker:pull:
-    desc: Pulls all toolchain images
-    silent: true
-    cmd: 'docker buildx bake --pull'
-
-  docker:pull:*:
-    desc: Pulls a specific toolchain image
-    silent: true
-    cmd: 'docker buildx bake {{ index .MATCH 0 }} --pull'
-
   nix:update:
     desc: Updates all the flakes
     silent: true

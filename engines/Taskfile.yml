@@ -2,23 +2,8 @@
 
 version: 3
 
-tasks:
-  docker:build:
-    desc: Builds all the engines images
-    silent: true
-    cmd: 'docker buildx bake'
-
-  docker:build:*:
-    desc: Builds a specific engine image
-    silent: true
-    cmd: 'docker buildx bake {{ index .MATCH 0 }}'
-
-  docker:pull:
-    desc: Pulls all the engines images
-    silent: true
-    cmd: 'docker buildx bake --pull'
-
-  docker:pull:*:
-    desc: Pulls a specific engine image
-    silent: true
-    cmd: 'docker buildx bake {{ index .MATCH 0 }} --pull'
+includes:
+  docker:
+    taskfile: ../taskfiles/docker.yml
+    dir: .
+    flatten: true
