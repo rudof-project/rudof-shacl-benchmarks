@@ -20,7 +20,7 @@ tasks:
       - for: { var: DATASETS }
         task: docker:generate:{{ .ITEM }}
 
-  docker:*:generate:
+  docker:generate:*:
     desc: Generates the given dataset using Docker.
     silent: true
     cmd: >
