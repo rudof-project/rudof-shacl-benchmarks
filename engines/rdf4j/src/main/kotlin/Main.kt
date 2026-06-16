@@ -21,7 +21,8 @@ import kotlin.time.measureTimedValue
 // - warm_up: Number of runs for warm up
 fun main(args: Array<String>) {
     val dataPath = args.getOrNull(0) ?: throw Exception("Missing data graph path")
-    val dataFormat = when (args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")) {
+    val dataFormatStr = args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")
+    val dataFormat = when (dataFormatStr) {
         "turtle" -> RDFFormat.TURTLE
         "n3" -> RDFFormat.N3
         "rdfxml" -> RDFFormat.RDFXML
@@ -32,7 +33,8 @@ fun main(args: Array<String>) {
         else -> throw Exception("Format not supported")
     }
     val shapesPath = args.getOrNull(2) ?: throw Exception("Missing shapes graph path")
-    val shapesFormat = when (args.getOrNull(3)?.lowercase() ?: throw Exception("Missing shapes format")) {
+    val shapesFormatStr = args.getOrNull(3)?.lowercase() ?: throw Exception("Missing shapes format")
+    val shapesFormat = when (shapesFormatStr) {
         "turtle" -> RDFFormat.TURTLE
         "n3" -> RDFFormat.N3
         "rdfxml" -> RDFFormat.RDFXML
@@ -46,6 +48,11 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(5)?.toInt() ?: 20
     val warmUp = args.getOrNull(6)?.toInt() ?: 10
     val results = mutableListOf<String>()
+
+    println("[rdf4j] Data:    $dataPath ($dataFormatStr)")
+    println("[rdf4j] Shapes:  $shapesPath ($shapesFormatStr)")
+    println("[rdf4j] CSV:     $csvPath")
+    println("[rdf4j] Runs:    $runs, warm-up: $warmUp")
 
     val shaclSail = ShaclSail(MemoryStore()).apply {
         validationResultsLimitTotal = -1
@@ -79,6 +86,9 @@ fun main(args: Array<String>) {
                         results.add("${result.duration.inWholeMilliseconds}")
                         results.add("${result.duration.inWholeMicroseconds / 1000.0}")
                     }
+                    if (idx == warmUp - 1) {
+                        println("[rdf4j] Warm-up complete")
+                    }
                 }
             }
         }
@@ -91,4 +101,6 @@ fun main(args: Array<String>) {
             }
         }
     }
+
+    println("[rdf4j] Done -> $csvPath")
 }

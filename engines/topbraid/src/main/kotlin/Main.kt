@@ -17,7 +17,8 @@ import kotlin.time.measureTimedValue
 // - warm_up: Number of runs for warm up
 fun main(args: Array<String>) {
     val dataPath = args.getOrNull(0) ?: throw Exception("Missing data graph path")
-    val dataFormat = when (args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")) {
+    val dataFormatStr = args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")
+    val dataFormat = when (dataFormatStr) {
         "turtle" -> FileUtils.langTurtle
         "rdfxml" -> FileUtils.langXML
         "n3" -> FileUtils.langN3
@@ -25,7 +26,8 @@ fun main(args: Array<String>) {
         else -> throw Exception("Not supported format")
     }
     val shapesPath = args.getOrNull(2) ?: throw Exception("Missing shapes graph path")
-    val shapesFormat = when (args.getOrNull(3)?.lowercase() ?: throw Exception("Missing shapes format")) {
+    val shapesFormatStr = args.getOrNull(3)?.lowercase() ?: throw Exception("Missing shapes format")
+    val shapesFormat = when (shapesFormatStr) {
         "turtle" -> FileUtils.langTurtle
         "rdfxml" -> FileUtils.langXML
         "n3" -> FileUtils.langN3
@@ -39,6 +41,10 @@ fun main(args: Array<String>) {
 
     val dataModel = JenaUtil.createMemoryModel().apply { read(dataPath, dataFormat) }
     val shapesModel = JenaUtil.createMemoryModel().apply { read(shapesPath, shapesFormat) }
+    println("[topbraid] Data:    $dataPath ($dataFormatStr)")
+    println("[topbraid] Shapes:  $shapesPath ($shapesFormatStr)")
+    println("[topbraid] CSV:     $csvPath")
+    println("[topbraid] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
         val result = measureTimedValue {
@@ -47,6 +53,9 @@ fun main(args: Array<String>) {
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+        }
+        if (idx == warmUp - 1) {
+            println("[topbraid] Warm-up complete")
         }
     }
 
@@ -58,4 +67,6 @@ fun main(args: Array<String>) {
             }
         }
     }
+
+    println("[topbraid] Done -> $csvPath")
 }

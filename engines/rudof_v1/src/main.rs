@@ -18,10 +18,8 @@ fn main() {
     let args = env::args().collect::<Vec<String>>();
 
     let data_path = args.get(1).expect("Missing data graph path");
-    let data_format = match args.get(2)
-        .expect("Missing data format")
-        .to_lowercase()
-        .as_str() {
+    let data_format_str = args.get(2).expect("Missing data format").to_lowercase();
+    let data_format = match data_format_str.as_str() {
         "turtle" => RDFFormat::Turtle,
         "ntriples" => RDFFormat::NTriples,
         "rdfxml" => RDFFormat::RDFXML,
@@ -32,10 +30,8 @@ fn main() {
         _ => panic!("Not expected format"),
     };
     let shapes_path = args.get(3).expect("Missing shapes graph path");
-    let shapes_format = match args.get(4)
-        .expect("Missing shapes format")
-        .to_lowercase()
-        .as_str() {
+    let shapes_format_str = args.get(4).expect("Missing shapes format").to_lowercase();
+    let shapes_format = match shapes_format_str.as_str() {
         "internal" => ShaclFormat::Internal,
         "turtle" => ShaclFormat::Turtle,
         "ntriples" => ShaclFormat::NTriples,
@@ -50,6 +46,11 @@ fn main() {
     let runs: usize = args.get(6).and_then(|s| s.parse().ok()).unwrap_or(20);
     let warm_up: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(10);
     let mut result: Vec<String> = Vec::new();
+
+    println!("[rudof_v1] Data:    {} ({})", data_path, data_format_str);
+    println!("[rudof_v1] Shapes:  {} ({})", shapes_path, shapes_format_str);
+    println!("[rudof_v1] CSV:     {}", csv_path);
+    println!("[rudof_v1] Runs:    {}, warm-up: {}", runs, warm_up);
 
     let mut rudof = Rudof::new(&RudofConfig::default_config().unwrap()).unwrap();
 
@@ -66,6 +67,9 @@ fn main() {
         if idx >= warm_up {
             result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
         }
+        if warm_up > 0 && idx == warm_up - 1 {
+            println!("[rudof_v1] Warm-up complete");
+        }
     }
 
     let mut file = File::create(csv_path).expect(&format!("Unable to create file {csv_path}"));
@@ -73,4 +77,6 @@ fn main() {
         file.write((&format!("{x}\n")).as_ref()).expect("Unable to write results to csv");
     });
     file.flush().unwrap();
+
+    println!("[rudof_v1] Done -> {}", csv_path);
 }

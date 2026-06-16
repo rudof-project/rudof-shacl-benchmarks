@@ -19,7 +19,8 @@ import kotlin.time.measureTimedValue
 // - warm_up: Number of runs for warm up
 fun main(args: Array<String>) {
     val dataPath = args.getOrNull(0) ?: throw Exception("Missing data graph path")
-    val dataFormat = when (args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")) {
+    val dataFormatStr = args.getOrNull(1)?.lowercase() ?: throw Exception("Missing data format")
+    val dataFormat = when (dataFormatStr) {
         "turtle" -> Lang.TURTLE
         "rdfxml" -> Lang.RDFXML
         "n3" -> Lang.N3
@@ -30,7 +31,7 @@ fun main(args: Array<String>) {
         else -> throw Exception("Format not supported")
     }
     val shapesPath = args.getOrNull(2) ?: throw Exception("Missing shapes graph path")
-    args.getOrNull(3) ?: throw Exception("Missing shapes format")
+    val shapesFormat = args.getOrNull(3) ?: throw Exception("Missing shapes format")
     val csvPath = args.getOrNull(4) ?: throw Exception("Missing csv report path")
     val runs = args.getOrNull(5)?.toInt() ?: 20
     val warmUp = args.getOrNull(6)?.toInt() ?: 10
@@ -43,6 +44,10 @@ fun main(args: Array<String>) {
             .addSchemaURI("local-shacl", shapesPath)
             .build()
     )
+    println("[rdfunit] Data:    $dataPath ($dataFormatStr)")
+    println("[rdfunit] Shapes:  $shapesPath ($shapesFormat)")
+    println("[rdfunit] CSV:     $csvPath")
+    println("[rdfunit] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
         val result = measureTimedValue {
@@ -51,6 +56,9 @@ fun main(args: Array<String>) {
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+        }
+        if (idx == warmUp - 1) {
+            println("[rdfunit] Warm-up complete")
         }
     }
 
@@ -62,4 +70,6 @@ fun main(args: Array<String>) {
             }
         }
     }
+
+    println("[rdfunit] Done -> $csvPath")
 }

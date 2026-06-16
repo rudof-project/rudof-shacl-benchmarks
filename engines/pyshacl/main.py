@@ -15,13 +15,18 @@ from pyshacl import validate
 # - warm_up: Number of runs for warm up
 def main() -> None:
     data_path = get_arg(1, "Missing data graph path")
-    get_arg(2, "Missing data format")
+    data_format = get_arg(2, "Missing data format")
     shapes_path = get_arg(3, "Missing shapes graph path")
-    get_arg(4, "Missing shapes format")
+    shapes_format = get_arg(4, "Missing shapes format")
     csv_path = get_arg(5, "Missing csv report path")
     runs = int(get_arg(6, "", 20))
     warm_up = int(get_arg(7, "", 10))
     results: list[str] = []
+
+    print(f"[pyshacl] Data:    {data_path} ({data_format})")
+    print(f"[pyshacl] Shapes:  {shapes_path} ({shapes_format})")
+    print(f"[pyshacl] CSV:     {csv_path}")
+    print(f"[pyshacl] Runs:    {runs}, warm-up: {warm_up}")
 
     for i in range(runs + warm_up):
         data_graph = rdflib.Graph()
@@ -38,9 +43,13 @@ def main() -> None:
 
         if i >= warm_up:
             results.append(f"{delta * 1000:.3f}\n")
+        if i == warm_up - 1:
+            print("[pyshacl] Warm-up complete")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
         f.writelines(results)
+
+    print(f"[pyshacl] Done -> {csv_path}")
 
 def get_arg(idx: int, msg: str, default=None) -> str:
     arg = None
