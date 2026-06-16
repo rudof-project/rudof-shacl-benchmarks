@@ -33,7 +33,7 @@ target "_common_kt" {
 
 target "_common_python" {
   inherits = [ "_common" ]
-  dockerfile = "../Dockerfile_py_static"
+  dockerfile = "../Dockerfile_python"
 }
 
 target "rudof_v1" {
@@ -101,6 +101,7 @@ target "jena" {
 
 target "pyshacl" {
   inherits = [ "_common_python" ]
+  dockerfile = "Dockerfile"
   args = {
     BINARY_NAME = "pyshacl"
   }
@@ -110,7 +111,6 @@ target "pyshacl" {
 
 target "maplib" {
   inherits = [ "_common_python" ]
-  dockerfile = "../Dockerfile_py_native"
   context = "./maplib"
   tags = [ "rudof/maplib:latest" ]
 }

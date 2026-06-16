@@ -7,11 +7,25 @@ WORKDIR /app
 COPY wheels ./wheels/
 COPY .python-version main.py pyproject.toml uv.lock ./
 
+ENV UV_PYTHON_DOWNLOADS=never
+ENV UV_PYTHON=/toolchain/bin/python3
+ENV CC=gcc
+ENV CXX=g++
+
 RUN uv sync --no-cache
 
 RUN uv run python -m nuitka \
     --standalone \
     --static-libpython=yes \
+    --assume-yes-for-downloads \
+    --include-package=importlib.metadata \
+    --include-package=importlib.resources \
+    --include-package=rdflib \
+    --include-package=pyshacl \
+    --include-package-data=rdflib \
+    --include-package-data=pyshacl \
+    --follow-import-to=importlib \
+    --follow-import-to=importlib.metadata \
     --output-filename=binary \
     --output-dir=/app/out \
     main.py
