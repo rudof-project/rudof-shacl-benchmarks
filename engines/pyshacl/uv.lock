@@ -86,12 +86,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "nuitka", extra = ["onefile"] },
     { name = "pyshacl" },
+    { name = "rdflib" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "nuitka", extras = ["onefile"], specifier = ">=4.1.2" },
     { name = "pyshacl", specifier = ">=0.31.0" },
+    { name = "rdflib", specifier = ">=7.6.0" },
 ]
 
 [package.metadata.requires-dev]
