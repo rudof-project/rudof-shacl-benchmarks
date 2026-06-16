@@ -31,7 +31,7 @@ def main() -> None:
         delta = time.time() - start
 
         if i >= warm_up:
-            results.append(f"{delta}")
+            results.append(f"{delta * 1000:.3f}\n")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
         f.writelines(results)

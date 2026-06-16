@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
         }
 
         if (idx >= warmUp) {
-            results.add("${result.duration.inWholeMilliseconds}")
+            results.add("${result.duration.inWholeMicroseconds / 1000.0}")
         }
     }
 

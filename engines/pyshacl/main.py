@@ -27,7 +27,7 @@ def main() -> None:
         data_graph = rdflib.Graph()
         with open(data_path, "r", encoding="utf-8") as f:
             data_graph.parse(data=f.read())
-    
+
         shapes_graph = rdflib.Graph()
         with open(shapes_path, "r", encoding="utf-8") as f:
             shapes_graph.parse(data=f.read())
@@ -37,7 +37,7 @@ def main() -> None:
         delta = time.time() - start
 
         if i >= warm_up:
-            results.append(f"{delta}")
+            results.append(f"{delta * 1000:.3f}\n")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
         f.writelines(results)

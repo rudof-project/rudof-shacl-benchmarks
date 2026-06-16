@@ -64,7 +64,7 @@ fn main() {
         let elapsed = start.elapsed();
 
         if idx >= warm_up {
-            result.push(format!("{}", elapsed.as_millis()))
+            result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
         }
     }
 

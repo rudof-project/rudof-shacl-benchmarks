@@ -30,10 +30,10 @@ fun main(args: Array<String>) {
         val result = measureTimedValue { shacl.eval() }
 
         if (idx >= warmUp) {
-            results.add("${result.duration.inWholeMilliseconds}")
+            results.add("${result.duration.inWholeMicroseconds / 1000.0}")
         }
     }
-    
+
     File(csvPath).bufferedWriter().use { writer ->
         results.forEach {
             writer.apply {
