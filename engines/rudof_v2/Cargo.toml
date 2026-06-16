@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "e98c1c2e675dd51ae98361caefde46be8fd8cc44" } # v0.3.2
+rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", version = "0.3.4" }
