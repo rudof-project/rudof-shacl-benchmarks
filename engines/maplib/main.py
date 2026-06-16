@@ -29,10 +29,10 @@ def main() -> None:
         model = Model()
 
         model.read(data_path, parallel=True)
-        model.read(shapes_path)
+        model.read(shapes_path, parallel=True)
 
         start = time.time()
-        model.validate(include_shape_graph=True)
+        model.validate()
         delta = time.time() - start
 
         if i >= warm_up:
