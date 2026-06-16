@@ -20,6 +20,7 @@ vars:
   RUNS: 20
   WARM_UP: 10
   RUDOF_BENCH_CFG: "{{ .DKR_WKD }}/default_config.toml"
+  RUDOF_BENCH_QLEVER_CFG: "{{ .DKR_WKD }}/qlever_config.toml"
 
   DATASETS:
     - era
