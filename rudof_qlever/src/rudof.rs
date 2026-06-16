@@ -17,9 +17,14 @@ impl RudofEngine for RudofQleverEngine {
         let cfg_path = env::var("RUDOF_BENCH_QLEVER_CFG")
             .unwrap_or("qlever_config.toml".to_string());
 
-        let config = RudofConfig::from_path(cfg_path).unwrap_or_default();
+        let config = RudofConfig::from_path(cfg_path);
 
-        Self(Rudof::new(config))
+        if let Ok(config) = config {
+            return Self(Rudof::new(config));
+        }
+
+        eprintln!("[+] Config file not found, using default");
+        Self(Rudof::new(RudofConfig::default()))
     }
 
     fn load_data<S: Into<String>>(&mut self, path: S, format: RdfFormat) {
