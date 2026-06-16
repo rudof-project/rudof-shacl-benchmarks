@@ -1,7 +1,8 @@
 use crate::rdf_format::{cnv_rdf_format, cnv_shacl_format};
 use common::{RdfFormat, RudofEngine};
-use rudof::formats::{DataReaderMode, InputSpec, ShaclValidationMode};
+use rudof::formats::{BackendSpec, DataReaderMode, InputSpec, ShaclValidationMode};
 use rudof::{Rudof, RudofConfig};
+use std::env;
 use std::hint::black_box;
 
 pub struct RudofQleverEngine(Rudof);
@@ -11,9 +12,12 @@ impl RudofEngine for RudofQleverEngine {
     const ID: &'static str = "rudof_qlever";
 
     fn new() -> Self {
-        // TODO - Load config file for qlever
         // TODO - If the config branch is merged, this will be simpler
-        let config = RudofConfig::default();
+
+        let cfg_path = env::var("RUDOF_BENCH_QLEVER_CFG")
+            .unwrap_or("qlever_config.toml".to_string());
+
+        let config = RudofConfig::from_path(cfg_path).unwrap_or_default();
 
         Self(Rudof::new(config))
     }
@@ -28,6 +32,7 @@ impl RudofEngine for RudofQleverEngine {
             .with_data_format(&format)
             .with_reader_mode(&DataReaderMode::Strict)
             .with_merge(false)
+            .with_backend(BackendSpec::Qlever)
             .execute().unwrap();
     }
 

@@ -1,0 +1,14 @@
+[rdf_data.qlever]
+image_name = "adfreiburg/qlever"
+image_tag = "commit-a307781"
+index_name = "default"
+auto_delete_if_created = false
+host_port= 7001
+container_port = 7001
+parser_parallel = false
+memory_max_size = "5G"
+cache_max_size = "2G"
+cache_max_size_single_entry = "1G"
+run_as_host_user = true
+server_readiness_timeout_secs = 60
+default_query_timeout = "600s"
