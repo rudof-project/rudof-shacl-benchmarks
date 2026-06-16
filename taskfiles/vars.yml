@@ -19,6 +19,7 @@ vars:
   PROFILE_TIME: 30
   RUNS: 20
   WARM_UP: 10
+  RUDOF_BENCH_CFG: "{{ .DKR_WKD }}/default_config.toml"
 
   DATASETS:
     - era
