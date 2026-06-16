@@ -8,7 +8,6 @@ common.workspace = true
 
 rudof_v1.workspace = true
 rudof_v2.workspace = true
-rudof_qlever.workspace = true
 
 toml.workspace = true
 

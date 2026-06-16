@@ -3772,15 +3772,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rudof_qlever"
-version = "0.1.0"
-dependencies = [
- "common",
- "minijinja",
- "rudof_lib 0.3.4",
-]
-
-[[package]]
 name = "rudof_rdf"
 version = "0.3.4"
 source = "git+https://github.com/rudof-project/rudof.git#863a428a2c9e40367938af782cc0a5721528316b"
@@ -3848,7 +3839,6 @@ dependencies = [
  "common",
  "criterion",
  "pprof",
- "rudof_qlever",
  "rudof_v1",
  "rudof_v2",
  "toml 1.1.2+spec-1.1.0",

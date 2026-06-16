@@ -3,9 +3,8 @@ mod common;
 use crate::common::{criterion_config, load_config};
 use ::common::RudofEngine;
 use criterion::{criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion};
-use rudof_qlever::RudofQleverEngine;
 use rudof_v1::RudofV1Engine;
-use rudof_v2::RudofV2Engine;
+use rudof_v2::{RudofQleverEngine, RudofV2Engine};
 use std::hint::black_box;
 
 fn era_bench_validation(c: &mut Criterion) {

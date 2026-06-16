@@ -9,7 +9,6 @@ members = [
     "common",
     "rudof_v1",
     "rudof_v2",
-    "rudof_qlever",
     "runner"
 ]
 
@@ -20,7 +19,6 @@ exclude = [ "engines/rudof_v1", "engines/rudof_v2", "engines/rudof_qlever" ]
 common = { version = "0.1.0", path = "./common" }
 rudof_v1 = { version = "0.1.0", path = "./rudof_v1" }
 rudof_v2 = { version = "0.1.0", path = "./rudof_v2" }
-rudof_qlever = { version = "0.1.0", path = "./rudof_qlever" }
 runner = { version = "0.1.0", path = "./runner" }
 
 criterion = { version = "0.8.2", features = [ "csv_output", "html_reports" ] }
