@@ -1,0 +1,182 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+set: [ errexit ]
+
+includes:
+  toolchain:
+    taskfile: toolchains/Taskfile.yml
+    dir: toolchains
+  data:
+    taskfile: data/Taskfile.yml
+    dir: data
+  engine:
+    taskfile: engines/Taskfile.yml
+    dir: engines
+  vars:
+    taskfile: taskfiles/vars.yml
+    internal: true
+
+tasks:
+  generate:dir:results:
+    desc: Generates the results folder
+    silent: true
+    internal: true
+    cmd: mkdir -p results/dist/{{ if eq 1 (len .DATASETS) }}{{ index .DATASETS 0 }}{{ else }}{ {{- .DATASETS | join "," -}} }{{ end }}
+
+  results:clean:
+    desc: Cleans the results
+    silent: true
+    deps:
+      - task: results:clean:criterion
+      - task: results:clean:engines
+
+  results:clean:criterion:
+    desc: Cleans the Criterion results
+    silent: true
+    cmd: rm -rf target/criterion
+
+  results:clean:engines:
+    desc: Cleans the engines results
+    silent: true
+    cmd: rm -rf results/dist
+
+  docker:rudof:bench:
+    desc: Runs the rudof engine benchmarks in Docker
+    silent: true
+    cmds:
+      - for: { var: DATASETS }
+        task: "docker:rudof:bench:{{ .ITEM }}"
+
+  docker:rudof:bench:*:
+    desc: Runs the rudof engine benchmarks in Docker for the specified dataset
+    silent: true
+    cmd: >
+      docker run \
+        --rm \
+        -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+        -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
+        -w {{ .DKR_WKD }} \
+        --entrypoint {{ .DKR_SH_CARGO }} \
+        --user {{ .UID }}:{{ .GID }} \
+        --group-add {{ .DKR_GID }} \
+        -e RUDOF_BENCH_CFG={{ .RUDOF_BENCH_CFG }} \
+        -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
+        {{ .DKR_BUILDER_RUST }} \
+        bench --bench={{ index .MATCH 0 }}
+
+  docker:rudof:prof:
+    desc: Runs the rudof engine profiler in Docker
+    silent: true
+    cmds:
+      - for: { var: DATASETS }
+        task: "docker:rudof:prof:{{ .ITEM }}"
+
+  docker:rudof:prof:*:
+    desc: Runs the rudof engine profiler in Docker for the specified dataset
+    silent: true
+    cmd: >
+      docker run \
+      --rm \
+      -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+      -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
+      -w {{ .DKR_WKD }} \
+      --entrypoint {{ .DKR_SH_CARGO }} \
+      --user {{ .UID }}:{{ .GID }} \
+      --group-add {{ .DKR_GID }} \
+      -e RUDOF_BENCH_CFG={{ .RUDOF_BENCH_CFG }} \
+      -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
+      {{ .DKR_BUILDER_RUST }} \
+      bench --bench={{ index .MATCH 0 }} -- --profile-time {{ .PROFILE_TIME }}
+
+  docker:engines:bench:
+    desc: Runs the all engines in Docker
+    silent: true
+    cmds:
+      - for: { var: ENGINES}
+        task: "docker:engines:bench:{{ .ITEM }}"
+
+  docker:engines:bench:*:
+    desc: Runs the specified engine in Docker
+    silent: true
+    vars:
+      ENGINE: "{{ index .MATCH 0 }}"
+    cmds:
+      - for: { var: DATASETS }
+        task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
+
+  docker:engine:bench:lubm:*:
+    desc: Runs the specified engine in Docker for the LUBM dataset
+    silent: true
+    deps:
+      - task: generate:dir:results
+    vars:
+      ENGINE: "{{ index .MATCH 0 }}"
+    cmds:
+      - for: { var: LUBM_IDX }
+        cmd: >
+          docker run \
+            --rm \
+            -v {{ .RESULTS_FOLDER }}/lubm:/results \
+            -v {{ .DATA_FOLDER }}/lubm:/data:ro \
+            --user {{ .UID }}:{{ .GID }} \
+            rudof/{{ .ENGINE }}:latest \
+            /data/data-{{ .ITEM }}.nt \
+            {{ .LUBM_DATA_FORMAT }} \
+            /data/shapes.ttl \
+            {{ .LUBM_SHAPES_FORMAT }} \
+            /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
+            {{ .RUNS }} {{ .WARM_UP }}
+
+  docker:engine:bench:icdd:*:
+    desc: Runs the specified engine in Docker for the ICDD dataset
+    silent: true
+    deps:
+      - task: generate:dir:results
+    vars:
+      ENGINE: "{{ index .MATCH 0 }}"
+    cmds:
+      - for:
+          matrix:
+            TYPES: { ref: .ICDD_TYPES }
+            IDX: { ref: .ICDD_IDX }
+        cmd: >
+          docker run \
+            --rm \
+            -v {{ .RESULTS_FOLDER }}/icdd:/results \
+            -v {{ .DATA_FOLDER }}/icdd:/data:ro \
+            --user {{ .UID }}:{{ .GID }} \
+            rudof/{{ .ENGINE }}:latest \
+            /data/data-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
+            {{ .ICDD_DATA_FORMAT }} \
+            /data/shapes-{{ .ITEM.TYPES }}.ttl \
+            {{ .ICDD_SHAPES_FORMAT }} \
+            /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
+            {{ .RUNS }} {{ .WARM_UP }}
+
+  docker:engine:bench:era:*:
+    desc: Runs the specified engine in Docker for the ERA dataset
+    silent: true
+    deps:
+      - task: generate:dir:results
+    vars:
+      ENGINE: "{{ index .MATCH 0 }}"
+    cmds:
+      - for:
+          matrix:
+            DATA: { ref: .ERA_DATA }
+            SHAPES: { ref: .ERA_SHAPES }
+        cmd: >
+          docker run \
+            --rm \
+            -v {{ .RESULTS_FOLDER }}/era:/results \
+            -v {{ .DATA_FOLDER }}/era:/data:ro \
+            --user {{ .UID }}:{{ .GID }} \
+            rudof/{{ .ENGINE }}:latest \
+            /data/{{ .ITEM.DATA }}-data.ttl \
+            {{ .ERA_DATA_FORMAT }} \
+            /data/{{ .ITEM.SHAPES }}-shapes.ttl \
+            {{ .ERA_SHAPES_FORMAT }} \
+            /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
+            {{ .RUNS }} {{ .WARM_UP }}
