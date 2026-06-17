@@ -39,6 +39,8 @@ fun main(args: Array<String>) {
 
     repeat(warmUp + runs) { idx ->
         val validator = ShaclPlainValidator()
+
+        System.gc()
         val result = measureTimedValue { validator.validate(shapes, dataGraph) }
 
         if (idx >= warmUp) {

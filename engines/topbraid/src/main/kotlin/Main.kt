@@ -47,6 +47,7 @@ fun main(args: Array<String>) {
     println("[topbraid] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
+        System.gc()
         val result = measureTimedValue {
             ValidationUtil.validateModel(dataModel, shapesModel, true)
         }

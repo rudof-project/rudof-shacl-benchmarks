@@ -32,6 +32,8 @@ fun main(args: Array<String>) {
 
     repeat(warmUp + runs) { idx ->
         val shacl = generateShacl(dataPath, shapesPath)
+
+        System.gc()
         val result = measureTimedValue { shacl.eval() }
 
         if (idx >= warmUp) {

@@ -50,6 +50,7 @@ fun main(args: Array<String>) {
     println("[rdfunit] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
+        System.gc()
         val result = measureTimedValue {
             RDFUnitStaticValidator.validate(dataModel, TestCaseExecutionType.shaclTestCaseResult)
         }

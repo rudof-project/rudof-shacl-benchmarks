@@ -76,6 +76,7 @@ fun main(args: Array<String>) {
                     add(File(dataPath), dataFormat)
                     commit()
 
+                    System.gc()
                     val result = measureTimedValue {
                         begin(IsolationLevels.NONE)
                         (sailConnection as ShaclSailConnection).revalidate()

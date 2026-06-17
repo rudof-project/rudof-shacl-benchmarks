@@ -1,4 +1,4 @@
-import sys, time
+import gc, sys, time
 from maplib import Model
 
 # Usage: python maplib <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> [runs] [warm_up]
@@ -31,9 +31,12 @@ def main() -> None:
         model.read(data_path, parallel=True)
         model.read(shapes_path, parallel=True)
 
+        gc.collect()
+        gc.disable()
         start = time.time()
         model.validate()
         delta = time.time() - start
+        gc.enable()
 
         if i >= warm_up:
             results.append(f"{delta * 1000:.3f}\n")
