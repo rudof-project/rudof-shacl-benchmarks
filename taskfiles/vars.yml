@@ -68,6 +68,7 @@ vars:
     - maplib
 #    - dotnet_rdf
     - pyshacl
+    - pyshacl_n
     - rdf4j
     - rdfunit
 #    - rudof_qlever
