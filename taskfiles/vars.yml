@@ -38,8 +38,8 @@ vars:
     - fr
   ERA_SHAPES:
     - core
+    - tds
 #    - era
-#    - tds
 
   ICDD_DATA_FORMAT: turtle
   ICDD_SHAPES_FORMAT: turtle
