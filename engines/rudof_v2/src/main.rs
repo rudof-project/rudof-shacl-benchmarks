@@ -1,4 +1,4 @@
-use rudof::formats::{DataFormat, DataReaderMode, InputSpec, ShaclFormat, ShaclValidationMode};
+use rudof::formats::{DataFormat, DataReaderMode, InputSpec, ResultShaclValidationFormat, ShaclFormat, ShaclValidationMode};
 use rudof::{Rudof, RudofConfig};
 use std::env;
 use std::fs::File;
@@ -6,13 +6,14 @@ use std::hint::black_box;
 use std::io::Write;
 use std::time::Instant;
 
-/// Usage: rudof_v2 <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> [runs] [warm_up]
+/// Usage: rudof_v2 <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> <report_path> [runs] [warm_up]
 ///
 /// - data_path: Path to an RDF file containing the data graph
 /// - data_format: RDF format of the <data_path>
 /// - shapes_path: Path to a SHACL shapes file
 /// - shapes_format: RDF format of the <shapes_path>
 /// - csv_path: Path to save the CSV report file
+/// - report_path: Path to save the SHACL validation report (Turtle)
 /// - runs: Number of benchmark runs (Result runs = runs - warm_up)
 /// - warm_up: Number of runs for warm up
 fn main() {
@@ -44,13 +45,15 @@ fn main() {
         _ => panic!("Not expected format"),
     };
     let csv_path = args.get(5).expect("Missing csv report path");
-    let runs: usize = args.get(6).and_then(|s| s.parse().ok()).unwrap_or(20);
-    let warm_up: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(10);
+    let report_path = args.get(6).expect("Missing validation report path");
+    let runs: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(20);
+    let warm_up: usize = args.get(8).and_then(|s| s.parse().ok()).unwrap_or(10);
     let mut result: Vec<String> = Vec::new();
 
     println!("[rudof_v2] Data:    {} ({})", data_path, data_format_str);
     println!("[rudof_v2] Shapes:  {} ({})", shapes_path, shapes_format_str);
     println!("[rudof_v2] CSV:     {}", csv_path);
+    println!("[rudof_v2] Report:  {}", report_path);
     println!("[rudof_v2] Runs:    {}, warm-up: {}", runs, warm_up);
 
     let mut rudof = Rudof::new(RudofConfig::default());
@@ -99,5 +102,12 @@ fn main() {
     });
     file.flush().unwrap();
 
-    println!("[rudof_v2] Done -> {}", csv_path);
+    let mut report_file = File::create(report_path).expect(&format!("Unable to create file {report_path}"));
+    rudof.serialize_shacl_validation_results(&mut report_file)
+        .with_result_shacl_validation_format(&ResultShaclValidationFormat::Turtle)
+        .execute()
+        .expect("Failed to serialize SHACL validation report");
+    report_file.flush().unwrap();
+
+    println!("[rudof_v2] Done -> {}, {}", csv_path, report_path);
 }

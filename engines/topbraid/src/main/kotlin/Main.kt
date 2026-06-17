@@ -1,18 +1,21 @@
 package es.weso.rudof
 
+import org.apache.jena.rdf.model.Resource
 import org.apache.jena.util.FileUtils
 import org.topbraid.jenax.util.JenaUtil
 import org.topbraid.shacl.validation.ValidationUtil
 import java.io.File
+import java.io.FileOutputStream
 import kotlin.time.measureTimedValue
 
-// Usage: java -jar topbraid.jar <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> [runs] [warm_up]
+// Usage: java -jar topbraid.jar <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> <report_path> [runs] [warm_up]
 //
 // - data_path: Path to an RDF file containing the data graph
 // - data_format: RDF format of the <data_path>
 // - shapes_path: Path to a SHACL shapes file
 // - shapes_format: RDF format of the <shapes_path>
 // - csv_path: Path to save the CSV report file
+// - report_path: Path to save the SHACL validation report (Turtle)
 // - runs: Number of benchmark runs (Result runs = runs - warm_up)
 // - warm_up: Number of runs for warm up
 fun main(args: Array<String>) {
@@ -35,13 +38,16 @@ fun main(args: Array<String>) {
         else -> throw Exception("Not supported format")
     }
     val csvPath = args.getOrNull(4) ?: throw Exception("Missing csv report path")
-    val runs = args.getOrNull(5)?.toInt() ?: 20
-    val warmUp = args.getOrNull(6)?.toInt() ?: 10
+    val reportPath = args.getOrNull(5) ?: throw Exception("Missing validation report path")
+    val runs = args.getOrNull(6)?.toInt() ?: 20
+    val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
+    var lastReport: Resource? = null
 
     println("[topbraid] Data:    $dataPath ($dataFormatStr)")
     println("[topbraid] Shapes:  $shapesPath ($shapesFormatStr)")
     println("[topbraid] CSV:     $csvPath")
+    println("[topbraid] Report:  $reportPath")
     println("[topbraid] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
@@ -52,6 +58,7 @@ fun main(args: Array<String>) {
         val result = measureTimedValue {
             ValidationUtil.validateModel(dataModel, shapesModel, true)
         }
+        lastReport = result.value
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
@@ -70,5 +77,8 @@ fun main(args: Array<String>) {
         }
     }
 
-    println("[topbraid] Done -> $csvPath")
+    FileOutputStream(reportPath).use { os ->
+        lastReport!!.model.write(os, "TURTLE")
+    }
+    println("[topbraid] Done -> $csvPath, $reportPath")
 }

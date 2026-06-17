@@ -134,6 +134,7 @@ tasks:
             /data/shapes.ttl \
             {{ .LUBM_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
 
   docker:engine:bench:icdd:
@@ -167,6 +168,7 @@ tasks:
             /data/shapes-{{ .ITEM.TYPES }}.ttl \
             {{ .ICDD_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
 
   docker:engine:bench:era:
@@ -200,4 +202,5 @@ tasks:
             /data/{{ .ITEM.SHAPES }}-shapes.ttl \
             {{ .ERA_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
