@@ -2,6 +2,8 @@
 <h1>Rudof SHACL validator Benchmarks</h1>
 </div>
 
+<!--
+This needs to be updated
 ## Usage instructions
 
 ### Clone the repository
@@ -69,3 +71,4 @@ The flamegraphs can be accessed in the `target/criterion/<benchmark_name>/<bench
 >[!NOTE]
 >In order to run the `task` commands, you need to have the [Taskfile](https://taskfile.dev) runner installed.
 
+-->

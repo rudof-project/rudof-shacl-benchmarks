@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+includes:
+  vars:
+    taskfile: ../taskfiles/vars.yml
+    internal: true
+
+tasks:
+  docker:generate:
+    desc: Generates all datasets using Docker.
+    silent: true
+    deps:
+      - for: { var: DATASETS }
+        task: docker:generate:{{ .ITEM }}
+
+  docker:generate:*:
+    desc: Generates the given dataset using Docker.
+    silent: true
+    cmd: >
+      docker run \
+        --rm \
+        -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+        -w {{ .DKR_WKD }} \
+        --entrypoint {{ .DKR_SH_BASH }} \
+        --user {{ .UID }}:{{ .GID }} \
+        --detach \
+        {{ .DKR_BUILDER_DATASET }} \
+        {{ index .MATCH 0 }}_entrypoint.sh

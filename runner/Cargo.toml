@@ -1,0 +1,28 @@
+[package]
+name = "runner"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+common.workspace = true
+
+rudof_v1.workspace = true
+rudof_v2.workspace = true
+
+toml.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+pprof.workspace = true
+
+[[bench]]
+name = "icdd"
+harness = false
+
+[[bench]]
+name = "era"
+harness = false
+
+[[bench]]
+name = "lubm"
+harness = false

@@ -1,24 +1,27 @@
-[package]
-name = "rudof-shacl-benchmarks"
+[workspace.package]
+name = "rudof_benches_shacl_benchmarks"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
-rudof_old = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "11d8d7e8634244a9676c08ce6528dee346eabcdc" } # rudof v0.1.146
-rudof_new = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "4ec53004c012d9c13cadae8ff6f86c7f17719097" } # rudof v0.2.6
+[workspace]
+resolver = "2"
+members = [
+    "common",
+    "rudof_v1",
+    "rudof_v2",
+    "runner"
+]
 
-[dev-dependencies]
-criterion = { version = "0.8.2", features = ["csv_output", "html_reports"] }
-pprof = { version = "0.15.0", features = ["flamegraph"] }
+default-members = [ "runner" ]
+exclude = [ "engines/rudof_v1", "engines/rudof_v2", "engines/rudof_qlever" ]
 
-[[bench]]
-name = "icdd_bench"
-harness = false
+[workspace.dependencies]
+common = { version = "0.1.0", path = "./common" }
+rudof_v1 = { version = "0.1.0", path = "./rudof_v1" }
+rudof_v2 = { version = "0.1.0", path = "./rudof_v2" }
+runner = { version = "0.1.0", path = "./runner" }
 
-[[bench]]
-name = "era_bench"
-harness = false
-
-[[bench]]
-name = "lubm_bench"
-harness = false
+criterion = { version = "0.8.2", features = [ "csv_output", "html_reports" ] }
+pprof = { version = "0.15.0", features = [ "flamegraph" ] }
+serde = { version = "1.0.228", features = [ "derive" ] }
+toml = "1.1.2"

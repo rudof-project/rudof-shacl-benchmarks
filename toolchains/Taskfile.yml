@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: 3
+
+includes:
+  docker:
+    taskfile: ../taskfiles/docker.yml
+    dir: .
+    flatten: true
+
+tasks:
+  nix:update:
+    desc: Updates all the flakes
+    silent: true
+    cmd: 'for d in */ ; do [ -f "$d/flake.nix" ] && (cd "$d" && nix flake update); done'
+
+  nix:update:*:
+    desc: Updates a specific flake
+    silent: true
+    cmd: 'cd {{ index .MATCH 0 }} && nix flake update'

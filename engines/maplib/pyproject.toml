@@ -1,0 +1,13 @@
+[project]
+name = "maplib-bench"
+version = "0.1.0"
+requires-python = ">=3.13, <3.14"
+dependencies = [
+    "maplib>=0.20.18",
+]
+
+[tool.uv]
+find-links = [ "./wheels" ]
+
+[tool.uv.sources]
+maplib = { path = "./wheels/maplib-0.20.19-cp313-cp313-manylinux_2_28_x86_64.whl" }
