@@ -54,25 +54,22 @@ fun main(args: Array<String>) {
     println("[rdf4j] CSV:     $csvPath")
     println("[rdf4j] Runs:    $runs, warm-up: $warmUp")
 
-    val shaclSail = ShaclSail(MemoryStore()).apply {
-        validationResultsLimitTotal = -1
-        validationResultsLimitPerConstraint = -1
-    }
+    repeat(warmUp + runs) { idx ->
+        val shaclSail = ShaclSail(MemoryStore()).apply {
+            validationResultsLimitTotal = -1
+            validationResultsLimitPerConstraint = -1
+        }
 
-    SailRepository(shaclSail)
-        .apply { init() }
-        .connection
-        .use { conn ->
-            conn.apply {
-                begin(IsolationLevels.NONE)
-                add(File(shapesPath), shapesFormat, RDF4J.SHACL_SHAPE_GRAPH)
-                commit()
-            }
-
-            repeat(warmUp + runs) { idx ->
+        SailRepository(shaclSail)
+            .apply { init() }
+            .connection
+            .use { conn ->
                 conn.apply {
+                    begin(IsolationLevels.NONE)
+                    add(File(shapesPath), shapesFormat, RDF4J.SHACL_SHAPE_GRAPH)
+                    commit()
+
                     begin(IsolationLevels.NONE, ShaclSail.TransactionSettings.ValidationApproach.Disabled)
-                    clear()
                     add(File(dataPath), dataFormat)
                     commit()
 
@@ -91,7 +88,7 @@ fun main(args: Array<String>) {
                     }
                 }
             }
-        }
+    }
 
     File(csvPath).bufferedWriter().use { writer ->
         results.forEach {

@@ -39,14 +39,15 @@ fun main(args: Array<String>) {
     val warmUp = args.getOrNull(6)?.toInt() ?: 10
     val results = mutableListOf<String>()
 
-    val dataModel = JenaUtil.createMemoryModel().apply { read(dataPath, dataFormat) }
-    val shapesModel = JenaUtil.createMemoryModel().apply { read(shapesPath, shapesFormat) }
     println("[topbraid] Data:    $dataPath ($dataFormatStr)")
     println("[topbraid] Shapes:  $shapesPath ($shapesFormatStr)")
     println("[topbraid] CSV:     $csvPath")
     println("[topbraid] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
+        val dataModel = JenaUtil.createMemoryModel().apply { read(dataPath, dataFormat) }
+        val shapesModel = JenaUtil.createMemoryModel().apply { read(shapesPath, shapesFormat) }
+
         System.gc()
         val result = measureTimedValue {
             ValidationUtil.validateModel(dataModel, shapesModel, true)

@@ -37,19 +37,19 @@ fun main(args: Array<String>) {
     val warmUp = args.getOrNull(6)?.toInt() ?: 10
     val results = mutableListOf<String>()
 
-    val dataModel = RDFDataMgr.loadModel(dataPath, dataFormat)
-
-    RDFUnitStaticValidator.initWrapper(
-        RDFUnitTestSuiteGenerator.Builder()
-            .addSchemaURI("local-shacl", shapesPath)
-            .build()
-    )
     println("[rdfunit] Data:    $dataPath ($dataFormatStr)")
     println("[rdfunit] Shapes:  $shapesPath ($shapesFormat)")
     println("[rdfunit] CSV:     $csvPath")
     println("[rdfunit] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
+        val dataModel = RDFDataMgr.loadModel(dataPath, dataFormat)
+        RDFUnitStaticValidator.initWrapper(
+            RDFUnitTestSuiteGenerator.Builder()
+                .addSchemaURI("local-shacl", shapesPath)
+                .build()
+        )
+
         System.gc()
         val result = measureTimedValue {
             RDFUnitStaticValidator.validate(dataModel, TestCaseExecutionType.shaclTestCaseResult)

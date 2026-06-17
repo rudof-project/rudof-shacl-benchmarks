@@ -31,13 +31,12 @@ fun main(args: Array<String>) {
     println("[jena] CSV:     $csvPath")
     println("[jena] Runs:    $runs, warm-up: $warmUp")
 
-    val dataGraph = RDFDataMgr.loadGraph("file:$dataPath")
-    val shapesGraph = RDFDataMgr.loadGraph("file:$shapesPath")
-
     GeoSPARQLConfig.setupMemoryIndex()
-    val shapes = Shapes.parse(shapesGraph)
 
     repeat(warmUp + runs) { idx ->
+        val dataGraph = RDFDataMgr.loadGraph("file:$dataPath")
+        val shapesGraph = RDFDataMgr.loadGraph("file:$shapesPath")
+        val shapes = Shapes.parse(shapesGraph)
         val validator = ShaclPlainValidator()
 
         System.gc()
