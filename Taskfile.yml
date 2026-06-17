@@ -106,6 +106,13 @@ tasks:
       - for: { var: DATASETS }
         task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
 
+  docker:engine:bench:lubm:
+    desc: Runs the all the engines in Docker for the LUBM dataset
+    silent: true
+    cmds:
+      - for: { var: ENGINES }
+        task: "docker:engine:bench:lubm:{{ .ITEM }}"
+
   docker:engine:bench:lubm:*:
     desc: Runs the specified engine in Docker for the LUBM dataset
     silent: true
@@ -128,6 +135,13 @@ tasks:
             {{ .LUBM_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
             {{ .RUNS }} {{ .WARM_UP }}
+
+  docker:engine:bench:icdd:
+    desc: Runs all the engines in Docker for the ICDD dataset
+    silent: true
+    cmds:
+      - for: { var: ENGINES }
+        task: "docker:engine:bench:icdd:{{ .ITEM }}"
 
   docker:engine:bench:icdd:*:
     desc: Runs the specified engine in Docker for the ICDD dataset
@@ -154,6 +168,13 @@ tasks:
             {{ .ICDD_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
             {{ .RUNS }} {{ .WARM_UP }}
+
+  docker:engine:bench:era:
+    desc: Runs all the engines in Docker for the ERA dataset
+    silent: true
+    cmds:
+      - for: { var: ENGINES }
+        task: "docker:engine:bench:era:{{ .ITEM }}"
 
   docker:engine:bench:era:*:
     desc: Runs the specified engine in Docker for the ERA dataset
