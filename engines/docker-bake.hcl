@@ -11,7 +11,7 @@ group "kotlin" {
 }
 
 group "python" {
-  targets = [ "pyshacl", "maplib" ]
+  targets = [ "pyshacl", "maplib", "pyshacl_n" ]
 }
 
 target "_common" {
@@ -107,6 +107,12 @@ target "pyshacl" {
   }
   context = "./pyshacl"
   tags = [ "rudof/pyshacl:latest" ]
+}
+
+target "pyshacl_n" {
+  inherits = [ "_common_python" ]
+  context = "./pyshacl"
+  tags = [ "rudof/pyshacl_n:latest" ]
 }
 
 target "maplib" {
