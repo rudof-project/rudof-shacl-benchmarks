@@ -22,6 +22,9 @@ vars:
   RUDOF_BENCH_CFG: "{{ .DKR_WKD }}/default_config.toml"
   RUDOF_BENCH_QLEVER_CFG: "{{ .DKR_WKD }}/qlever_config.toml"
 
+  DATA_FOLDER: ./data/dist
+  RESULTS_FOLDER: ./results/dist
+
   DATASETS:
     - era
     - lubm
