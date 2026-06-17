@@ -50,17 +50,12 @@ fn lubm_bench_validation(c: &mut Criterion) {
         }
 
         if cfg.engines.contains(&RudofQleverEngine::ID.to_string()) {
+            let mut rudof = RudofQleverEngine::new();
+            rudof.load_data(data_path.clone(), cfg.data_format);
+            rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
+
             group.bench_function(BenchmarkId::new(RudofQleverEngine::DISPLAY_VERSION, data_file.as_str()), |b| {
-                b.iter_batched(|| {
-                    let mut rudof = RudofQleverEngine::new();
-
-                    rudof.load_data(data_path.clone(), cfg.data_format);
-                    rudof.load_shapes(shapes_path.clone(), cfg.shapes_format);
-
-                    rudof
-                }, |mut rudof| {
-                    black_box(rudof.validate())
-                }, BatchSize::PerIteration);
+                b.iter(|| { black_box(rudof.validate()) });
             });
         }
     }
