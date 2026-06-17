@@ -1,0 +1,16 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Missing ex:name for the organization (violates sh:minCount 1 on OrganizationShape)
+ex:badOrg a ex:Organization .
+
+ex:carol a ex:Person ;
+  # No ex:name — violates sh:minCount 1 on PersonShape
+  ex:age 200 ;                        # violates sh:maxInclusive 150
+  ex:email "not-an-email" ;           # violates sh:pattern
+  ex:worksAt ex:badOrg .             # ex:badOrg itself is invalid
+
+ex:dave a ex:Person ;
+  ex:name "Dave" ;
+  ex:name "David" ;                   # violates sh:maxCount 1 (duplicate name)
+  ex:age -5 .                         # violates sh:minInclusive 0
