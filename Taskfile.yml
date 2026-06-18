@@ -90,21 +90,12 @@ tasks:
       {{ .DKR_BUILDER_RUST }} \
       bench --bench={{ index .MATCH 0 }} -- --profile-time {{ .PROFILE_TIME }}
 
-  docker:engines:bench:
+  docker:engine:bench:
     desc: Runs the all engines in Docker
     silent: true
     cmds:
-      - for: { var: ENGINES}
-        task: "docker:engines:bench:{{ .ITEM }}"
-
-  docker:engines:bench:*:
-    desc: Runs the specified engine in Docker
-    silent: true
-    vars:
-      ENGINE: "{{ index .MATCH 0 }}"
-    cmds:
-      - for: { var: DATASETS }
-        task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
+      - for: { var: ENGINES }
+        task: "docker:engine:bench:{{ .ITEM }}"
 
   docker:engine:bench:lubm:
     desc: Runs the all the engines in Docker for the LUBM dataset
@@ -204,3 +195,12 @@ tasks:
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
+
+  docker:engine:bench:*:
+    desc: Runs the specified engine in Docker
+    silent: true
+    vars:
+      ENGINE: "{{ index .MATCH 0 }}"
+    cmds:
+      - for: { var: DATASETS }
+        task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
