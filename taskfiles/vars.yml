@@ -24,6 +24,9 @@ vars:
 
   DATA_FOLDER: ./data/dist
   RESULTS_FOLDER: ./results/dist
+  NOTIFY: false
+  NTFY_ENDPOINT: https://ntfy.sh/match-oven-wine-awake-morning-movie-ladder-knife-legal-type-okay
+  NTFY_ICON: https://raw.githubusercontent.com/rudof-project/rudof/refs/heads/master/docs/src/assets/corp/logo.png
 
   DATASETS:
     - era
@@ -76,4 +79,16 @@ vars:
     - rudof_v2
     - topbraid
 
-tasks: { _foo: { internal: true } }
+tasks:
+  notify:
+    desc: Sends a notification to the ntfy.sh service
+    silent: true
+    requires:
+      vars: [ TITLE, MESSAGE, TAGS, MARKDOWN ]
+    cmd: >
+      curl -H "Title: {{ .TITLE }}" \
+        -H "Tags: {{ .TAGS }}" \
+        -H "Markdown: {{ if .MARKDOWN }}yes{{ else }}no{{ end }}" \
+        -H "Icon: {{ .NTFY_ICON }}" \
+        -d "{{ .MESSAGE }}" \
+        {{ .NTFY_ENDPOINT }}
