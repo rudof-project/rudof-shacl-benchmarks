@@ -127,8 +127,9 @@ tasks:
       ENGINE: "{{ index .MATCH 0 }}"
     cmds:
       - for: { var: LUBM_IDX }
-        cmd: >
-          docker run \
+        cmd: |
+          set +e
+          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/lubm:/results \
             -v {{ .DATA_FOLDER }}/lubm:/data:ro \
@@ -141,6 +142,13 @@ tasks:
             /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
+          code=$?
+          set -e
+          if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+            echo "[TIMEOUT] {{ .ENGINE }} lubm-{{ .ITEM }} exceeded {{ .TIMEOUT }}s"
+          elif [ "$code" -ne 0 ]; then
+            exit $code
+          fi
 
   docker:engine:bench:icdd:
     desc: Runs all the engines in Docker for the ICDD dataset
@@ -168,8 +176,9 @@ tasks:
           matrix:
             TYPES: { ref: .ICDD_TYPES }
             IDX: { ref: .ICDD_IDX }
-        cmd: >
-          docker run \
+        cmd: |
+          set +e
+          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/icdd:/results \
             -v {{ .DATA_FOLDER }}/icdd:/data:ro \
@@ -182,6 +191,13 @@ tasks:
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
+          code=$?
+          set -e
+          if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+            echo "[TIMEOUT] {{ .ENGINE }} icdd-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }} exceeded {{ .TIMEOUT }}s"
+          elif [ "$code" -ne 0 ]; then
+            exit $code
+          fi
 
   docker:engine:bench:era:
     desc: Runs all the engines in Docker for the ERA dataset
@@ -209,8 +225,9 @@ tasks:
           matrix:
             DATA: { ref: .ERA_DATA }
             SHAPES: { ref: .ERA_SHAPES }
-        cmd: >
-          docker run \
+        cmd: |
+          set +e
+          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/era:/results \
             -v {{ .DATA_FOLDER }}/era:/data:ro \
@@ -223,6 +240,13 @@ tasks:
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.ttl \
             {{ .RUNS }} {{ .WARM_UP }}
+          code=$?
+          set -e
+          if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+            echo "[TIMEOUT] {{ .ENGINE }} era-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }} exceeded {{ .TIMEOUT }}s"
+          elif [ "$code" -ne 0 ]; then
+            exit $code
+          fi
 
   docker:engine:bench:*:
     desc: Runs the specified engine in Docker
