@@ -96,6 +96,13 @@ tasks:
     cmds:
       - for: { var: ENGINES }
         task: "docker:engine:bench:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "Benchmarks completed"
+          MESSAGE: "Benchmarks have been completed for **all configured engines**. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:engine:bench:lubm:
     desc: Runs the all the engines in Docker for the LUBM dataset
@@ -103,6 +110,13 @@ tasks:
     cmds:
       - for: { var: ENGINES }
         task: "docker:engine:bench:lubm:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "LUBM benchmarks completed"
+          MESSAGE: "LUBM benchmarks have been completed for **all configured engines**. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:engine:bench:lubm:*:
     desc: Runs the specified engine in Docker for the LUBM dataset
@@ -134,6 +148,13 @@ tasks:
     cmds:
       - for: { var: ENGINES }
         task: "docker:engine:bench:icdd:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "ICDD benchmarks completed"
+          MESSAGE: "ICDD benchmarks have been completed for **all configured engines**. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:engine:bench:icdd:*:
     desc: Runs the specified engine in Docker for the ICDD dataset
@@ -168,6 +189,13 @@ tasks:
     cmds:
       - for: { var: ENGINES }
         task: "docker:engine:bench:era:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "ERA benchmarks completed"
+          MESSAGE: "ERA benchmarks have been completed for **all configured engines**. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:engine:bench:era:*:
     desc: Runs the specified engine in Docker for the ERA dataset
