@@ -19,7 +19,7 @@ includes:
     internal: true
 
 tasks:
-  generate:dir:results:
+  results:generate:dir:
     desc: Generates the results folder
     silent: true
     internal: true
@@ -122,7 +122,7 @@ tasks:
     desc: Runs the specified engine in Docker for the LUBM dataset
     silent: true
     deps:
-      - task: generate:dir:results
+      - task: results:generate:dir
     vars:
       ENGINE: "{{ index .MATCH 0 }}"
     cmds:
@@ -168,7 +168,7 @@ tasks:
     desc: Runs the specified engine in Docker for the ICDD dataset
     silent: true
     deps:
-      - task: generate:dir:results
+      - task: results:generate:dir
     vars:
       ENGINE: "{{ index .MATCH 0 }}"
     cmds:
@@ -217,7 +217,7 @@ tasks:
     desc: Runs the specified engine in Docker for the ERA dataset
     silent: true
     deps:
-      - task: generate:dir:results
+      - task: results:generate:dir
     vars:
       ENGINE: "{{ index .MATCH 0 }}"
     cmds:
