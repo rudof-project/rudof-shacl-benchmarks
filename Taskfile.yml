@@ -34,9 +34,9 @@ tasks:
         -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
         -w {{ .DKR_WKD }}/results/generator \
         --user {{ .UID }}:{{ .GID }} \
-        --entrypoint {{ .DKR_SH_UV }} \
+        --entrypoint {{ .DKR_SH_PYTHON }} \
         {{ .DKR_BUILDER_PYTHON }} \
-      run -n main.py
+        main.py
 
   results:clean:
     desc: Cleans the results

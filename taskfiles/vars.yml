@@ -9,6 +9,7 @@ vars:
 
   DKR_SH_BASH: /toolchain/bin/bash
   DKR_SH_CARGO: /toolchain/bin/cargo
+  DKR_SH_PYTHON: /toolchain/bin/python3
   DKR_SH_UV: /toolchain/bin/uv
 
   DKR_WKD: /app

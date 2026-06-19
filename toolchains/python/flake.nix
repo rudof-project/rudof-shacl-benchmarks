@@ -7,7 +7,11 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
     packages = with pkgs; [
-      python3
+      (python3.withPackages (ps: with ps; [
+        numpy
+        matplotlib
+        pandas
+      ]))
       uv
       gcc
       patchelf
