@@ -21,7 +21,6 @@ def main() -> None:
     runs = int(get_arg(7, "", 20))
     warm_up = int(get_arg(8, "", 10))
     results: list[str] = []
-    last_report = None
     last_model = None
 
     print(f"[maplib] Data:    {data_path} ({data_format})")
@@ -43,7 +42,7 @@ def main() -> None:
         gc.collect()
         gc.disable()
         start = time.time()
-        last_report = model.validate(
+        model.validate(
             data_graph=data_graph_iri,
             shape_graph=shapes_graph_iri,
             report_graph=report_graph_iri,
