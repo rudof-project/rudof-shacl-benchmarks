@@ -52,7 +52,7 @@ tasks:
   docker:rudof:bench:*:
     desc: Runs the rudof engine benchmarks in Docker for the specified dataset
     silent: true
-    cmd: >
+    cmd: |
       docker run \
         --rm \
         -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
@@ -76,7 +76,7 @@ tasks:
   docker:rudof:prof:*:
     desc: Runs the rudof engine profiler in Docker for the specified dataset
     silent: true
-    cmd: >
+    cmd: |
       docker run \
       --rm \
       -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
@@ -256,3 +256,4 @@ tasks:
     cmds:
       - for: { var: DATASETS }
         task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
+
