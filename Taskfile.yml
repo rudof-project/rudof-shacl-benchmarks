@@ -61,6 +61,13 @@ tasks:
     cmds:
       - for: { var: DATASETS }
         task: "docker:rudof:bench:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "Criterion benchmarks completed"
+          MESSAGE: "The criterion benchmarks have been completed. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:rudof:bench:*:
     desc: Runs the rudof engine benchmarks in Docker for the specified dataset
@@ -85,6 +92,13 @@ tasks:
     cmds:
       - for: { var: DATASETS }
         task: "docker:rudof:prof:{{ .ITEM }}"
+      - if: '[ "{{ .NOTIFY }}" = "true" ]'
+        task: "vars:notify"
+        vars:
+          TITLE: "Profiling completed"
+          MESSAGE: "The rudof profiler has finished. Now you can check the results"
+          TAGS: "tada"
+          MARKDOWN: true
 
   docker:rudof:prof:*:
     desc: Runs the rudof engine profiler in Docker for the specified dataset
