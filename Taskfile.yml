@@ -36,7 +36,7 @@ tasks:
         --user {{ .UID }}:{{ .GID }} \
         --entrypoint {{ .DKR_SH_UV }} \
         {{ .DKR_BUILDER_PYTHON }} \
-        run main.py
+      run -n main.py
 
   results:clean:
     desc: Cleans the results
