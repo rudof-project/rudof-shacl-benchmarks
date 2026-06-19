@@ -36,6 +36,7 @@ def main() -> None:
     for i in range(runs + warm_up):
         model = Model()
 
+        # If there are parsing issues remove the parallel load (our server starts parsing data chunks before finishing the prefix chunk)
         model.read(data_path, parallel=True, graph=data_graph_iri)
         model.read(shapes_path, parallel=True, graph=shapes_graph_iri)
 
