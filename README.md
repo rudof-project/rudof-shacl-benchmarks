@@ -17,7 +17,7 @@ The following dependencies must be installed to run the benchmarks:
 
 - `docker` and `docker-buildx` for building and running the Docker-based engines
 - `cargo` for compiling and running the Criterion Rust benchmarks
-- `go-task` a task runner to simplify all the operations ([link](https://taskfile.dev))
+- `go-task` a task runner to simplify all the operations
 
 ### Toolchain Docker images
 
