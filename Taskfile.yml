@@ -25,6 +25,19 @@ tasks:
     internal: true
     cmd: mkdir -p results/dist/{{ if eq 1 (len .DATASETS) }}{{ index .DATASETS 0 }}{{ else }}{ {{- .DATASETS | join "," -}} }{{ end }}
 
+  results:generate:
+    desc: Generates plots and report from benchmark results
+    silent: true
+    cmd: |
+      docker run \
+        --rm \
+        -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+        -w {{ .DKR_WKD }}/results/generator \
+        --user {{ .UID }}:{{ .GID }} \
+        --entrypoint {{ .DKR_SH_UV }} \
+        {{ .DKR_BUILDER_PYTHON }} \
+        run main.py
+
   results:clean:
     desc: Cleans the results
     silent: true

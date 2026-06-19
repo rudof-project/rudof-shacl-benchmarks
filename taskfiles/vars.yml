@@ -4,10 +4,12 @@ version: 3
 
 vars:
   DKR_BUILDER_RUST: rudof/rust_builder:latest
+  DKR_BUILDER_PYTHON: rudof/python_builder:latest
   DKR_BUILDER_DATASET: rudof/dataset_builder:latest
 
   DKR_SH_BASH: /toolchain/bin/bash
   DKR_SH_CARGO: /toolchain/bin/cargo
+  DKR_SH_UV: /toolchain/bin/uv
 
   DKR_WKD: /app
   DKR_SOCKET: /var/run/docker.sock
