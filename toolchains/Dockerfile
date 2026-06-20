@@ -14,7 +14,7 @@ ENV PATH="/toolchain/bin:$PATH"
 ENV CARGO_HOME=/cargo
 ENV RUSTUP_HOME=/rustup
 
-RUN mkdir -p /cargo /rustup && \
-    chmod 777 /cargo /rustup
+RUN mkdir -p /cargo /rustup /.cache && \
+    chmod 777 /cargo /rustup /.cache
 
 WORKDIR /app
