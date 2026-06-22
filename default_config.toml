@@ -1,0 +1,13 @@
+# All the missing values are in common/src/config.rs
+
+[era]
+disabled = false
+engines = [ "rudof_v1", "rudof_v2", "rudof_qlever" ]
+
+[lubm]
+disabled = false
+engines = [ "rudof_v1", "rudof_v2", "rudof_qlever" ]
+
+[icdd]
+disabled = false
+engines = [ "rudof_v1", "rudof_v2", "rudof_qlever" ]

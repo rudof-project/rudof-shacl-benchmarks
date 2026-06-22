@@ -1,3 +1,10 @@
 [era]
+engines = [ "rudof_v1", "rudof_v2" ]
 data = [ "es", "fr" ]
 shapes = [ "core" ]
+
+[lubm]
+engines = [ "rudof_v1", "rudof_v2" ]
+
+[icdd]
+engines = [ "rudof_v1", "rudof_v2" ]
