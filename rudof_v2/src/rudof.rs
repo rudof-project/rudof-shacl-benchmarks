@@ -7,7 +7,7 @@ use std::hint::black_box;
 pub struct RudofV2Engine(Rudof);
 
 impl RudofEngine for RudofV2Engine {
-    const DISPLAY_VERSION: &'static str = "rudof v0.3";
+    const DISPLAY_VERSION: &'static str = "rudof v2";
     const ID: &'static str = "rudof_v2";
 
     fn new() -> Self {

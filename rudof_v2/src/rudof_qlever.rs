@@ -40,7 +40,7 @@ impl RudofQleverEngine {
 }
 
 impl RudofEngine for RudofQleverEngine {
-    const DISPLAY_VERSION: &'static str = "rudof v0.3 (qlever)";
+    const DISPLAY_VERSION: &'static str = "rudof v2 (qlever)";
     const ID: &'static str = "rudof_qlever";
 
     fn new() -> Self {
