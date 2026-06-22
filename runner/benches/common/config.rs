@@ -10,7 +10,7 @@ pub fn load_config() -> BenchmarkConfig {
     let f = File::open(cfg_path);
 
     if f.is_err() {
-        eprintln!("[+] Config file not found, using default");
+        eprintln!("[+] Benchmarks config file not found, using default");
         return BenchmarkConfig::default();
     }
 
