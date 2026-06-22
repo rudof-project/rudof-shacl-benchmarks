@@ -15,6 +15,6 @@ ENV CARGO_HOME=/cargo
 ENV RUSTUP_HOME=/rustup
 
 RUN mkdir -p /cargo /rustup /.cache && \
-    chmod 777 /cargo /rustup /.cache
+    chmod -R 777 /cargo /rustup /.cache
 
 WORKDIR /app

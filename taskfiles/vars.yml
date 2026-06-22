@@ -18,13 +18,14 @@ vars:
 
   UID: { sh: id -u }
   GID: { sh: id -g }
+  HOME: { sh: echo "$HOME" }
 
   PROFILE_TIME: 30
   RUNS: 20
   WARM_UP: 10
   TIMEOUT: 3600
-  RUDOF_BENCH_CFG: "{{ .DKR_WKD }}/default_config.toml"
-  RUDOF_BENCH_QLEVER_CFG: "{{ .DKR_WKD }}/qlever_config.toml"
+  RUDOF_BENCH_CFG: "{{ .TASK_DIR }}/default_config.toml"
+  RUDOF_BENCH_QLEVER_CFG: "{{ .TASK_DIR }}/qlever_config.toml"
 
   DATA_FOLDER: ./data/dist
   RESULTS_FOLDER: ./results/dist
@@ -78,7 +79,7 @@ vars:
     - pyshacl_n
     - rdf4j
     - rdfunit
-#    - rudof_qlever
+    - rudof_qlever
     - rudof_v1
     - rudof_v2
     - topbraid

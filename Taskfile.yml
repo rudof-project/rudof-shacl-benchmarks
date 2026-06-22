@@ -75,14 +75,17 @@ tasks:
     cmd: |
       docker run \
         --rm \
-        -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+        --network=host \
+        -v {{ .TASK_DIR }}:{{ .TASK_DIR }} \
         -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
-        -w {{ .DKR_WKD }} \
+        -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
+        -w {{ .TASK_DIR }} \
         --entrypoint {{ .DKR_SH_CARGO }} \
         --user {{ .UID }}:{{ .GID }} \
         --group-add {{ .DKR_GID }} \
         -e RUDOF_BENCH_CFG={{ .RUDOF_BENCH_CFG }} \
         -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
+        -e HOME={{ .HOME }} \
         {{ .DKR_BUILDER_RUST }} \
         bench --bench={{ index .MATCH 0 }}
 
@@ -106,14 +109,17 @@ tasks:
     cmd: |
       docker run \
       --rm \
-      -v {{ .TASK_DIR }}:{{ .DKR_WKD }} \
+      --network=host \
+      -v {{ .TASK_DIR }}:{{ .TASK_DIR }} \
       -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
-      -w {{ .DKR_WKD }} \
+      -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
+      -w {{ .TASK_DIR }} \
       --entrypoint {{ .DKR_SH_CARGO }} \
       --user {{ .UID }}:{{ .GID }} \
       --group-add {{ .DKR_GID }} \
       -e RUDOF_BENCH_CFG={{ .RUDOF_BENCH_CFG }} \
       -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
+      -e HOME={{ .HOME }} \
       {{ .DKR_BUILDER_RUST }} \
       bench --bench={{ index .MATCH 0 }} -- --profile-time {{ .PROFILE_TIME }}
 
@@ -159,12 +165,21 @@ tasks:
           timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/lubm:/results \
-            -v {{ .DATA_FOLDER }}/lubm:/data:ro \
+            -v {{ .TASK_DIR }}/data/dist/lubm:{{ .TASK_DIR }}/data/dist/lubm:ro \
+            {{- if eq .ENGINE "rudof_qlever" }}
+            --network=host \
+            -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
+            -v {{ .TASK_DIR }}/qlever_config.toml:/qlever_config.toml:ro \
+            -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
+            -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
+            -e HOME={{ .HOME }} \
+            --group-add {{ .DKR_GID }} \
+            {{- end }}
             --user {{ .UID }}:{{ .GID }} \
             rudof/{{ .ENGINE }}:latest \
-            /data/data-{{ .ITEM }}.nt \
+            {{ .TASK_DIR }}/data/dist/lubm/data-{{ .ITEM }}.nt \
             {{ .LUBM_DATA_FORMAT }} \
-            /data/shapes.ttl \
+            {{ .TASK_DIR }}/data/dist/lubm/shapes.ttl \
             {{ .LUBM_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM }}.ttl \
@@ -208,12 +223,21 @@ tasks:
           timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/icdd:/results \
-            -v {{ .DATA_FOLDER }}/icdd:/data:ro \
+            -v {{ .TASK_DIR }}/data/dist/icdd:{{ .TASK_DIR }}/data/dist/icdd:ro \
+            {{- if eq .ENGINE "rudof_qlever" }}
+            --network=host \
+            -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
+            -v {{ .TASK_DIR }}/qlever_config.toml:/qlever_config.toml:ro \
+            -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
+            -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
+            -e HOME={{ .HOME }} \
+            --group-add {{ .DKR_GID }} \
+            {{- end }}
             --user {{ .UID }}:{{ .GID }} \
             rudof/{{ .ENGINE }}:latest \
-            /data/data-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
+            {{ .TASK_DIR }}/data/dist/icdd/data-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
             {{ .ICDD_DATA_FORMAT }} \
-            /data/shapes-{{ .ITEM.TYPES }}.ttl \
+            {{ .TASK_DIR }}/data/dist/icdd/shapes-{{ .ITEM.TYPES }}.ttl \
             {{ .ICDD_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
@@ -257,12 +281,21 @@ tasks:
           timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/era:/results \
-            -v {{ .DATA_FOLDER }}/era:/data:ro \
+            -v {{ .TASK_DIR }}/data/dist/era:{{ .TASK_DIR }}/data/dist/era:ro \
+            {{- if eq .ENGINE "rudof_qlever" }}
+            --network=host \
+            -v {{ .DKR_SOCKET }}:/var/run/docker.sock \
+            -v {{ .TASK_DIR }}/qlever_config.toml:/qlever_config.toml:ro \
+            -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
+            -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
+            -e HOME={{ .HOME }} \
+            --group-add {{ .DKR_GID }} \
+            {{- end }}
             --user {{ .UID }}:{{ .GID }} \
             rudof/{{ .ENGINE }}:latest \
-            /data/{{ .ITEM.DATA }}-data.ttl \
+            {{ .TASK_DIR }}/data/dist/era/{{ .ITEM.DATA }}-data.ttl \
             {{ .ERA_DATA_FORMAT }} \
-            /data/{{ .ITEM.SHAPES }}-shapes.ttl \
+            {{ .TASK_DIR }}/data/dist/era/{{ .ITEM.SHAPES }}-shapes.ttl \
             {{ .ERA_SHAPES_FORMAT }} \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.ttl \
