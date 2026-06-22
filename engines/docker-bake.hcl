@@ -3,7 +3,7 @@ group "default" {
 }
 
 group "rust" {
-  targets = [ "rudof_v1", "rudof_v2" ]
+  targets = [ "rudof_v1", "rudof_v2", "rudof_qlever" ]
 }
 
 group "kotlin" {
@@ -52,6 +52,16 @@ target "rudof_v2" {
   }
   context = "./rudof_v2"
   tags = [ "rudof/rudof_v2:latest" ]
+}
+
+target "rudof_qlever" {
+  inherits = [ "_common_rust" ]
+  dockerfile = "Dockerfile"
+  args = {
+    BINARY_NAME = "rudof_qlever"
+  }
+  context = "./rudof_qlever"
+  tags = [ "rudof/rudof_qlever:latest" ]
 }
 
 target "corese" {
