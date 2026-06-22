@@ -1,0 +1,7 @@
+# This is a new possible format for the Criterion config file, it's not supported actualy
+
+[[case]]
+benchmark = "era"
+engines = [ "rudof_v1", "rudof_v2" ]
+parameters = { data = [ "es", "fr" ], shapes = [ "core" ] }
+disable = true
