@@ -22,11 +22,70 @@ use std::time::{Duration, Instant};
 /// - runs: Number of benchmark runs (Result runs = runs - warm_up)
 /// - warm_up: Number of runs for warm up
 fn main() {
-    let args = env::args().collect::<Vec<String>>();
+    let args = Args::from_env();
+    let qlever_mode = qlever_mode_enabled();
 
-    let data_path = args.get(1).expect("Missing data graph path");
-    let data_format_str = args.get(2).expect("Missing data format").to_lowercase();
-    let data_format = match data_format_str.as_str() {
+    print_header(&args, qlever_mode);
+
+    let mut rudof = init_rudof(qlever_mode);
+
+    let samples = if qlever_mode {
+        run_qlever(&mut rudof, &args)
+    } else {
+        run_in_memory(&mut rudof, &args)
+    };
+
+    write_csv(&args.csv_path, &samples);
+    write_report(&mut rudof, &args.report_path);
+
+    println!("[rudof_v2] Done -> {}, {}", args.csv_path, args.report_path);
+}
+
+struct Args {
+    data_path: String,
+    data_format: DataFormat,
+    data_format_str: String,
+    shapes_path: String,
+    shapes_format: ShaclFormat,
+    shapes_format_str: String,
+    csv_path: String,
+    report_path: String,
+    runs: usize,
+    warm_up: usize,
+}
+
+impl Args {
+    fn from_env() -> Self {
+        let args = env::args().collect::<Vec<String>>();
+
+        let data_path = args.get(1).expect("Missing data graph path").clone();
+        let data_format_str = args.get(2).expect("Missing data format").to_lowercase();
+        let data_format = parse_data_format(&data_format_str);
+        let shapes_path = args.get(3).expect("Missing shapes graph path").clone();
+        let shapes_format_str = args.get(4).expect("Missing shapes format").to_lowercase();
+        let shapes_format = parse_shapes_format(&shapes_format_str);
+        let csv_path = args.get(5).expect("Missing csv report path").clone();
+        let report_path = args.get(6).expect("Missing validation report path").clone();
+        let runs: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(20);
+        let warm_up: usize = args.get(8).and_then(|s| s.parse().ok()).unwrap_or(10);
+
+        Self {
+            data_path,
+            data_format,
+            data_format_str,
+            shapes_path,
+            shapes_format,
+            shapes_format_str,
+            csv_path,
+            report_path,
+            runs,
+            warm_up,
+        }
+    }
+}
+
+fn parse_data_format(s: &str) -> DataFormat {
+    match s {
         "turtle" => DataFormat::Turtle,
         "ntriples" => DataFormat::NTriples,
         "rdfxml" => DataFormat::RdfXml,
@@ -35,10 +94,11 @@ fn main() {
         "nquads" => DataFormat::NQuads,
         "jsonld" => DataFormat::JsonLd,
         _ => panic!("Not expected format"),
-    };
-    let shapes_path = args.get(3).expect("Missing shapes graph path");
-    let shapes_format_str = args.get(4).expect("Missing shapes format").to_lowercase();
-    let shapes_format = match shapes_format_str.as_str() {
+    }
+}
+
+fn parse_shapes_format(s: &str) -> ShaclFormat {
+    match s {
         "internal" => ShaclFormat::Internal,
         "turtle" => ShaclFormat::Turtle,
         "ntriples" => ShaclFormat::NTriples,
@@ -48,131 +108,132 @@ fn main() {
         "nquads" => ShaclFormat::NQuads,
         "jsonld" => ShaclFormat::JsonLd,
         _ => panic!("Not expected format"),
-    };
-    let csv_path = args.get(5).expect("Missing csv report path");
-    let report_path = args.get(6).expect("Missing validation report path");
-    let runs: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(20);
-    let warm_up: usize = args.get(8).and_then(|s| s.parse().ok()).unwrap_or(10);
-    let mut result: Vec<String> = Vec::new();
+    }
+}
 
-    let qlever_mode = match env::var("RUDOF_BACKEND_QLEVER").ok().as_deref() {
-        None | Some("") | Some("0") | Some("false") | Some("FALSE") | Some("False") => false,
-        _ => true,
-    };
+fn qlever_mode_enabled() -> bool {
+    !matches!(
+        env::var("RUDOF_BACKEND_QLEVER").ok().as_deref(),
+        None | Some("") | Some("0") | Some("false") | Some("FALSE") | Some("False"),
+    )
+}
 
-    println!("[rudof_v2] Data:    {} ({})", data_path, data_format_str);
-    println!("[rudof_v2] Shapes:  {} ({})", shapes_path, shapes_format_str);
-    println!("[rudof_v2] CSV:     {}", csv_path);
-    println!("[rudof_v2] Report:  {}", report_path);
-    println!("[rudof_v2] Runs:    {}, warm-up: {}", runs, warm_up);
-
-    let mut rudof = if qlever_mode {
-        let cfg_path = env::var("RUDOF_BENCH_QLEVER_CFG")
-            .unwrap_or("qlever_config.toml".to_string());
-        match RudofConfig::from_path(&cfg_path) {
-            Ok(config) => Rudof::new(config),
-            Err(_) => {
-                eprintln!("[rudof_v2] Config file '{}' not found, using default", cfg_path);
-                Rudof::new(RudofConfig::default())
-            }
+fn init_rudof(qlever_mode: bool) -> Rudof {
+    if !qlever_mode {
+        return Rudof::new(RudofConfig::default());
+    }
+    let cfg_path = env::var("RUDOF_BENCH_QLEVER_CFG")
+        .unwrap_or("qlever_config.toml".to_string());
+    match RudofConfig::from_path(&cfg_path) {
+        Ok(config) => Rudof::new(config),
+        Err(_) => {
+            eprintln!("[rudof_v2] Config file '{}' not found, using default", cfg_path);
+            Rudof::new(RudofConfig::default())
         }
-    } else {
-        Rudof::new(RudofConfig::default())
-    };
+    }
+}
 
-    if qlever_mode {
-        let qlever_endpoint = env::var("RUDOF_QLEVER_ENDPOINT")
-            .unwrap_or("localhost:7001".to_string());
+fn print_header(args: &Args, qlever_mode: bool) {
+    println!("[rudof_v2] Data:    {} ({})", args.data_path, args.data_format_str);
+    println!("[rudof_v2] Shapes:  {} ({})", args.shapes_path, args.shapes_format_str);
+    println!("[rudof_v2] CSV:     {}", args.csv_path);
+    println!("[rudof_v2] Report:  {}", args.report_path);
+    println!("[rudof_v2] Backend: {}", if qlever_mode { "qlever" } else { "in-memory" });
+    println!("[rudof_v2] Runs:    {}, warm-up: {}", args.runs, args.warm_up);
+}
+
+fn run_qlever(rudof: &mut Rudof, args: &Args) -> Vec<String> {
+    let endpoint = env::var("RUDOF_QLEVER_ENDPOINT")
+        .unwrap_or("localhost:7001".to_string());
+
+    rudof.load_data()
+        .with_data(&[InputSpec::path(&args.data_path)])
+        .with_data_format(&args.data_format)
+        .with_reader_mode(&DataReaderMode::Strict)
+        .with_merge(false)
+        .with_backend(BackendSpec::Qlever)
+        .execute()
+        .unwrap();
+
+    rudof.load_shacl_shapes()
+        .with_shacl_schema(&InputSpec::path(&args.shapes_path))
+        .with_shacl_schema_format(&args.shapes_format)
+        .with_reader_mode(&DataReaderMode::Strict)
+        .execute()
+        .unwrap();
+
+    fn_loop(args, || {
+        clear_qlever_cache(&endpoint);
+        time_validate(rudof)
+    })
+}
+
+fn run_in_memory(rudof: &mut Rudof, args: &Args) -> Vec<String> {
+    fn_loop(args, || {
+        rudof.reset_data().execute();
+        rudof.reset_shacl().execute();
 
         rudof.load_data()
-            .with_data(&[InputSpec::path(data_path)])
-            .with_data_format(&data_format)
+            .with_data(&[InputSpec::path(&args.data_path)])
+            .with_data_format(&args.data_format)
             .with_reader_mode(&DataReaderMode::Strict)
             .with_merge(false)
-            .with_backend(BackendSpec::Qlever)
             .execute()
             .unwrap();
 
         rudof.load_shacl_shapes()
-            .with_shacl_schema(&InputSpec::path(shapes_path))
-            .with_shacl_schema_format(&shapes_format)
+            .with_shacl_schema(&InputSpec::path(&args.shapes_path))
+            .with_shacl_schema_format(&args.shapes_format)
             .with_reader_mode(&DataReaderMode::Strict)
             .execute()
             .unwrap();
 
-        for idx in 0..(warm_up + runs) {
-            clear_qlever_cache(&qlever_endpoint);
+        time_validate(rudof)
+    })
+}
 
-            let start = Instant::now();
-
-            black_box(rudof.validate_shacl()
-                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
-                .execute()
-                .unwrap());
-
-            let elapsed = start.elapsed();
-
-            if idx >= warm_up {
-                result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
-            }
-            if warm_up > 0 && idx == warm_up - 1 {
-                println!("[rudof_v2] Warm-up complete");
-            }
+fn fn_loop<F>(args: &Args, mut measure: F) -> Vec<String>
+where
+    F: FnMut() -> u128,
+{
+    let mut samples = Vec::with_capacity(args.runs);
+    for idx in 0..(args.warm_up + args.runs) {
+        let micros = measure();
+        if idx >= args.warm_up {
+            samples.push(format!("{}", micros as f64 / 1000.0));
         }
-    } else {
-        for idx in 0..(warm_up + runs) {
-            rudof.reset_data()
-                .execute();
-            rudof.reset_shacl()
-                .execute();
-
-            rudof.load_data()
-                .with_data(&[InputSpec::path(data_path)])
-                .with_data_format(&data_format)
-                .with_reader_mode(&DataReaderMode::Strict)
-                .with_merge(false)
-                .execute()
-                .unwrap();
-
-            rudof.load_shacl_shapes()
-                .with_shacl_schema(&InputSpec::path(shapes_path))
-                .with_shacl_schema_format(&shapes_format)
-                .with_reader_mode(&DataReaderMode::Strict)
-                .execute()
-                .unwrap();
-
-            let start = Instant::now();
-
-            black_box(rudof.validate_shacl()
-                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
-                .execute()
-                .unwrap());
-
-            let elapsed = start.elapsed();
-
-            if idx >= warm_up {
-                result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
-            }
-            if warm_up > 0 && idx == warm_up - 1 {
-                println!("[rudof_v2] Warm-up complete");
-            }
+        if args.warm_up > 0 && idx == args.warm_up - 1 {
+            println!("[rudof_v2] Warm-up complete");
         }
     }
+    samples
+}
 
-    let mut file = File::create(csv_path).expect(&format!("Unable to create file {csv_path}"));
-    result.iter().for_each(|x| {
-        file.write((&format!("{x}\n")).as_ref()).expect("Unable to write results to csv");
-    });
+fn time_validate(rudof: &mut Rudof) -> u128 {
+    let start = Instant::now();
+    black_box(rudof.validate_shacl()
+        .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
+        .execute()
+        .unwrap());
+    start.elapsed().as_micros()
+}
+
+fn write_csv(path: &str, samples: &[String]) {
+    let mut file = File::create(path).expect(&format!("Unable to create file {path}"));
+    for line in samples {
+        file.write_all(format!("{line}\n").as_bytes())
+            .expect("Unable to write results to csv");
+    }
     file.flush().unwrap();
+}
 
-    let mut report_file = File::create(report_path).expect(&format!("Unable to create file {report_path}"));
-    rudof.serialize_shacl_validation_results(&mut report_file)
+fn write_report(rudof: &mut Rudof, path: &str) {
+    let mut file = File::create(path).expect(&format!("Unable to create file {path}"));
+    rudof.serialize_shacl_validation_results(&mut file)
         .with_result_shacl_validation_format(&ResultShaclValidationFormat::Turtle)
         .execute()
         .expect("Failed to serialize SHACL validation report");
-    report_file.flush().unwrap();
-
-    println!("[rudof_v2] Done -> {}, {}", csv_path, report_path);
+    file.flush().unwrap();
 }
 
 fn clear_qlever_cache(endpoint: &str) {
