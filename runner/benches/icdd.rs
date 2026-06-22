@@ -6,6 +6,7 @@ use criterion::{criterion_group, criterion_main, BatchSize, BenchmarkId, Criteri
 use rudof_v1::RudofV1Engine;
 use rudof_v2::{RudofQleverEngine, RudofV2Engine};
 use std::hint::black_box;
+use std::time::{Duration, Instant};
 
 fn icdd_bench_validation(c: &mut Criterion) {
     let cfg = load_config().icdd;
@@ -56,7 +57,16 @@ fn icdd_bench_validation(c: &mut Criterion) {
                 rudof.load_shapes(shape_file_path.clone(), cfg.shapes_format);
 
                 group.bench_function(BenchmarkId::new(RudofQleverEngine::DISPLAY_VERSION, data_file_name.as_str()), |b| {
-                    b.iter(|| { black_box(rudof.validate()) });
+                    b.iter_custom(|iters| {
+                        let mut total = Duration::ZERO;
+                        for _ in 0..iters {
+                            rudof.clear_cache();
+                            let start = Instant::now();
+                            black_box(rudof.validate());
+                            total += start.elapsed();
+                        }
+                        total
+                    });
                 });
             }
         }
