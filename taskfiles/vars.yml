@@ -40,13 +40,13 @@ vars:
   ERA_DATA_FORMAT: turtle
   ERA_SHAPES_FORMAT: turtle
   ERA_DATA:
-#    - era
+    - era
     - es
     - fr
   ERA_SHAPES:
     - core
     - tds
-#    - era
+    - era
 
   ICDD_DATA_FORMAT: turtle
   ICDD_SHAPES_FORMAT: turtle
