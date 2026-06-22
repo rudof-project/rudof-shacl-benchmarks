@@ -56,11 +56,14 @@ target "rudof_v2" {
 
 target "rudof_qlever" {
   inherits = [ "_common_rust" ]
-  dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile_qlever"
+  context = "./rudof_v2"
+  contexts = {
+    "rudof/rudof_v2" = "target:rudof_v2"
+  }
   args = {
     BINARY_NAME = "rudof_qlever"
   }
-  context = "./rudof_qlever"
   tags = [ "rudof/rudof_qlever:latest" ]
 }
 

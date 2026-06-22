@@ -1,12 +1,17 @@
-use rudof::formats::{DataFormat, DataReaderMode, InputSpec, ResultShaclValidationFormat, ShaclFormat, ShaclValidationMode};
+use rudof::formats::{BackendSpec, DataFormat, DataReaderMode, InputSpec, ResultShaclValidationFormat, ShaclFormat, ShaclValidationMode};
 use rudof::{Rudof, RudofConfig};
 use std::env;
 use std::fs::File;
 use std::hint::black_box;
-use std::io::Write;
-use std::time::Instant;
+use std::io::{Read, Write};
+use std::net::TcpStream;
+use std::time::{Duration, Instant};
 
 /// Usage: rudof_v2 <data_path> <data_format> <shapes_path> <shapes_format> <csv_path> <report_path> [runs] [warm_up]
+///
+/// The backend is selected at runtime via the `RUDOF_BACKEND_QLEVER` env var:
+/// empty OR 0 OR false -> in-memory (default)
+/// anything else -> qlever
 ///
 /// - data_path: Path to an RDF file containing the data graph
 /// - data_format: RDF format of the <data_path>
@@ -50,25 +55,41 @@ fn main() {
     let warm_up: usize = args.get(8).and_then(|s| s.parse().ok()).unwrap_or(10);
     let mut result: Vec<String> = Vec::new();
 
+    let qlever_mode = match env::var("RUDOF_BACKEND_QLEVER").ok().as_deref() {
+        None | Some("") | Some("0") | Some("false") | Some("FALSE") | Some("False") => false,
+        _ => true,
+    };
+
     println!("[rudof_v2] Data:    {} ({})", data_path, data_format_str);
     println!("[rudof_v2] Shapes:  {} ({})", shapes_path, shapes_format_str);
     println!("[rudof_v2] CSV:     {}", csv_path);
     println!("[rudof_v2] Report:  {}", report_path);
     println!("[rudof_v2] Runs:    {}, warm-up: {}", runs, warm_up);
 
-    let mut rudof = Rudof::new(RudofConfig::default());
+    let mut rudof = if qlever_mode {
+        let cfg_path = env::var("RUDOF_BENCH_QLEVER_CFG")
+            .unwrap_or("qlever_config.toml".to_string());
+        match RudofConfig::from_path(&cfg_path) {
+            Ok(config) => Rudof::new(config),
+            Err(_) => {
+                eprintln!("[rudof_v2] Config file '{}' not found, using default", cfg_path);
+                Rudof::new(RudofConfig::default())
+            }
+        }
+    } else {
+        Rudof::new(RudofConfig::default())
+    };
 
-    for idx in 0..(warm_up + runs) {
-        rudof.reset_data()
-            .execute();
-        rudof.reset_shacl()
-            .execute();
+    if qlever_mode {
+        let qlever_endpoint = env::var("RUDOF_QLEVER_ENDPOINT")
+            .unwrap_or("localhost:7001".to_string());
 
         rudof.load_data()
             .with_data(&[InputSpec::path(data_path)])
             .with_data_format(&data_format)
             .with_reader_mode(&DataReaderMode::Strict)
             .with_merge(false)
+            .with_backend(BackendSpec::Qlever)
             .execute()
             .unwrap();
 
@@ -79,20 +100,62 @@ fn main() {
             .execute()
             .unwrap();
 
-        let start = Instant::now();
+        for idx in 0..(warm_up + runs) {
+            clear_qlever_cache(&qlever_endpoint);
 
-        black_box(rudof.validate_shacl()
-            .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
-            .execute()
-            .unwrap());
+            let start = Instant::now();
 
-        let elapsed = start.elapsed();
+            black_box(rudof.validate_shacl()
+                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
+                .execute()
+                .unwrap());
 
-        if idx >= warm_up {
-            result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
+            let elapsed = start.elapsed();
+
+            if idx >= warm_up {
+                result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
+            }
+            if warm_up > 0 && idx == warm_up - 1 {
+                println!("[rudof_v2] Warm-up complete");
+            }
         }
-        if warm_up > 0 && idx == warm_up - 1 {
-            println!("[rudof_v2] Warm-up complete");
+    } else {
+        for idx in 0..(warm_up + runs) {
+            rudof.reset_data()
+                .execute();
+            rudof.reset_shacl()
+                .execute();
+
+            rudof.load_data()
+                .with_data(&[InputSpec::path(data_path)])
+                .with_data_format(&data_format)
+                .with_reader_mode(&DataReaderMode::Strict)
+                .with_merge(false)
+                .execute()
+                .unwrap();
+
+            rudof.load_shacl_shapes()
+                .with_shacl_schema(&InputSpec::path(shapes_path))
+                .with_shacl_schema_format(&shapes_format)
+                .with_reader_mode(&DataReaderMode::Strict)
+                .execute()
+                .unwrap();
+
+            let start = Instant::now();
+
+            black_box(rudof.validate_shacl()
+                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
+                .execute()
+                .unwrap());
+
+            let elapsed = start.elapsed();
+
+            if idx >= warm_up {
+                result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
+            }
+            if warm_up > 0 && idx == warm_up - 1 {
+                println!("[rudof_v2] Warm-up complete");
+            }
         }
     }
 
@@ -110,4 +173,27 @@ fn main() {
     report_file.flush().unwrap();
 
     println!("[rudof_v2] Done -> {}, {}", csv_path, report_path);
+}
+
+fn clear_qlever_cache(endpoint: &str) {
+    let mut stream = match TcpStream::connect(endpoint) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("[rudof_v2] clear-cache connect to {endpoint} failed: {e}");
+            return;
+        }
+    };
+    let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
+    let _ = stream.set_write_timeout(Some(Duration::from_secs(5)));
+
+    let req = format!(
+        "GET /?cmd=clear-cache HTTP/1.1\r\nHost: {endpoint}\r\nConnection: close\r\n\r\n",
+    );
+
+    if let Err(e) = stream.write_all(req.as_bytes()) {
+        eprintln!("[rudof_v2] clear-cache write failed: {e}");
+        return;
+    }
+    let mut sink = Vec::with_capacity(256);
+    let _ = stream.read_to_end(&mut sink);
 }
