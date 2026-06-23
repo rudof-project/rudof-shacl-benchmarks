@@ -87,7 +87,7 @@ tasks:
         -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
         -e HOME={{ .HOME }} \
         {{ .DKR_BUILDER_RUST }} \
-        bench --bench={{ index .MATCH 0 }}
+        bench --bench={{ index .MATCH 0 }} --message-format=json
 
   docker:rudof:prof:
     desc: Runs the rudof engine profiler in Docker
@@ -121,7 +121,7 @@ tasks:
       -e RUDOF_BENCH_QLEVER_CFG={{ .RUDOF_BENCH_QLEVER_CFG }} \
       -e HOME={{ .HOME }} \
       {{ .DKR_BUILDER_RUST }} \
-      bench --bench={{ index .MATCH 0 }} -- --profile-time {{ .PROFILE_TIME }}
+      bench --bench={{ index .MATCH 0 }} --message-format=json -- --profile-time {{ .PROFILE_TIME }}
 
   docker:engine:bench:
     desc: Runs the all engines in Docker
