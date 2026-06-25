@@ -91,7 +91,7 @@ impl RudofEngine for RudofQleverEngine {
     fn validate(&mut self) {
         black_box(
             self.rudof.validate_shacl()
-                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
+                .with_shacl_validation_mode(black_box(&ShaclValidationMode::Sparql))
                 .execute()
                 .unwrap()
         );

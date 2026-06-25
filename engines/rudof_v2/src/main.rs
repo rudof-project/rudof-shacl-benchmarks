@@ -164,7 +164,7 @@ fn run_qlever(rudof: &mut Rudof, args: &Args) -> Vec<String> {
 
     fn_loop(args, || {
         clear_qlever_cache(&endpoint);
-        time_validate(rudof)
+        time_validate(rudof, &ShaclValidationMode::Sparql)
     })
 }
 
@@ -188,7 +188,7 @@ fn run_in_memory(rudof: &mut Rudof, args: &Args) -> Vec<String> {
             .execute()
             .unwrap();
 
-        time_validate(rudof)
+        time_validate(rudof, &ShaclValidationMode::Native)
     })
 }
 
@@ -209,10 +209,10 @@ where
     samples
 }
 
-fn time_validate(rudof: &mut Rudof) -> u128 {
+fn time_validate(rudof: &mut Rudof, mode: &ShaclValidationMode) -> u128 {
     let start = Instant::now();
     black_box(rudof.validate_shacl()
-        .with_shacl_validation_mode(black_box(&ShaclValidationMode::Native))
+        .with_shacl_validation_mode(black_box(mode))
         .execute()
         .unwrap());
     start.elapsed().as_micros()
