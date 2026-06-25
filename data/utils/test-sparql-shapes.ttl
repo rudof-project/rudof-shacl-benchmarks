@@ -1,0 +1,101 @@
+@prefix : <http://weso.es/shapes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:PersonShape a sh:NodeShape ;
+  sh:targetClass ex:Person ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Person must have at least one ex:name of type xsd:string" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT $this ?value WHERE {
+        {
+          FILTER NOT EXISTS { $this ex:name ?value }
+        } UNION {
+          $this ex:name ?value .
+          FILTER (DATATYPE(?value) != xsd:string)
+        }
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Person must not have more than one ex:name" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      SELECT $this WHERE {
+        {
+          SELECT $this (COUNT(?n) AS ?cnt) WHERE {
+            $this ex:name ?n
+          } GROUP BY $this
+        }
+        FILTER (?cnt > 1)
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "ex:age must be an xsd:integer between 0 and 150 inclusive" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT $this ?value WHERE {
+        $this ex:age ?value .
+        FILTER (
+          DATATYPE(?value) != xsd:integer ||
+          ?value < 0 ||
+          ?value > 150
+        )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "ex:email must be an xsd:string matching the email pattern" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT $this ?value WHERE {
+        $this ex:email ?value .
+        FILTER (
+          DATATYPE(?value) != xsd:string ||
+          !REGEX(STR(?value), "^[^@]+@[^@]+[.][^@]+$")
+        )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Organization linked via ex:worksAt must have at least one xsd:string ex:name" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT $this ?value WHERE {
+        $this ex:worksAt ?value .
+        FILTER NOT EXISTS {
+          ?value ex:name ?n .
+          FILTER (DATATYPE(?n) = xsd:string)
+        }
+      }
+    """ ;
+  ] .
+
+:OrganizationShape a sh:NodeShape ;
+  sh:targetClass ex:Organization ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Organization must have at least one ex:name of type xsd:string" ;
+    sh:select """
+      PREFIX ex: <http://example.org/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT $this WHERE {
+        FILTER NOT EXISTS {
+          $this ex:name ?n .
+          FILTER (DATATYPE(?n) = xsd:string)
+        }
+      }
+    """ ;
+  ] .
