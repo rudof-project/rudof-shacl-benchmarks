@@ -6,5 +6,5 @@ edition.workspace = true
 [dependencies]
 common.workspace = true
 
-rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", version = "0.3.4", features = [ "qlever" ] }
+rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "5ff5000f1ce17c5ebf8e414973f2ddb9d0c8afbf", features = [ "qlever" ] } # v0.3.4 with SHACL-SPARQL fixes
 minijinja = "=2.12.0"
