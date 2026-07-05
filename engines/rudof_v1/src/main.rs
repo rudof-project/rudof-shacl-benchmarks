@@ -64,6 +64,11 @@ fn main() {
         rudof.read_data(&mut File::open(data_path).unwrap(), "Bench", &data_format, None, &ReaderMode::Strict, false).unwrap();
         rudof.read_shacl(&mut File::open(shapes_path).unwrap(), "Bench", &shapes_format, None, &ReaderMode::Strict).unwrap();
 
+        if idx == 0 {
+            println!("[rudof_v1] Data graph size: TODO");
+            println!("[rudof_v1] Shapes graph size: TODO");
+        }
+
         let start = Instant::now();
         let report = black_box(rudof.validate_shacl(black_box(&ShaclValidationMode::Native), black_box(&ShapesGraphSource::CurrentSchema))).unwrap();
         let elapsed = start.elapsed();

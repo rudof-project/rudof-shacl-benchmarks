@@ -133,12 +133,17 @@ fn init_rudof(qlever_mode: bool) -> Rudof {
 }
 
 fn print_header(args: &Args, qlever_mode: bool) {
-    println!("[rudof_v2] Data:    {} ({})", args.data_path, args.data_format_str);
-    println!("[rudof_v2] Shapes:  {} ({})", args.shapes_path, args.shapes_format_str);
-    println!("[rudof_v2] CSV:     {}", args.csv_path);
-    println!("[rudof_v2] Report:  {}", args.report_path);
-    println!("[rudof_v2] Backend: {}", if qlever_mode { "qlever" } else { "in-memory" });
-    println!("[rudof_v2] Runs:    {}, warm-up: {}", args.runs, args.warm_up);
+    let version = if qlever_mode {
+        "rudof_qlever"
+    } else {
+        "rudof_v2"
+    };
+    println!("[{version}] Data:    {} ({})", args.data_path, args.data_format_str);
+    println!("[{version}] Shapes:  {} ({})", args.shapes_path, args.shapes_format_str);
+    println!("[{version}] CSV:     {}", args.csv_path);
+    println!("[{version}] Report:  {}", args.report_path);
+    println!("[{version}] Backend: {}", if qlever_mode { "qlever" } else { "in-memory" });
+    println!("[{version}] Runs:    {}, warm-up: {}", args.runs, args.warm_up);
 }
 
 fn run_qlever(rudof: &mut Rudof, args: &Args) -> Vec<String> {
@@ -160,6 +165,9 @@ fn run_qlever(rudof: &mut Rudof, args: &Args) -> Vec<String> {
         .with_reader_mode(&DataReaderMode::Strict)
         .execute()
         .unwrap();
+
+    println!("[rudof_qlever] Data graph size: TODO");
+    println!("[rudof_qlever] Shapes graph size: TODO");
 
     fn_loop(args, rudof, |_, rudof| {
         clear_qlever_cache(&endpoint);
@@ -186,6 +194,11 @@ fn run_in_memory(rudof: &mut Rudof, args: &Args) -> Vec<String> {
             .with_reader_mode(&DataReaderMode::Strict)
             .execute()
             .unwrap();
+
+        if idx == 0 {
+            println!("[rudof_v2] Data graph size: TODO");
+            println!("[rudof_v2] Shapes graph size: TODO")
+        }
 
         time_validate(rudof, &ShaclValidationMode::Native)
     })
