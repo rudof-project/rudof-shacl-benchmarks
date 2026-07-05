@@ -1,6 +1,3 @@
-import importlib.metadata
-import importlib.resources
-
 import gc, time, rdflib, sys
 from pyshacl import validate
 
@@ -67,11 +64,11 @@ def get_arg(idx: int, msg: str, default=None) -> str:
     arg = None
     try:
         arg = sys.argv[idx]
-    except:
+    except IndexError:
         pass
 
-    if arg == None:
-        if default == None:
+    if arg is None:
+        if default is None:
             raise Exception(msg)
         arg = default
 
