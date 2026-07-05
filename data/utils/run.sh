@@ -13,7 +13,9 @@ docker run \
   turtle \
   /shapes.ttl \turtle \
   /test.csv \
-  /dev/stdout
+  /dev/stdout \
+  1 \
+  0
 
 printf "\n\n\n[+] Running rudof/$1:latest with the non-conformant data file\n\n"
 
@@ -26,4 +28,6 @@ docker run \
   turtle \
   /shapes.ttl \turtle \
   /test.csv \
-  /dev/stdout
+  /dev/stdout \
+  1 \
+  0
