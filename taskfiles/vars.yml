@@ -23,7 +23,9 @@ vars:
   PROFILE_TIME: 30
   RUNS: 20
   WARM_UP: 10
-  TIMEOUT: 3600
+  GLOBAL_TIMEOUT: 3600
+  TIMEOUT: 160
+  VALID_ITERATIONS: 15
   RUDOF_BENCH_CFG: "{{ .TASK_DIR }}/default_config.toml"
   RUDOF_BENCH_QLEVER_CFG: "{{ .TASK_DIR }}/qlever_config.toml"
 

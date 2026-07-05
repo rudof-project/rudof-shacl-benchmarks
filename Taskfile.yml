@@ -162,7 +162,7 @@ tasks:
       - for: { var: LUBM_IDX }
         cmd: |
           set +e
-          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
+          timeout --foreground -k 30s {{ .GLOBAL_TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/lubm:/results \
             -v {{ .TASK_DIR }}/data/dist/lubm:{{ .TASK_DIR }}/data/dist/lubm:ro \
@@ -181,13 +181,13 @@ tasks:
             {{ .LUBM_DATA_FORMAT }} \
             {{ .TASK_DIR }}/data/dist/lubm/shapes.ttl \
             {{ .LUBM_SHAPES_FORMAT }} \
-            /results/{{ .ENGINE }}-{{ .ITEM }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM }}.json \
             /results/{{ .ENGINE }}-{{ .ITEM }}.ttl \
-            {{ .RUNS }} {{ .WARM_UP }}
+            {{ .RUNS }} {{ .WARM_UP }} {{ .TIMEOUT }} {{ .VALID_ITERATIONS }}
           code=$?
           set -e
           if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
-            echo "[TIMEOUT] {{ .ENGINE }} lubm-{{ .ITEM }} exceeded {{ .TIMEOUT }}s"
+            echo "[TIMEOUT] {{ .ENGINE }} lubm-{{ .ITEM }} exceeded {{ .GLOBAL_TIMEOUT }}s"
           elif [ "$code" -ne 0 ]; then
             exit $code
           fi
@@ -220,7 +220,7 @@ tasks:
             IDX: { ref: .ICDD_IDX }
         cmd: |
           set +e
-          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
+          timeout --foreground -k 30s {{ .GLOBAL_TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/icdd:/results \
             -v {{ .TASK_DIR }}/data/dist/icdd:{{ .TASK_DIR }}/data/dist/icdd:ro \
@@ -239,13 +239,13 @@ tasks:
             {{ .ICDD_DATA_FORMAT }} \
             {{ .TASK_DIR }}/data/dist/icdd/shapes-{{ .ITEM.TYPES }}.ttl \
             {{ .ICDD_SHAPES_FORMAT }} \
-            /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.json \
             /results/{{ .ENGINE }}-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }}.ttl \
-            {{ .RUNS }} {{ .WARM_UP }}
+            {{ .RUNS }} {{ .WARM_UP }} {{ .TIMEOUT }} {{ .VALID_ITERATIONS }}
           code=$?
           set -e
           if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
-            echo "[TIMEOUT] {{ .ENGINE }} icdd-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }} exceeded {{ .TIMEOUT }}s"
+            echo "[TIMEOUT] {{ .ENGINE }} icdd-{{ .ITEM.TYPES }}-{{ .ITEM.IDX }} exceeded {{ .GLOBAL_TIMEOUT }}s"
           elif [ "$code" -ne 0 ]; then
             exit $code
           fi
@@ -278,7 +278,7 @@ tasks:
             SHAPES: { ref: .ERA_SHAPES }
         cmd: |
           set +e
-          timeout --foreground -k 30s {{ .TIMEOUT }}s docker run \
+          timeout --foreground -k 30s {{ .GLOBAL_TIMEOUT }}s docker run \
             --rm \
             -v {{ .RESULTS_FOLDER }}/era:/results \
             -v {{ .TASK_DIR }}/data/dist/era:{{ .TASK_DIR }}/data/dist/era:ro \
@@ -297,13 +297,13 @@ tasks:
             {{ .ERA_DATA_FORMAT }} \
             {{ .TASK_DIR }}/data/dist/era/{{ .ITEM.SHAPES }}-shapes.ttl \
             {{ .ERA_SHAPES_FORMAT }} \
-            /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.csv \
+            /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.json \
             /results/{{ .ENGINE }}-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }}.ttl \
-            {{ .RUNS }} {{ .WARM_UP }}
+            {{ .RUNS }} {{ .WARM_UP }} {{ .TIMEOUT }} {{ .VALID_ITERATIONS }}
           code=$?
           set -e
           if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
-            echo "[TIMEOUT] {{ .ENGINE }} era-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }} exceeded {{ .TIMEOUT }}s"
+            echo "[TIMEOUT] {{ .ENGINE }} era-{{ .ITEM.DATA }}-{{ .ITEM.SHAPES }} exceeded {{ .GLOBAL_TIMEOUT }}s"
           elif [ "$code" -ne 0 ]; then
             exit $code
           fi
@@ -316,4 +316,3 @@ tasks:
     cmds:
       - for: { var: DATASETS }
         task: "docker:engine:bench:{{ .ITEM }}:{{ .ENGINE }}"
-
