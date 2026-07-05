@@ -16,7 +16,9 @@ docker run \
   /test.csv \
   /dev/stdout \
   1 \
-  0
+  0 \
+  60 \
+  1
 
 printf "\n\n\n[+] Running rudof/$1:latest with the non-conformant data file\n\n"
 
@@ -32,4 +34,6 @@ docker run \
   /test.csv \
   /dev/stdout \
   1 \
-  0
+  0 \
+  60 \
+  1
