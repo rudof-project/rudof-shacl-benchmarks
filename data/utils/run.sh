@@ -11,7 +11,8 @@ docker run \
   rudof/$1:latest \
   /data.ttl \
   turtle \
-  /shapes.ttl \turtle \
+  /shapes.ttl \
+  turtle \
   /test.csv \
   /dev/stdout \
   1 \
@@ -26,7 +27,8 @@ docker run \
   rudof/$1:latest \
   /data.ttl \
   turtle \
-  /shapes.ttl \turtle \
+  /shapes.ttl \
+  turtle \
   /test.csv \
   /dev/stdout \
   1 \
