@@ -27,7 +27,6 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(6)?.toInt() ?: 20
     val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
-    var lastReport: Graph? = null
 
     println("[corese] Data:    $dataPath ($dataFormat)")
     println("[corese] Shapes:  $shapesPath ($shapesFormat)")
@@ -40,10 +39,12 @@ fun main(args: Array<String>) {
 
         System.gc()
         val result = measureTimedValue { shacl.eval() }
-        lastReport = result.value
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+
+            val turtle = Transformer.create(result.value!!, Transformer.TURTLE).transform()
+            File(reportPath).writeText(turtle)
         }
         if (idx == warmUp - 1) {
             println("[corese] Warm-up complete")
@@ -59,8 +60,6 @@ fun main(args: Array<String>) {
         }
     }
 
-    val turtle = Transformer.create(lastReport!!, Transformer.TURTLE).transform()
-    File(reportPath).writeText(turtle)
     println("[corese] Done -> $csvPath, $reportPath")
 }
 

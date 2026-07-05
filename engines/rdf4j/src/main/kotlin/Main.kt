@@ -54,7 +54,6 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(6)?.toInt() ?: 20
     val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
-    var lastReport: ValidationReport? = null
 
     println("[rdf4j] Data:    $dataPath ($dataFormatStr)")
     println("[rdf4j] Shapes:  $shapesPath ($shapesFormatStr)")
@@ -93,10 +92,15 @@ fun main(args: Array<String>) {
                         commit()
                         report
                     }
-                    lastReport = result.value
 
                     if (idx >= warmUp) {
                         results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+
+                        FileOutputStream(reportPath).use { os ->
+                            val model = LinkedHashModel()
+                            result.value!!.asModel(model)
+                            Rio.write(model, os, RDFFormat.TURTLE)
+                        }
                     }
                     if (idx == warmUp - 1) {
                         println("[rdf4j] Warm-up complete")
@@ -114,10 +118,5 @@ fun main(args: Array<String>) {
         }
     }
 
-    FileOutputStream(reportPath).use { os ->
-        val model = LinkedHashModel()
-        lastReport!!.asModel(model)
-        Rio.write(model, os, RDFFormat.TURTLE)
-    }
     println("[rdf4j] Done -> $csvPath, $reportPath")
 }

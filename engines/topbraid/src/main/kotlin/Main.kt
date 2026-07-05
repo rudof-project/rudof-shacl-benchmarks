@@ -42,7 +42,6 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(6)?.toInt() ?: 20
     val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
-    var lastReport: Resource? = null
 
     println("[topbraid] Data:    $dataPath ($dataFormatStr)")
     println("[topbraid] Shapes:  $shapesPath ($shapesFormatStr)")
@@ -63,10 +62,13 @@ fun main(args: Array<String>) {
         val result = measureTimedValue {
             ValidationUtil.validateModel(dataModel, shapesModel, true)
         }
-        lastReport = result.value
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+
+            FileOutputStream(reportPath).use { os ->
+                result.value!!.model.write(os, "TURTLE")
+            }
         }
         if (idx == warmUp - 1) {
             println("[topbraid] Warm-up complete")
@@ -82,8 +84,5 @@ fun main(args: Array<String>) {
         }
     }
 
-    FileOutputStream(reportPath).use { os ->
-        lastReport!!.model.write(os, "TURTLE")
-    }
     println("[topbraid] Done -> $csvPath, $reportPath")
 }

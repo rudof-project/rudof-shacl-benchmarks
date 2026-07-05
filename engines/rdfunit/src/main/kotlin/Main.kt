@@ -42,7 +42,6 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(6)?.toInt() ?: 20
     val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
-    var lastReport: TestExecution? = null
 
     println("[rdfunit] Data:    $dataPath ($dataFormatStr)")
     println("[rdfunit] Shapes:  $shapesPath ($shapesFormat)")
@@ -67,10 +66,15 @@ fun main(args: Array<String>) {
         val result = measureTimedValue {
             RDFUnitStaticValidator.validate(dataModel, TestCaseExecutionType.shaclTestCaseResult)
         }
-        lastReport = result.value
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+
+            FileOutputStream(reportPath).use { os ->
+                val model = ModelFactory.createDefaultModel()
+                TestExecutionWriter.create(result.value!!).write(model)
+                RDFDataMgr.write(os, model, Lang.TURTLE)
+            }
         }
         if (idx == warmUp - 1) {
             println("[rdfunit] Warm-up complete")
@@ -86,10 +90,5 @@ fun main(args: Array<String>) {
         }
     }
 
-    FileOutputStream(reportPath).use { os ->
-        val model = ModelFactory.createDefaultModel()
-        TestExecutionWriter.create(lastReport!!).write(model)
-        RDFDataMgr.write(os, model, Lang.TURTLE)
-    }
     println("[rdfunit] Done -> $csvPath, $reportPath")
 }

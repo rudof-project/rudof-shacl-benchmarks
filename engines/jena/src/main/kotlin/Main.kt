@@ -30,7 +30,6 @@ fun main(args: Array<String>) {
     val runs = args.getOrNull(6)?.toInt() ?: 20
     val warmUp = args.getOrNull(7)?.toInt() ?: 10
     val results = mutableListOf<String>()
-    var lastReport: ValidationReport? = null
 
     println("[jena] Data:    $dataPath ($dataFormat)")
     println("[jena] Shapes:  $shapesPath ($shapesFormat)")
@@ -54,10 +53,13 @@ fun main(args: Array<String>) {
 
         System.gc()
         val result = measureTimedValue { validator.validate(shapes, dataGraph) }
-        lastReport = result.value
 
         if (idx >= warmUp) {
             results.add("${result.duration.inWholeMicroseconds / 1000.0}")
+
+            FileOutputStream(reportPath).use { os ->
+                RDFDataMgr.write(os, result.value!!.model, Lang.TURTLE)
+            }
         }
         if (idx == warmUp - 1) {
             println("[jena] Warm-up complete")
@@ -73,8 +75,5 @@ fun main(args: Array<String>) {
         }
     }
 
-    FileOutputStream(reportPath).use { os ->
-        RDFDataMgr.write(os, lastReport!!.model, Lang.TURTLE)
-    }
     println("[jena] Done -> $csvPath, $reportPath")
 }
