@@ -4,9 +4,9 @@ FROM rudof/kotlin_builder:latest AS builder
 
 WORKDIR /app
 
-COPY src ./src/
 COPY build.gradle.kts gradle.properties settings.gradle.kts ./
 COPY gradle/libs.versions.toml ./gradle/libs.versions.toml
+COPY src ./src/
 
 RUN gradle shadowJar
 

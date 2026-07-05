@@ -4,8 +4,8 @@ FROM rudof/rust_builder:latest AS builder
 
 WORKDIR /app
 
-COPY src ./src
 COPY Cargo.toml Cargo.lock ./
+COPY src ./src
 
 RUN cargo zigbuild --release --target x86_64-unknown-linux-musl
 
