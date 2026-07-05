@@ -43,9 +43,17 @@ target "dotnet" {
   tags = [ "rudof/dotnet_builder:latest" ]
 }
 
-target "dataset" {
+target "_base_dataset" {
   inherits = [ "_common" ]
   context = "./dataset"
-  tags = [ "rudof/dataset_builder:latest" ]
 }
 
+target "dataset" {
+  inherits = [ "_common" ]
+  dockerfile = "Dockerfile"
+  context = "./dataset"
+  contexts = {
+    "base" = "target:_base_dataset"
+  }
+  tags = [ "rudof/dataset_builder:latest" ]
+}
