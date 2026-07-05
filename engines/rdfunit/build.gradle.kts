@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.johnrengelman.shadow)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "es.weso.rudof"
@@ -14,6 +15,7 @@ dependencies {
     implementation(libs.jena.core)
     implementation(libs.jena.arq)
     implementation(libs.rdfunit.core)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kotlin {

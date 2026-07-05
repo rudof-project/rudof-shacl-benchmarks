@@ -3,12 +3,16 @@ kotlin = "2.2.21"
 johnrengelman-shadow = "7.0.0"
 jena = "3.7.0"
 rdfunit = "0.8.21"
+kotlinx-serialization-json = "1.11.0"
+kotlin-serialization = "2.3.20"
 
 [libraries]
 jena-core = { module = "org.apache.jena:jena-core", version.ref = "jena" }
 jena-arq = { module = "org.apache.jena:jena-arq", version.ref = "jena" }
 rdfunit-core = { module = "org.aksw.rdfunit:rdfunit-core", version.ref = "rdfunit" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 johnrengelman-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "johnrengelman-shadow" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.johnrengelman.shadow)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "es.weso.rudof"
@@ -16,6 +17,7 @@ dependencies {
     implementation(libs.rdf4j.rio.turtle)
     implementation(libs.rdf4j.storage)
     implementation(libs.rdf4j.queryalgebra.geosparql)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kotlin {

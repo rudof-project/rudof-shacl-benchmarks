@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.johnrengelman.shadow)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "es.weso.rudof"
@@ -13,6 +14,7 @@ repositories {
 dependencies {
     implementation(libs.jena.shacl)
     implementation(libs.jena.geosparql)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kotlin {
