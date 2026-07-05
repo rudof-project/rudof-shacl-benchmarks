@@ -49,7 +49,6 @@ fn main() {
     let runs: usize = args.get(7).and_then(|s| s.parse().ok()).unwrap_or(20);
     let warm_up: usize = args.get(8).and_then(|s| s.parse().ok()).unwrap_or(10);
     let mut result: Vec<String> = Vec::new();
-    let mut last_report = None;
 
     println!("[rudof_v1] Data:    {} ({})", data_path, data_format_str);
     println!("[rudof_v1] Shapes:  {} ({})", shapes_path, shapes_format_str);
@@ -68,10 +67,15 @@ fn main() {
         let start = Instant::now();
         let report = black_box(rudof.validate_shacl(black_box(&ShaclValidationMode::Native), black_box(&ShapesGraphSource::CurrentSchema))).unwrap();
         let elapsed = start.elapsed();
-        last_report = Some(report);
 
         if idx >= warm_up {
-            result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0))
+            result.push(format!("{}", elapsed.as_micros() as f64 / 1000.0));
+
+            let mut rdf_writer = SRDFGraph::new();
+            report.to_rdf(&mut rdf_writer).expect("Failed to convert validation report to RDF");
+            let mut report_file = File::create(report_path).expect(&format!("Unable to create file {report_path}"));
+            rdf_writer.serialize(&RDFFormat::Turtle, &mut report_file).expect("Failed to serialize validation report as Turtle");
+            report_file.flush().unwrap();
         }
         if warm_up > 0 && idx == warm_up - 1 {
             println!("[rudof_v1] Warm-up complete");
@@ -83,13 +87,6 @@ fn main() {
         file.write((&format!("{x}\n")).as_ref()).expect("Unable to write results to csv");
     });
     file.flush().unwrap();
-
-    let report = last_report.expect("Missing validation report");
-    let mut rdf_writer = SRDFGraph::new();
-    report.to_rdf(&mut rdf_writer).expect("Failed to convert validation report to RDF");
-    let mut report_file = File::create(report_path).expect(&format!("Unable to create file {report_path}"));
-    rdf_writer.serialize(&RDFFormat::Turtle, &mut report_file).expect("Failed to serialize validation report as Turtle");
-    report_file.flush().unwrap();
 
     println!("[rudof_v1] Done -> {}, {}", csv_path, report_path);
 }

@@ -36,7 +36,6 @@ fn main() {
     };
 
     write_csv(&args.csv_path, &samples);
-    write_report(&mut rudof, &args.report_path);
 
     println!("[rudof_v2] Done -> {}, {}", args.csv_path, args.report_path);
 }
@@ -162,14 +161,14 @@ fn run_qlever(rudof: &mut Rudof, args: &Args) -> Vec<String> {
         .execute()
         .unwrap();
 
-    fn_loop(args, || {
+    fn_loop(args, rudof, |_, rudof| {
         clear_qlever_cache(&endpoint);
         time_validate(rudof, &ShaclValidationMode::Sparql)
     })
 }
 
 fn run_in_memory(rudof: &mut Rudof, args: &Args) -> Vec<String> {
-    fn_loop(args, || {
+    fn_loop(args, rudof, |idx, rudof| {
         rudof.reset_data().execute();
         rudof.reset_shacl().execute();
 
@@ -192,15 +191,17 @@ fn run_in_memory(rudof: &mut Rudof, args: &Args) -> Vec<String> {
     })
 }
 
-fn fn_loop<F>(args: &Args, mut measure: F) -> Vec<String>
+fn fn_loop<F>(args: &Args, rudof: &mut Rudof, mut measure: F) -> Vec<String>
 where
-    F: FnMut() -> u128,
+    F: FnMut(usize, &mut Rudof) -> u128,
 {
     let mut samples = Vec::with_capacity(args.runs);
     for idx in 0..(args.warm_up + args.runs) {
-        let micros = measure();
+        let micros = measure(idx, rudof);
         if idx >= args.warm_up {
             samples.push(format!("{}", micros as f64 / 1000.0));
+
+            write_report(rudof, &args.report_path)
         }
         if args.warm_up > 0 && idx == args.warm_up - 1 {
             println!("[rudof_v2] Warm-up complete");
