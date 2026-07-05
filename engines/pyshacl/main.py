@@ -24,7 +24,6 @@ def main() -> None:
     runs = int(get_arg(7, "", 20))
     warm_up = int(get_arg(8, "", 10))
     results: list[str] = []
-    last_results_graph: rdflib.Graph | None = None
 
     print(f"[pyshacl] Data:    {data_path} ({data_format})")
     print(f"[pyshacl] Shapes:  {shapes_path} ({shapes_format})")
@@ -44,19 +43,20 @@ def main() -> None:
         gc.collect()
         gc.disable()
         start = time.time()
-        _, last_results_graph, _ = validate(data_graph=data_graph, shacl_graph=shapes_graph, inference="")
+        _, results_graph, _ = validate(data_graph=data_graph, shacl_graph=shapes_graph, inference="")
         delta = time.time() - start
         gc.enable()
 
         if i >= warm_up:
             results.append(f"{delta * 1000:.3f}\n")
+
+            results_graph.serialize(destination=report_path, format="turtle")
         if i == warm_up - 1:
             print("[pyshacl] Warm-up complete")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
         f.writelines(results)
 
-    last_results_graph.serialize(destination=report_path, format="turtle")
     print(f"[pyshacl] Done -> {csv_path}, {report_path}")
 
 def get_arg(idx: int, msg: str, default=None) -> str:

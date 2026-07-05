@@ -21,7 +21,6 @@ def main() -> None:
     runs = int(get_arg(7, "", 20))
     warm_up = int(get_arg(8, "", 10))
     results: list[str] = []
-    last_model = None
 
     print(f"[maplib] Data:    {data_path} ({data_format})")
     print(f"[maplib] Shapes:  {shapes_path} ({shapes_format})")
@@ -50,17 +49,17 @@ def main() -> None:
         )
         delta = time.time() - start
         gc.enable()
-        last_model = model
 
         if i >= warm_up:
             results.append(f"{delta * 1000:.3f}\n")
+
+            model.write(report_path, format="turtle", graph=report_graph_iri)
         if i == warm_up - 1:
             print("[maplib] Warm-up complete")
 
     with open(csv_path, mode="w", encoding="utf-8") as f:
         f.writelines(results)
 
-    last_model.write(report_path, format="turtle", graph=report_graph_iri)
     print(f"[maplib] Done -> {csv_path}, {report_path}")
 
 def get_arg(idx: int, msg: str, default=None) -> str:
