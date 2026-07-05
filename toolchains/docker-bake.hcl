@@ -16,9 +16,18 @@ target "kotlin" {
   tags = [ "rudof/kotlin_builder:latest" ]
 }
 
-target "rust" {
+target "_base_rust" {
   inherits = [ "_common" ]
   context = "./rust"
+}
+
+target "rust" {
+  inherits = [ "_common" ]
+  dockerfile = "Dockerfile"
+  context = "./rust"
+  contexts = {
+    "base" = "target:_base_rust"
+  }
   tags = [ "rudof/rust_builder:latest" ]
 }
 
