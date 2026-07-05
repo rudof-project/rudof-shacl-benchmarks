@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
     println("[corese] Runs:    $runs, warm-up: $warmUp")
 
     repeat(warmUp + runs) { idx ->
-        val shacl = generateShacl(dataPath, shapesPath)
+        val shacl = generateShacl(dataPath, shapesPath, idx)
 
         System.gc()
         val result = measureTimedValue { shacl.eval() }
@@ -64,12 +64,17 @@ fun main(args: Array<String>) {
     println("[corese] Done -> $csvPath, $reportPath")
 }
 
-fun generateShacl(dataPath: String, shapesPath: String): Shacl {
+fun generateShacl(dataPath: String, shapesPath: String, idx: Int): Shacl {
     val dataGraph = Graph.create()
     val shapeGraph = Graph.create()
 
     Load.create(dataGraph).parse(dataPath)
     Load.create(shapeGraph).parse(shapesPath)
+
+    if (idx == 0) {
+        println("[corese] Data graph size: ${dataGraph.size()}")
+        println("[corese] Shapes graph size: ${shapeGraph.size()}")
+    }
 
     return Shacl(dataGraph, shapeGraph)
 }

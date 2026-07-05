@@ -81,6 +81,11 @@ fun main(args: Array<String>) {
                     add(File(dataPath), dataFormat)
                     commit()
 
+                    if (idx == 0) {
+                        println("[rdf4j] Data graph size: TODO")
+                        println("[rdf4j] Shapes graph size: TODO")
+                    }
+
                     System.gc()
                     val result = measureTimedValue {
                         begin(IsolationLevels.NONE)

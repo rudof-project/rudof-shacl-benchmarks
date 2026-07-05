@@ -43,6 +43,12 @@ fun main(args: Array<String>) {
     repeat(warmUp + runs) { idx ->
         val dataGraph = RDFDataMgr.loadGraph("file:$dataPath")
         val shapesGraph = RDFDataMgr.loadGraph("file:$shapesPath")
+
+        if (idx == 0) {
+            println("[jena] Data graph size: ${dataGraph.size()}")
+            println("[jena] Shapes graph size: ${shapesGraph.size()}")
+        }
+
         val shapes = Shapes.parse(shapesGraph)
         val validator = ShaclPlainValidator()
 

@@ -58,6 +58,11 @@ fun main(args: Array<String>) {
                 .build()
         )
 
+        if (idx == 0) {
+            println("[rdfunit] Data graph size: ${dataModel.size()}")
+            println("[rdfunit] Shapes graph size: TODO")
+        }
+
         System.gc()
         val result = measureTimedValue {
             RDFUnitStaticValidator.validate(dataModel, TestCaseExecutionType.shaclTestCaseResult)

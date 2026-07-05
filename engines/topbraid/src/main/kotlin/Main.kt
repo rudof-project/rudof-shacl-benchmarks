@@ -54,6 +54,11 @@ fun main(args: Array<String>) {
         val dataModel = JenaUtil.createMemoryModel().apply { read(dataPath, dataFormat) }
         val shapesModel = JenaUtil.createMemoryModel().apply { read(shapesPath, shapesFormat) }
 
+        if (idx == 0) {
+            println("[topbraid] Data graph size: ${dataModel.size()}")
+            println("[topbraid] Shapes graph size: ${shapesModel.size()}")
+        }
+
         System.gc()
         val result = measureTimedValue {
             ValidationUtil.validateModel(dataModel, shapesModel, true)
