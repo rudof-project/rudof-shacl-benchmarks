@@ -40,6 +40,10 @@ def main() -> None:
         with open(shapes_path, "r", encoding="utf-8") as f:
             shapes_graph.parse(data=f.read())
 
+        if i == 0:
+            print(f"[pyshacl] Data graph size: {len(data_graph)}")
+            print(f"[pyshacl] Shapes graph size: {len(shapes_graph)}")
+
         gc.collect()
         gc.disable()
         start = time.time()

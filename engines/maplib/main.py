@@ -39,6 +39,10 @@ def main() -> None:
         model.read(data_path, parallel=True, graph=data_graph_iri)
         model.read(shapes_path, parallel=True, graph=shapes_graph_iri)
 
+        if i == 0:
+            print(f"[maplib] Data graph size: {model.size(data_graph_iri)}")
+            print(f"[maplib] Shapes graph size: {model.size(shapes_graph_iri)}")
+
         gc.collect()
         gc.disable()
         start = time.time()
