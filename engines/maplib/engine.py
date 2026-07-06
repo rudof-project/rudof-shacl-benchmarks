@@ -18,7 +18,6 @@ class Engine(ValidationEngine[ValidationReport]):
         self._model = Model()
         assert self._model is not None
 
-        # If there are parsing issues remove the parallel load (the server starts parsing data chunks before finishing the prefix chunk)
         self._model.read(
             data_path,
             parallel=True,
