@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git" , rev = "11d8d7e8634244a9676c08ce6528dee346eabcdc" } # v0.1.146
+serde = { version = "1.0.228", features = [ "derive" ] }
+serde_json = "1.0.149"
