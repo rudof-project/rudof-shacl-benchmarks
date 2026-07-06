@@ -5,7 +5,8 @@ FROM rudof/python_builder:latest AS builder
 WORKDIR /app
 
 COPY wheels ./wheels/
-COPY .python-version main.py pyproject.toml uv.lock ./
+COPY .python-version pyproject.toml uv.lock ./
+COPY *.py ./
 
 ENV UV_PYTHON_DOWNLOADS=never
 ENV UV_PYTHON=/toolchain/bin/python3
