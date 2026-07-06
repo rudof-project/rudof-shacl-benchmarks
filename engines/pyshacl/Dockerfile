@@ -52,4 +52,6 @@ COPY --from=builder /app/out/main.dist /opt/app
 
 RUN ln -s /opt/app/binary ${BINARY}
 
+ENV PYTHONUNBUFFERED=1
+
 ENTRYPOINT [ "/bin/sh", "-c", "exec ${BINARY} \"$@\"", "--" ]

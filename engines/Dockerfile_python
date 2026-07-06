@@ -17,5 +17,6 @@ COPY --from=rootfs /bin/sh /bin/sh
 COPY --from=builder /app /app
 
 ENV PYTHONPATH=/app/.venv/lib/python3.13/site-packages
+ENV PYTHONUNBUFFERED=1
 
 ENTRYPOINT [ "/bin/sh", "-c", "exec python3 /app/main.py \"$@\"", "--" ]
