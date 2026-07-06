@@ -7,7 +7,7 @@ class Engine(ValidationEngine[ValidationReport]):
 
     _DATA_GRAPH_IRI = "urn:bench:data"
     _SHAPES_GRAPH_IRI = "urn:bench:shapes"
-    _REPORT_GRAPH_IRI = "urn:bench:validation-report"
+    # _REPORT_GRAPH_IRI = "urn:bench:validation-report"
 
     def __init__(self) -> None:
         self._model: Model | None = None
@@ -31,9 +31,10 @@ class Engine(ValidationEngine[ValidationReport]):
         return self._model.validate(
             data_graph=self._DATA_GRAPH_IRI,
             shape_graph=self._SHAPES_GRAPH_IRI,
-            report_graph=self._REPORT_GRAPH_IRI,
+            # report_graph=self._REPORT_GRAPH_IRI,
         )
 
     def generate_report(self, result: ValidationReport) -> str:
         assert self._model is not None
-        return self._model.writes(format="turtle", graph=self._REPORT_GRAPH_IRI)
+        return "TODO"
+        # return self._model.writes(format="turtle", graph=self._REPORT_GRAPH_IRI)
