@@ -8,6 +8,7 @@ class Engine(ValidationEngine[ValidationReport]):
     _DATA_GRAPH_IRI = "urn:bench:data"
     _SHAPES_GRAPH_IRI = "urn:bench:shapes"
     # _REPORT_GRAPH_IRI = "urn:bench:validation-report"
+    _BASE_IRI = "http://ex.net/"
 
     def __init__(self) -> None:
         self._model: Model | None = None
@@ -18,8 +19,17 @@ class Engine(ValidationEngine[ValidationReport]):
         assert self._model is not None
 
         # If there are parsing issues remove the parallel load (the server starts parsing data chunks before finishing the prefix chunk)
-        self._model.read(data_path, parallel=True, graph=self._DATA_GRAPH_IRI)
-        self._model.read(shapes_path, parallel=True, graph=self._SHAPES_GRAPH_IRI)
+        self._model.read(
+            data_path,
+            parallel=True,
+            graph=self._DATA_GRAPH_IRI,
+            base_iri=self._BASE_IRI
+        )
+        self._model.read(shapes_path,
+            parallel=True,
+            graph=self._SHAPES_GRAPH_IRI,
+            base_iri=self._BASE_IRI
+        )
 
         if not self._size_logged:
             print(f"[{self.name}] Data graph size:   {self._model.size(self._DATA_GRAPH_IRI)}")
