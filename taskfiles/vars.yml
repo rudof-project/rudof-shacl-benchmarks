@@ -81,7 +81,7 @@ vars:
     - pyshacl_n
     - rdf4j
     - rdfunit
-    - rudof_qlever
+    # - rudof_qlever
     - rudof_v1
     - rudof_v2
     - topbraid
