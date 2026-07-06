@@ -20,6 +20,8 @@ vars:
   GID: { sh: id -g }
   HOME: { sh: echo "$HOME" }
 
+  JVM_HEAP: 4G
+
   PROFILE_TIME: 30
   RUNS: 20
   WARM_UP: 10

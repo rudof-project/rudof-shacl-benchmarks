@@ -19,4 +19,6 @@ ENV JAR=/${JAR_NAME}.jar
 COPY --from=rootfs /bin/sh /bin/sh
 COPY --from=builder /app/build/libs/${JAR_NAME}-1.0-SNAPSHOT.jar ${JAR}
 
-ENTRYPOINT [ "sh", "-c", "exec java -jar ${JAR} \"$@\"", "--" ]
+ENV JVM_HEAP=4G
+
+ENTRYPOINT [ "sh", "-c", "exec java -Xmx${JVM_HEAP} -jar ${JAR} \"$@\"", "--" ]

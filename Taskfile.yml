@@ -173,6 +173,7 @@ tasks:
             -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
             -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
             -e HOME={{ .HOME }} \
+            -e JVM_HEAP={{ .JVM_HEAP }} \
             --group-add {{ .DKR_GID }} \
             {{- end }}
             --user {{ .UID }}:{{ .GID }} \
@@ -231,6 +232,7 @@ tasks:
             -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
             -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
             -e HOME={{ .HOME }} \
+            -e JVM_HEAP={{ .JVM_HEAP }} \
             --group-add {{ .DKR_GID }} \
             {{- end }}
             --user {{ .UID }}:{{ .GID }} \
@@ -289,6 +291,7 @@ tasks:
             -v {{ .HOME }}/.cache:{{ .HOME }}/.cache \
             -e RUDOF_BENCH_QLEVER_CFG=/qlever_config.toml \
             -e HOME={{ .HOME }} \
+            -e JVM_HEAP={{ .JVM_HEAP }} \
             --group-add {{ .DKR_GID }} \
             {{- end }}
             --user {{ .UID }}:{{ .GID }} \
