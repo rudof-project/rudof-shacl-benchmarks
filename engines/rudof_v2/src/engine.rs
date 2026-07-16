@@ -20,7 +20,7 @@ impl Engine {
 }
 
 impl ValidationEngine for Engine {
-    const NAME: &'static str = "rudof_v1";
+    const NAME: &'static str = "rudof_v2";
     type Report = ();
 
     fn load_data(
