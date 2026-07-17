@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "5ff5000f1ce17c5ebf8e414973f2ddb9d0c8afbf", features = [ "qlever", "sparql" ] } # v0.3.4 with SHACL-SPARQL fixes 
+rudof = { package = "rudof_lib", git = "https://github.com/rudof-project/rudof.git", rev = "8c4a166a91dcc89beeee82cdd7ef5a93b1f9c278", features = [ "qlever", "sparql" ] } # v0.3.6
 serde = { version = "1.0.228", features = [ "derive" ] }
 serde_json = "1.0.149"
