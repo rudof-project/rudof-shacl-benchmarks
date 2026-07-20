@@ -20,12 +20,12 @@ class Engine(ValidationEngine[ValidationReport]):
 
         self._model.read(
             data_path,
-            parallel=True,
+            parallel=False, # Makes trouble while parsing prefixes
             graph=self._DATA_GRAPH_IRI,
             base_iri=self._BASE_IRI
         )
         self._model.read(shapes_path,
-            parallel=True,
+            parallel=False, # Makes trouble while parsing prefixes
             graph=self._SHAPES_GRAPH_IRI,
             base_iri=self._BASE_IRI
         )
