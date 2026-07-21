@@ -19,6 +19,7 @@
       libuuid
       glibcLocales
       util-linuxMinimal
+      python313
     ];
   in {
     devShells.${system}.default = pkgs.mkShell {
