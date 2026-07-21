@@ -18,3 +18,5 @@ done
 for file in /app/dist/icdd/data-*.ttl; do
     python /patch/main.py "$file" icdd data
 done
+
+chmod 644 /app/dist/icdd/data-*.ttl
