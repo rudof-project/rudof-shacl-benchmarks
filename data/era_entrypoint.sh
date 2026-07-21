@@ -16,4 +16,9 @@ cp /app/era/shapes/core_shapes.ttl /app/dist/era/core-shapes.ttl
 cp /app/era/shapes/era_shapes.ttl  /app/dist/era/era-shapes.ttl
 cp /app/era/shapes/tds_shapes.ttl  /app/dist/era/tds-shapes.ttl
 
+# Patch invalid values
+for file in /app/dist/era/*-data.ttl; do
+    python /patch/main.py "$file" era data
+done
+
 trap 'code=$?; rm -f /app/2025-01-05-rinf-xml-combined.nt; exit $code' EXIT
