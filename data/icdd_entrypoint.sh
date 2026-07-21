@@ -13,3 +13,8 @@ for t in "${TYPES[@]}"; do
     cp "/app/icdd/sourcecode/src/main/resources/benchmark/datasets/$i/dataset-$t.ttl" "/app/dist/icdd/data-$t-$i.ttl"
   done
 done
+
+# Patch invalid values
+for file in /app/dist/icdd/data-*.ttl; do
+    python /patch/main.py "$file" icdd data
+done
