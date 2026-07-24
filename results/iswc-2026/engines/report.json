@@ -1,0 +1,4502 @@
+{
+  "load": {
+    "icdd": {
+      "binary-1": {
+        "corese": {
+          "mean": 37.542,
+          "std": 3.813,
+          "min": 33.68,
+          "max": 47.814,
+          "median": 36.685,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 13.415,
+          "std": 2.275,
+          "min": 10.863,
+          "max": 17.043,
+          "median": 12.521,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 31.301,
+          "std": 1.596,
+          "min": 28.335,
+          "max": 33.439,
+          "median": 31.298,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 49.246,
+          "std": 1.579,
+          "min": 46.571,
+          "max": 52.443,
+          "median": 49.264,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 53.918,
+          "std": 2.746,
+          "min": 50.409,
+          "max": 60.268,
+          "median": 53.547,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 16.194,
+          "std": 1.565,
+          "min": 14.165,
+          "max": 19.313,
+          "median": 15.681,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 20.054,
+          "std": 5.769,
+          "min": 14.812,
+          "max": 34.29,
+          "median": 18.223,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 4.82,
+          "std": 0.055,
+          "min": 4.721,
+          "max": 4.911,
+          "median": 4.817,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 3.663,
+          "std": 0.1,
+          "min": 3.474,
+          "max": 3.818,
+          "median": 3.635,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 16.386,
+          "std": 4.215,
+          "min": 12.41,
+          "max": 27.115,
+          "median": 15.864,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-2": {
+        "corese": {
+          "mean": 279.521,
+          "std": 9.254,
+          "min": 263.891,
+          "max": 301.131,
+          "median": 278.468,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 54.477,
+          "std": 10.912,
+          "min": 38.626,
+          "max": 69.526,
+          "median": 57.342,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 89.013,
+          "std": 4.661,
+          "min": 80.665,
+          "max": 93.497,
+          "median": 90.125,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 526.525,
+          "std": 13.676,
+          "min": 508.371,
+          "max": 550.547,
+          "median": 523.597,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 561.336,
+          "std": 11.822,
+          "min": 545.517,
+          "max": 587.771,
+          "median": 560.571,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 84.134,
+          "std": 5.598,
+          "min": 73.499,
+          "max": 92.208,
+          "median": 84.268,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 102.56,
+          "std": 22.863,
+          "min": 89.02,
+          "max": 164.581,
+          "median": 92.4,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 33.679,
+          "std": 0.308,
+          "min": 32.918,
+          "max": 34.047,
+          "median": 33.695,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 37.704,
+          "std": 1.937,
+          "min": 36.054,
+          "max": 42.042,
+          "median": 36.585,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 69.233,
+          "std": 8.829,
+          "min": 59.148,
+          "max": 89.642,
+          "median": 68.87,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-3": {
+        "corese": {
+          "mean": 544.084,
+          "std": 18.918,
+          "min": 516.627,
+          "max": 575.405,
+          "median": 543.544,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 84.572,
+          "std": 8.459,
+          "min": 73.411,
+          "max": 101.632,
+          "median": 86.281,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 134.397,
+          "std": 4.603,
+          "min": 128.45,
+          "max": 144.24,
+          "median": 133.097,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1072.415,
+          "std": 14.82,
+          "min": 1044.699,
+          "max": 1098.572,
+          "median": 1075.103,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 1159.339,
+          "std": 17.04,
+          "min": 1128.731,
+          "max": 1188.331,
+          "median": 1158.149,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 165.547,
+          "std": 6.271,
+          "min": 155.364,
+          "max": 175.026,
+          "median": 166.288,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 226.148,
+          "std": 16.546,
+          "min": 204.567,
+          "max": 255.479,
+          "median": 227.121,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 66.441,
+          "std": 1.409,
+          "min": 63.57,
+          "max": 67.53,
+          "median": 67.081,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 81.447,
+          "std": 5.222,
+          "min": 70.206,
+          "max": 87.696,
+          "median": 81.447,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 137.205,
+          "std": 8.352,
+          "min": 126.361,
+          "max": 157.006,
+          "median": 136.194,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-4": {
+        "corese": {
+          "mean": 2329.463,
+          "std": 28.08,
+          "min": 2296.027,
+          "max": 2381.469,
+          "median": 2329.229,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 361.659,
+          "std": 29.084,
+          "min": 323.862,
+          "max": 397.162,
+          "median": 365.192,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 325.159,
+          "std": 11.033,
+          "min": 298.026,
+          "max": 341.519,
+          "median": 325.327,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 4513.62,
+          "std": 33.998,
+          "min": 4453.436,
+          "max": 4574.123,
+          "median": 4504.858,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 4914.515,
+          "std": 42.417,
+          "min": 4844.033,
+          "max": 4969.131,
+          "median": 4917.582,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 658.929,
+          "std": 12.461,
+          "min": 643.318,
+          "max": 686.166,
+          "median": 655.442,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 1036.698,
+          "std": 43.842,
+          "min": 974.914,
+          "max": 1109.609,
+          "median": 1029.0,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 288.161,
+          "std": 8.645,
+          "min": 274.386,
+          "max": 300.527,
+          "median": 289.142,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 346.973,
+          "std": 16.391,
+          "min": 331.346,
+          "max": 379.86,
+          "median": 341.769,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 542.03,
+          "std": 45.983,
+          "min": 506.876,
+          "max": 677.046,
+          "median": 529.713,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-1": {
+        "corese": {
+          "mean": 33.55,
+          "std": 5.533,
+          "min": 29.204,
+          "max": 48.953,
+          "median": 32.145,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 11.401,
+          "std": 1.692,
+          "min": 9.931,
+          "max": 14.942,
+          "median": 10.919,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 30.954,
+          "std": 1.464,
+          "min": 28.305,
+          "max": 32.215,
+          "median": 31.739,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 45.591,
+          "std": 2.665,
+          "min": 42.993,
+          "max": 50.949,
+          "median": 44.225,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 46.072,
+          "std": 2.332,
+          "min": 43.386,
+          "max": 51.039,
+          "median": 45.625,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 16.697,
+          "std": 2.692,
+          "min": 13.377,
+          "max": 22.371,
+          "median": 16.602,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 18.014,
+          "std": 5.515,
+          "min": 12.652,
+          "max": 32.424,
+          "median": 16.566,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 4.489,
+          "std": 0.057,
+          "min": 4.378,
+          "max": 4.611,
+          "median": 4.476,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 3.316,
+          "std": 0.045,
+          "min": 3.208,
+          "max": 3.366,
+          "median": 3.312,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 13.009,
+          "std": 1.731,
+          "min": 10.366,
+          "max": 15.908,
+          "median": 12.381,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-2": {
+        "corese": {
+          "mean": 221.933,
+          "std": 3.931,
+          "min": 213.657,
+          "max": 227.856,
+          "median": 221.73,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 45.934,
+          "std": 13.432,
+          "min": 33.369,
+          "max": 75.59,
+          "median": 42.907,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 80.945,
+          "std": 6.147,
+          "min": 68.89,
+          "max": 91.042,
+          "median": 81.774,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 368.347,
+          "std": 8.799,
+          "min": 358.347,
+          "max": 387.731,
+          "median": 365.632,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 374.867,
+          "std": 4.913,
+          "min": 365.238,
+          "max": 381.447,
+          "median": 375.66,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 64.717,
+          "std": 3.452,
+          "min": 60.238,
+          "max": 70.23,
+          "median": 63.788,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 67.631,
+          "std": 11.838,
+          "min": 54.813,
+          "max": 93.228,
+          "median": 62.744,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 26.405,
+          "std": 0.201,
+          "min": 26.127,
+          "max": 26.775,
+          "median": 26.392,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 28.596,
+          "std": 1.527,
+          "min": 27.132,
+          "max": 32.82,
+          "median": 28.376,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 41.984,
+          "std": 8.148,
+          "min": 34.083,
+          "max": 62.421,
+          "median": 40.035,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-3": {
+        "corese": {
+          "mean": 438.668,
+          "std": 11.818,
+          "min": 416.18,
+          "max": 461.875,
+          "median": 438.798,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 73.294,
+          "std": 26.603,
+          "min": 56.942,
+          "max": 150.313,
+          "median": 65.341,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 128.217,
+          "std": 3.815,
+          "min": 120.252,
+          "max": 133.631,
+          "median": 129.051,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 804.533,
+          "std": 14.658,
+          "min": 781.248,
+          "max": 829.185,
+          "median": 803.516,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 851.81,
+          "std": 13.596,
+          "min": 829.725,
+          "max": 885.589,
+          "median": 850.332,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 131.147,
+          "std": 9.629,
+          "min": 113.302,
+          "max": 144.406,
+          "median": 131.157,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 156.029,
+          "std": 12.318,
+          "min": 140.062,
+          "max": 184.586,
+          "median": 153.198,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 53.525,
+          "std": 0.402,
+          "min": 52.578,
+          "max": 54.129,
+          "median": 53.54,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 68.603,
+          "std": 4.018,
+          "min": 60.147,
+          "max": 72.426,
+          "median": 71.343,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 98.385,
+          "std": 8.079,
+          "min": 86.781,
+          "max": 109.568,
+          "median": 96.688,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-4": {
+        "corese": {
+          "mean": 1581.211,
+          "std": 53.95,
+          "min": 1531.672,
+          "max": 1715.063,
+          "median": 1557.001,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 206.658,
+          "std": 10.113,
+          "min": 191.58,
+          "max": 222.782,
+          "median": 205.974,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 235.432,
+          "std": 4.628,
+          "min": 227.901,
+          "max": 242.875,
+          "median": 234.48,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 2714.67,
+          "std": 49.173,
+          "min": 2649.639,
+          "max": 2819.97,
+          "median": 2706.585,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 2858.44,
+          "std": 44.36,
+          "min": 2793.991,
+          "max": 2947.926,
+          "median": 2840.1,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 463.976,
+          "std": 9.679,
+          "min": 455.167,
+          "max": 487.713,
+          "median": 460.27,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 573.133,
+          "std": 59.455,
+          "min": 504.627,
+          "max": 644.526,
+          "median": 578.034,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 198.073,
+          "std": 4.99,
+          "min": 188.474,
+          "max": 203.236,
+          "median": 200.296,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 237.326,
+          "std": 15.611,
+          "min": 220.501,
+          "max": 264.186,
+          "median": 231.685,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 334.066,
+          "std": 39.537,
+          "min": 289.877,
+          "max": 385.955,
+          "median": 333.077,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-1": {
+        "corese": {
+          "mean": 36.374,
+          "std": 1.762,
+          "min": 34.357,
+          "max": 38.801,
+          "median": 35.599,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 13.471,
+          "std": 3.022,
+          "min": 10.878,
+          "max": 20.053,
+          "median": 12.39,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 30.296,
+          "std": 1.363,
+          "min": 28.389,
+          "max": 32.679,
+          "median": 30.327,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 54.103,
+          "std": 3.631,
+          "min": 50.49,
+          "max": 61.115,
+          "median": 52.377,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 55.283,
+          "std": 1.326,
+          "min": 53.686,
+          "max": 57.219,
+          "median": 54.627,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 16.566,
+          "std": 2.539,
+          "min": 14.232,
+          "max": 21.096,
+          "median": 15.1,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 19.863,
+          "std": 4.865,
+          "min": 14.683,
+          "max": 28.111,
+          "median": 19.12,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 4.818,
+          "std": 0.053,
+          "min": 4.737,
+          "max": 4.885,
+          "median": 4.814,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 3.559,
+          "std": 0.072,
+          "min": 3.444,
+          "max": 3.679,
+          "median": 3.548,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 19.471,
+          "std": 5.189,
+          "min": 12.37,
+          "max": 26.079,
+          "median": 20.892,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-2": {
+        "corese": {
+          "mean": 280.081,
+          "std": 8.583,
+          "min": 263.431,
+          "max": 296.889,
+          "median": 279.327,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 56.729,
+          "std": 13.646,
+          "min": 38.945,
+          "max": 77.746,
+          "median": 60.922,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 87.521,
+          "std": 5.623,
+          "min": 75.538,
+          "max": 96.678,
+          "median": 88.938,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 522.575,
+          "std": 8.513,
+          "min": 508.199,
+          "max": 535.164,
+          "median": 522.875,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 552.409,
+          "std": 8.149,
+          "min": 540.224,
+          "max": 567.148,
+          "median": 549.922,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 84.287,
+          "std": 6.062,
+          "min": 73.972,
+          "max": 92.291,
+          "median": 84.989,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 100.758,
+          "std": 12.958,
+          "min": 87.37,
+          "max": 126.765,
+          "median": 93.874,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 33.669,
+          "std": 0.422,
+          "min": 32.656,
+          "max": 34.212,
+          "median": 33.771,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 39.37,
+          "std": 2.573,
+          "min": 36.85,
+          "max": 43.833,
+          "median": 38.531,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 70.288,
+          "std": 8.296,
+          "min": 59.302,
+          "max": 82.733,
+          "median": 68.602,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-3": {
+        "corese": {
+          "mean": 552.95,
+          "std": 18.164,
+          "min": 521.144,
+          "max": 575.677,
+          "median": 560.086,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 82.349,
+          "std": 7.4,
+          "min": 73.107,
+          "max": 97.172,
+          "median": 82.065,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 141.379,
+          "std": 6.397,
+          "min": 129.34,
+          "max": 151.224,
+          "median": 140.884,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1069.238,
+          "std": 15.101,
+          "min": 1042.917,
+          "max": 1101.334,
+          "median": 1068.332,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 1152.728,
+          "std": 22.276,
+          "min": 1123.396,
+          "max": 1192.164,
+          "median": 1145.35,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 160.443,
+          "std": 6.002,
+          "min": 155.253,
+          "max": 171.716,
+          "median": 157.327,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 217.049,
+          "std": 16.284,
+          "min": 197.085,
+          "max": 251.034,
+          "median": 215.483,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 66.759,
+          "std": 0.677,
+          "min": 65.577,
+          "max": 67.982,
+          "median": 66.558,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 79.846,
+          "std": 4.017,
+          "min": 75.935,
+          "max": 89.286,
+          "median": 78.553,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 141.422,
+          "std": 9.779,
+          "min": 128.145,
+          "max": 159.35,
+          "median": 138.309,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-4": {
+        "corese": {
+          "mean": 2327.751,
+          "std": 64.419,
+          "min": 2262.601,
+          "max": 2440.584,
+          "median": 2294.248,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 359.639,
+          "std": 31.587,
+          "min": 321.969,
+          "max": 405.532,
+          "median": 342.755,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 325.691,
+          "std": 5.746,
+          "min": 315.847,
+          "max": 336.264,
+          "median": 326.963,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 4541.036,
+          "std": 38.147,
+          "min": 4483.263,
+          "max": 4592.46,
+          "median": 4535.758,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 4936.665,
+          "std": 54.418,
+          "min": 4867.138,
+          "max": 5054.38,
+          "median": 4924.917,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 676.511,
+          "std": 14.01,
+          "min": 652.912,
+          "max": 697.333,
+          "median": 675.995,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 977.837,
+          "std": 21.018,
+          "min": 944.847,
+          "max": 1012.557,
+          "median": 982.126,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 290.842,
+          "std": 9.26,
+          "min": 274.476,
+          "max": 301.75,
+          "median": 294.426,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 360.138,
+          "std": 10.45,
+          "min": 342.406,
+          "max": 379.036,
+          "median": 359.459,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 584.025,
+          "std": 75.479,
+          "min": 518.523,
+          "max": 734.27,
+          "median": 539.673,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      }
+    },
+    "lubm": {
+      "5": {
+        "corese": {
+          "mean": 283.879,
+          "std": 4.599,
+          "min": 277.457,
+          "max": 291.845,
+          "median": 282.582,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 24.417,
+          "std": 4.503,
+          "min": 19.293,
+          "max": 35.533,
+          "median": 23.194,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 40.095,
+          "std": 2.564,
+          "min": 35.863,
+          "max": 45.049,
+          "median": 39.736,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 366.473,
+          "std": 7.687,
+          "min": 354.765,
+          "max": 379.411,
+          "median": 365.647,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 278.428,
+          "std": 5.998,
+          "min": 271.137,
+          "max": 291.566,
+          "median": 277.161,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 61.489,
+          "std": 6.684,
+          "min": 50.095,
+          "max": 74.583,
+          "median": 62.09,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 46.034,
+          "std": 0.869,
+          "min": 45.255,
+          "max": 48.283,
+          "median": 45.726,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 239.109,
+          "std": 3.304,
+          "min": 231.947,
+          "max": 243.992,
+          "median": 238.579,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 37.873,
+          "std": 2.784,
+          "min": 33.787,
+          "max": 42.537,
+          "median": 38.808,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 30.794,
+          "std": 4.803,
+          "min": 25.844,
+          "max": 39.423,
+          "median": 28.528,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "10": {
+        "corese": {
+          "mean": 310.43,
+          "std": 7.155,
+          "min": 299.267,
+          "max": 322.011,
+          "median": 308.721,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 28.572,
+          "std": 5.934,
+          "min": 22.882,
+          "max": 42.139,
+          "median": 27.316,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 42.669,
+          "std": 2.307,
+          "min": 38.679,
+          "max": 46.888,
+          "median": 43.251,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 403.793,
+          "std": 21.431,
+          "min": 379.842,
+          "max": 437.436,
+          "median": 402.894,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 311.77,
+          "std": 17.262,
+          "min": 295.284,
+          "max": 347.579,
+          "median": 302.102,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 63.473,
+          "std": 6.159,
+          "min": 51.621,
+          "max": 73.986,
+          "median": 63.787,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 51.482,
+          "std": 5.842,
+          "min": 48.41,
+          "max": 68.899,
+          "median": 49.692,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 236.619,
+          "std": 7.267,
+          "min": 221.029,
+          "max": 245.978,
+          "median": 238.079,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 42.041,
+          "std": 4.142,
+          "min": 37.245,
+          "max": 49.207,
+          "median": 40.234,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 32.211,
+          "std": 4.477,
+          "min": 27.581,
+          "max": 40.319,
+          "median": 31.007,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "50": {
+        "corese": {
+          "mean": 308.112,
+          "std": 2.844,
+          "min": 304.713,
+          "max": 314.619,
+          "median": 307.962,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 26.317,
+          "std": 4.084,
+          "min": 21.649,
+          "max": 36.733,
+          "median": 26.002,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 42.647,
+          "std": 2.96,
+          "min": 37.717,
+          "max": 47.319,
+          "median": 42.927,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 390.17,
+          "std": 7.085,
+          "min": 380.964,
+          "max": 401.747,
+          "median": 387.874,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 299.07,
+          "std": 6.23,
+          "min": 290.247,
+          "max": 308.639,
+          "median": 298.182,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 62.742,
+          "std": 6.93,
+          "min": 54.595,
+          "max": 77.826,
+          "median": 61.105,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 49.614,
+          "std": 0.689,
+          "min": 48.7,
+          "max": 50.854,
+          "median": 49.3,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 241.762,
+          "std": 3.665,
+          "min": 233.201,
+          "max": 246.844,
+          "median": 241.707,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 40.074,
+          "std": 3.535,
+          "min": 35.918,
+          "max": 45.182,
+          "median": 38.608,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 33.568,
+          "std": 5.143,
+          "min": 28.079,
+          "max": 42.667,
+          "median": 32.006,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "100": {
+        "corese": {
+          "mean": 310.709,
+          "std": 6.527,
+          "min": 299.73,
+          "max": 320.77,
+          "median": 312.687,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 26.055,
+          "std": 3.78,
+          "min": 22.272,
+          "max": 34.364,
+          "median": 24.829,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 43.292,
+          "std": 1.935,
+          "min": 39.922,
+          "max": 46.047,
+          "median": 43.868,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 390.606,
+          "std": 9.244,
+          "min": 381.145,
+          "max": 412.282,
+          "median": 388.548,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 302.747,
+          "std": 7.274,
+          "min": 292.084,
+          "max": 312.43,
+          "median": 303.752,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 63.268,
+          "std": 7.975,
+          "min": 53.129,
+          "max": 76.088,
+          "median": 61.431,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 49.624,
+          "std": 0.475,
+          "min": 49.113,
+          "max": 50.51,
+          "median": 49.428,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 224.42,
+          "std": 12.211,
+          "min": 210.262,
+          "max": 245.045,
+          "median": 218.777,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 40.007,
+          "std": 2.747,
+          "min": 37.019,
+          "max": 44.795,
+          "median": 39.6,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 32.067,
+          "std": 4.262,
+          "min": 27.805,
+          "max": 40.033,
+          "median": 30.341,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "500": {
+        "corese": {
+          "mean": 311.061,
+          "std": 5.274,
+          "min": 301.771,
+          "max": 320.287,
+          "median": 311.851,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 30.884,
+          "std": 8.649,
+          "min": 22.903,
+          "max": 46.655,
+          "median": 27.021,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 43.398,
+          "std": 3.352,
+          "min": 37.932,
+          "max": 50.857,
+          "median": 42.791,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 387.208,
+          "std": 20.098,
+          "min": 375.514,
+          "max": 446.127,
+          "median": 380.675,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 302.877,
+          "std": 5.973,
+          "min": 294.527,
+          "max": 315.223,
+          "median": 301.995,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 66.038,
+          "std": 6.812,
+          "min": 53.173,
+          "max": 77.225,
+          "median": 64.862,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 48.933,
+          "std": 0.545,
+          "min": 47.922,
+          "max": 49.868,
+          "median": 48.823,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 239.347,
+          "std": 7.114,
+          "min": 223.833,
+          "max": 244.907,
+          "median": 242.476,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 41.481,
+          "std": 2.488,
+          "min": 36.626,
+          "max": 45.208,
+          "median": 42.205,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 33.314,
+          "std": 4.557,
+          "min": 28.074,
+          "max": 40.658,
+          "median": 33.15,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      }
+    }
+  },
+  "validation": {
+    "icdd": {
+      "binary-1": {
+        "corese": {
+          "mean": 10.344,
+          "std": 0.715,
+          "min": 9.307,
+          "max": 11.751,
+          "median": 10.129,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.759,
+          "std": 0.14,
+          "min": 0.59,
+          "max": 0.997,
+          "median": 0.694,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 112.145,
+          "std": 6.359,
+          "min": 98.428,
+          "max": 120.04,
+          "median": 112.629,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.036,
+          "std": 0.154,
+          "min": 0.942,
+          "max": 1.485,
+          "median": 0.999,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.67,
+          "std": 0.029,
+          "min": 0.63,
+          "max": 0.717,
+          "median": 0.666,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.615,
+          "std": 0.305,
+          "min": 3.173,
+          "max": 4.175,
+          "median": 3.538,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 44.938,
+          "std": 5.269,
+          "min": 36.652,
+          "max": 51.659,
+          "median": 44.29,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 0.319,
+          "std": 0.086,
+          "min": 0.271,
+          "max": 0.571,
+          "median": 0.285,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 1.579,
+          "std": 0.104,
+          "min": 1.455,
+          "max": 1.777,
+          "median": 1.556,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.812,
+          "std": 1.829,
+          "min": 6.735,
+          "max": 13.556,
+          "median": 8.379,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-2": {
+        "corese": {
+          "mean": 12.145,
+          "std": 1.973,
+          "min": 9.609,
+          "max": 16.39,
+          "median": 12.028,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.905,
+          "std": 0.149,
+          "min": 0.684,
+          "max": 1.148,
+          "median": 0.827,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 152.493,
+          "std": 13.836,
+          "min": 128.028,
+          "max": 174.262,
+          "median": 151.053,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.322,
+          "std": 0.05,
+          "min": 1.276,
+          "max": 1.444,
+          "median": 1.302,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.878,
+          "std": 0.025,
+          "min": 0.856,
+          "max": 0.922,
+          "median": 0.862,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.777,
+          "std": 0.573,
+          "min": 2.79,
+          "max": 4.84,
+          "median": 3.671,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 58.15,
+          "std": 8.75,
+          "min": 48.933,
+          "max": 75.384,
+          "median": 54.61,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 4.839,
+          "std": 0.209,
+          "min": 4.52,
+          "max": 5.156,
+          "median": 4.917,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 17.887,
+          "std": 0.553,
+          "min": 16.822,
+          "max": 18.908,
+          "median": 17.901,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.949,
+          "std": 1.883,
+          "min": 6.359,
+          "max": 13.286,
+          "median": 8.651,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-3": {
+        "corese": {
+          "mean": 15.468,
+          "std": 2.298,
+          "min": 12.564,
+          "max": 20.095,
+          "median": 15.142,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.958,
+          "std": 0.154,
+          "min": 0.768,
+          "max": 1.317,
+          "median": 0.933,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 254.163,
+          "std": 8.143,
+          "min": 238.681,
+          "max": 263.7,
+          "median": 258.504,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.642,
+          "std": 0.043,
+          "min": 1.586,
+          "max": 1.732,
+          "median": 1.637,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 1.074,
+          "std": 0.031,
+          "min": 1.047,
+          "max": 1.146,
+          "median": 1.061,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.548,
+          "std": 0.319,
+          "min": 3.1,
+          "max": 4.082,
+          "median": 3.622,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 76.787,
+          "std": 5.696,
+          "min": 65.835,
+          "max": 83.209,
+          "median": 79.042,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 10.273,
+          "std": 0.29,
+          "min": 9.743,
+          "max": 10.55,
+          "median": 10.38,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 40.111,
+          "std": 0.657,
+          "min": 38.633,
+          "max": 41.042,
+          "median": 40.023,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.668,
+          "std": 1.518,
+          "min": 6.095,
+          "max": 10.768,
+          "median": 9.017,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "binary-4": {
+        "corese": {
+          "mean": 40.941,
+          "std": 12.169,
+          "min": 29.248,
+          "max": 72.283,
+          "median": 39.103,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 1.178,
+          "std": 0.188,
+          "min": 0.969,
+          "max": 1.56,
+          "median": 1.14,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 13560.993,
+          "std": 95.427,
+          "min": 13429.211,
+          "max": 13743.009,
+          "median": 13541.041,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 3.163,
+          "std": 0.112,
+          "min": 3.041,
+          "max": 3.424,
+          "median": 3.123,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 2.026,
+          "std": 0.044,
+          "min": 1.944,
+          "max": 2.089,
+          "median": 2.02,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.754,
+          "std": 0.222,
+          "min": 3.363,
+          "max": 4.183,
+          "median": 3.715,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 187.067,
+          "std": 14.442,
+          "min": 176.767,
+          "max": 229.348,
+          "median": 183.045,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 45.411,
+          "std": 0.986,
+          "min": 43.964,
+          "max": 47.353,
+          "median": 45.219,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 196.322,
+          "std": 6.472,
+          "min": 185.298,
+          "max": 209.258,
+          "median": 196.452,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 10.167,
+          "std": 1.619,
+          "min": 7.446,
+          "max": 13.117,
+          "median": 10.514,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-1": {
+        "corese": {
+          "mean": 9.735,
+          "std": 1.23,
+          "min": 8.091,
+          "max": 11.434,
+          "median": 9.743,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.621,
+          "std": 0.059,
+          "min": 0.524,
+          "max": 0.721,
+          "median": 0.62,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 108.73,
+          "std": 5.083,
+          "min": 99.964,
+          "max": 119.806,
+          "median": 109.015,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 0.99,
+          "std": 0.028,
+          "min": 0.913,
+          "max": 1.024,
+          "median": 0.998,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.682,
+          "std": 0.026,
+          "min": 0.644,
+          "max": 0.711,
+          "median": 0.681,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.695,
+          "std": 0.56,
+          "min": 3.054,
+          "max": 4.883,
+          "median": 3.551,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 48.056,
+          "std": 5.745,
+          "min": 40.574,
+          "max": 55.755,
+          "median": 47.942,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 0.267,
+          "std": 0.03,
+          "min": 0.241,
+          "max": 0.346,
+          "median": 0.262,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 1.383,
+          "std": 0.091,
+          "min": 1.252,
+          "max": 1.552,
+          "median": 1.365,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.253,
+          "std": 1.187,
+          "min": 6.867,
+          "max": 10.887,
+          "median": 7.853,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-2": {
+        "corese": {
+          "mean": 9.524,
+          "std": 1.218,
+          "min": 7.492,
+          "max": 11.194,
+          "median": 9.607,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.889,
+          "std": 0.194,
+          "min": 0.649,
+          "max": 1.339,
+          "median": 0.865,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 122.048,
+          "std": 8.062,
+          "min": 104.261,
+          "max": 129.054,
+          "median": 126.512,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.094,
+          "std": 0.042,
+          "min": 1.046,
+          "max": 1.172,
+          "median": 1.077,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.731,
+          "std": 0.013,
+          "min": 0.704,
+          "max": 0.754,
+          "median": 0.733,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.489,
+          "std": 0.459,
+          "min": 2.798,
+          "max": 4.105,
+          "median": 3.505,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 57.982,
+          "std": 8.101,
+          "min": 47.54,
+          "max": 71.448,
+          "median": 56.886,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 3.414,
+          "std": 0.086,
+          "min": 3.293,
+          "max": 3.622,
+          "median": 3.397,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 13.342,
+          "std": 0.452,
+          "min": 12.848,
+          "max": 14.278,
+          "median": 13.268,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 9.153,
+          "std": 3.099,
+          "min": 6.12,
+          "max": 16.527,
+          "median": 7.907,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-3": {
+        "corese": {
+          "mean": 11.838,
+          "std": 1.843,
+          "min": 9.161,
+          "max": 15.608,
+          "median": 11.915,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.746,
+          "std": 0.074,
+          "min": 0.628,
+          "max": 0.84,
+          "median": 0.757,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 134.556,
+          "std": 9.779,
+          "min": 120.532,
+          "max": 152.279,
+          "median": 132.481,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.316,
+          "std": 0.03,
+          "min": 1.276,
+          "max": 1.359,
+          "median": 1.323,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.884,
+          "std": 0.033,
+          "min": 0.855,
+          "max": 0.966,
+          "median": 0.872,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.643,
+          "std": 0.334,
+          "min": 3.099,
+          "max": 4.28,
+          "median": 3.615,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 70.828,
+          "std": 9.004,
+          "min": 61.594,
+          "max": 90.592,
+          "median": 68.471,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 8.099,
+          "std": 0.185,
+          "min": 7.808,
+          "max": 8.449,
+          "median": 8.035,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 32.633,
+          "std": 1.22,
+          "min": 31.322,
+          "max": 35.82,
+          "median": 32.56,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.882,
+          "std": 2.225,
+          "min": 5.838,
+          "max": 13.833,
+          "median": 8.402,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directed1ton-4": {
+        "corese": {
+          "mean": 11.572,
+          "std": 1.122,
+          "min": 10.362,
+          "max": 14.007,
+          "median": 11.197,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.786,
+          "std": 0.209,
+          "min": 0.627,
+          "max": 1.391,
+          "median": 0.744,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 265.288,
+          "std": 17.233,
+          "min": 246.677,
+          "max": 296.607,
+          "median": 258.974,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.24,
+          "std": 0.058,
+          "min": 1.123,
+          "max": 1.352,
+          "median": 1.236,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.855,
+          "std": 0.014,
+          "min": 0.834,
+          "max": 0.878,
+          "median": 0.859,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.975,
+          "std": 0.288,
+          "min": 3.55,
+          "max": 4.453,
+          "median": 3.895,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 151.869,
+          "std": 10.728,
+          "min": 134.124,
+          "max": 164.952,
+          "median": 156.362,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 30.436,
+          "std": 0.932,
+          "min": 28.752,
+          "max": 31.797,
+          "median": 30.718,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 133.549,
+          "std": 3.137,
+          "min": 128.113,
+          "max": 139.111,
+          "median": 133.839,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 9.045,
+          "std": 1.58,
+          "min": 6.612,
+          "max": 11.581,
+          "median": 9.488,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-1": {
+        "corese": {
+          "mean": 10.294,
+          "std": 0.789,
+          "min": 9.029,
+          "max": 11.571,
+          "median": 10.188,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.742,
+          "std": 0.106,
+          "min": 0.593,
+          "max": 0.876,
+          "median": 0.718,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 109.293,
+          "std": 8.758,
+          "min": 93.718,
+          "max": 121.765,
+          "median": 111.532,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.044,
+          "std": 0.008,
+          "min": 1.03,
+          "max": 1.06,
+          "median": 1.044,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.714,
+          "std": 0.044,
+          "min": 0.676,
+          "max": 0.833,
+          "median": 0.702,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.531,
+          "std": 0.334,
+          "min": 2.987,
+          "max": 4.198,
+          "median": 3.452,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 47.299,
+          "std": 8.128,
+          "min": 39.096,
+          "max": 61.989,
+          "median": 43.053,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 0.298,
+          "std": 0.026,
+          "min": 0.271,
+          "max": 0.345,
+          "median": 0.287,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 1.532,
+          "std": 0.108,
+          "min": 1.446,
+          "max": 1.739,
+          "median": 1.468,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 10.819,
+          "std": 2.905,
+          "min": 7.133,
+          "max": 16.072,
+          "median": 10.831,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-2": {
+        "corese": {
+          "mean": 11.756,
+          "std": 1.432,
+          "min": 9.706,
+          "max": 14.508,
+          "median": 11.668,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 0.911,
+          "std": 0.105,
+          "min": 0.786,
+          "max": 1.07,
+          "median": 0.887,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 123.212,
+          "std": 7.621,
+          "min": 112.092,
+          "max": 135.437,
+          "median": 120.092,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.337,
+          "std": 0.045,
+          "min": 1.276,
+          "max": 1.424,
+          "median": 1.337,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 0.884,
+          "std": 0.043,
+          "min": 0.836,
+          "max": 1.001,
+          "median": 0.874,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.901,
+          "std": 0.614,
+          "min": 2.899,
+          "max": 4.683,
+          "median": 3.899,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 59.429,
+          "std": 8.104,
+          "min": 49.952,
+          "max": 76.715,
+          "median": 56.416,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 4.706,
+          "std": 0.16,
+          "min": 4.46,
+          "max": 5.044,
+          "median": 4.655,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 18.124,
+          "std": 0.786,
+          "min": 16.904,
+          "max": 19.373,
+          "median": 17.967,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 9.024,
+          "std": 1.875,
+          "min": 6.748,
+          "max": 12.653,
+          "median": 8.384,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-3": {
+        "corese": {
+          "mean": 15.841,
+          "std": 2.524,
+          "min": 13.022,
+          "max": 20.326,
+          "median": 14.798,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 1.043,
+          "std": 0.199,
+          "min": 0.756,
+          "max": 1.364,
+          "median": 1.025,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 135.426,
+          "std": 8.883,
+          "min": 120.362,
+          "max": 153.65,
+          "median": 136.528,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1.693,
+          "std": 0.026,
+          "min": 1.651,
+          "max": 1.723,
+          "median": 1.706,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 1.092,
+          "std": 0.019,
+          "min": 1.066,
+          "max": 1.13,
+          "median": 1.089,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.561,
+          "std": 0.329,
+          "min": 3.159,
+          "max": 4.208,
+          "median": 3.478,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 75.746,
+          "std": 7.099,
+          "min": 65.928,
+          "max": 89.789,
+          "median": 74.725,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 10.256,
+          "std": 0.22,
+          "min": 9.784,
+          "max": 10.623,
+          "median": 10.274,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 40.747,
+          "std": 0.571,
+          "min": 40.234,
+          "max": 42.125,
+          "median": 40.605,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 8.57,
+          "std": 1.657,
+          "min": 6.062,
+          "max": 10.945,
+          "median": 8.538,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "directedbinary-4": {
+        "corese": {
+          "mean": 40.83,
+          "std": 6.392,
+          "min": 31.032,
+          "max": 50.109,
+          "median": 42.998,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 1.247,
+          "std": 0.346,
+          "min": 0.944,
+          "max": 1.997,
+          "median": 1.103,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 434.543,
+          "std": 5.834,
+          "min": 424.985,
+          "max": 443.171,
+          "median": 435.816,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 3.175,
+          "std": 0.095,
+          "min": 3.067,
+          "max": 3.39,
+          "median": 3.171,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 2.039,
+          "std": 0.071,
+          "min": 1.948,
+          "max": 2.164,
+          "median": 2.044,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 3.763,
+          "std": 0.215,
+          "min": 3.452,
+          "max": 4.134,
+          "median": 3.721,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 190.019,
+          "std": 10.161,
+          "min": 177.029,
+          "max": 212.037,
+          "median": 189.072,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 46.499,
+          "std": 1.778,
+          "min": 43.973,
+          "max": 50.402,
+          "median": 46.489,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 197.225,
+          "std": 3.787,
+          "min": 191.571,
+          "max": 204.812,
+          "median": 196.65,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 10.51,
+          "std": 2.166,
+          "min": 7.522,
+          "max": 15.179,
+          "median": 10.249,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      }
+    },
+    "lubm": {
+      "5": {
+        "corese": {
+          "mean": 566.175,
+          "std": 7.568,
+          "min": 554.469,
+          "max": 579.327,
+          "median": 563.92,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 39.281,
+          "std": 11.852,
+          "min": 30.994,
+          "max": 71.989,
+          "median": 34.959,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 263.791,
+          "std": 13.893,
+          "min": 247.864,
+          "max": 296.982,
+          "median": 262.959,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1131.871,
+          "std": 19.741,
+          "min": 1109.66,
+          "max": 1179.898,
+          "median": 1124.964,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 840.444,
+          "std": 9.253,
+          "min": 826.254,
+          "max": 858.408,
+          "median": 839.262,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 35.663,
+          "std": 5.606,
+          "min": 27.044,
+          "max": 45.581,
+          "median": 34.297,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 592.172,
+          "std": 32.524,
+          "min": 549.025,
+          "max": 646.39,
+          "median": 589.514,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 14580.655,
+          "std": 336.799,
+          "min": 14284.679,
+          "max": 15393.878,
+          "median": 14493.064,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 54.428,
+          "std": 0.916,
+          "min": 52.9,
+          "max": 55.69,
+          "median": 54.173,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 64.031,
+          "std": 9.291,
+          "min": 52.743,
+          "max": 82.949,
+          "median": 60.207,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "10": {
+        "corese": {
+          "mean": 598.294,
+          "std": 9.07,
+          "min": 585.057,
+          "max": 615.918,
+          "median": 598.588,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 44.281,
+          "std": 18.332,
+          "min": 30.523,
+          "max": 94.519,
+          "median": 38.486,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 250.239,
+          "std": 10.569,
+          "min": 235.551,
+          "max": 270.547,
+          "median": 247.167,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1213.194,
+          "std": 63.027,
+          "min": 1145.441,
+          "max": 1318.199,
+          "median": 1184.531,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 899.576,
+          "std": 41.333,
+          "min": 841.887,
+          "max": 962.328,
+          "median": 891.509,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 37.397,
+          "std": 7.414,
+          "min": 24.467,
+          "max": 51.715,
+          "median": 36.013,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 557.464,
+          "std": 19.82,
+          "min": 522.591,
+          "max": 587.96,
+          "median": 559.695,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 16689.285,
+          "std": 361.576,
+          "min": 16181.532,
+          "max": 17208.245,
+          "median": 16686.842,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 63.686,
+          "std": 2.308,
+          "min": 60.204,
+          "max": 67.97,
+          "median": 63.007,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 65.716,
+          "std": 8.22,
+          "min": 57.041,
+          "max": 83.792,
+          "median": 62.772,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "50": {
+        "corese": {
+          "mean": 619.755,
+          "std": 18.353,
+          "min": 595.739,
+          "max": 645.601,
+          "median": 616.395,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 43.246,
+          "std": 13.001,
+          "min": 30.364,
+          "max": 74.838,
+          "median": 39.909,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 260.676,
+          "std": 16.53,
+          "min": 233.823,
+          "max": 295.058,
+          "median": 259.839,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1181.358,
+          "std": 19.522,
+          "min": 1151.462,
+          "max": 1215.822,
+          "median": 1177.152,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 877.963,
+          "std": 19.867,
+          "min": 843.812,
+          "max": 911.986,
+          "median": 882.53,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 35.056,
+          "std": 8.403,
+          "min": 24.621,
+          "max": 54.073,
+          "median": 33.652,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 573.399,
+          "std": 13.18,
+          "min": 550.11,
+          "max": 588.846,
+          "median": 577.324,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 16505.689,
+          "std": 358.153,
+          "min": 16156.108,
+          "max": 17202.28,
+          "median": 16335.588,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 60.371,
+          "std": 1.247,
+          "min": 58.684,
+          "max": 63.179,
+          "median": 60.125,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 67.828,
+          "std": 8.959,
+          "min": 55.175,
+          "max": 82.803,
+          "median": 65.512,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "100": {
+        "corese": {
+          "mean": 602.966,
+          "std": 10.148,
+          "min": 584.67,
+          "max": 617.397,
+          "median": 604.242,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 40.128,
+          "std": 10.105,
+          "min": 31.061,
+          "max": 64.947,
+          "median": 36.449,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 253.39,
+          "std": 14.943,
+          "min": 228.936,
+          "max": 269.096,
+          "median": 256.616,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1194.692,
+          "std": 20.692,
+          "min": 1172.293,
+          "max": 1245.887,
+          "median": 1189.332,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 887.117,
+          "std": 12.822,
+          "min": 865.031,
+          "max": 908.22,
+          "median": 891.504,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 31.276,
+          "std": 6.351,
+          "min": 23.352,
+          "max": 46.504,
+          "median": 30.038,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 601.136,
+          "std": 21.556,
+          "min": 562.416,
+          "max": 637.866,
+          "median": 599.19,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 16392.743,
+          "std": 238.632,
+          "min": 16150.159,
+          "max": 16791.272,
+          "median": 16305.192,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 60.95,
+          "std": 0.831,
+          "min": 59.608,
+          "max": 62.181,
+          "median": 61.022,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 65.88,
+          "std": 9.199,
+          "min": 54.061,
+          "max": 82.295,
+          "median": 62.201,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      },
+      "500": {
+        "corese": {
+          "mean": 599.101,
+          "std": 4.491,
+          "min": 593.506,
+          "max": 607.341,
+          "median": 598.517,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "jena": {
+          "mean": 44.357,
+          "std": 13.408,
+          "min": 32.26,
+          "max": 73.669,
+          "median": 38.091,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "maplib": {
+          "mean": 258.432,
+          "std": 12.534,
+          "min": 234.939,
+          "max": 274.263,
+          "median": 261.254,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl": {
+          "mean": 1182.217,
+          "std": 27.506,
+          "min": 1143.069,
+          "max": 1244.597,
+          "median": 1177.611,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "pyshacl_n": {
+          "mean": 872.448,
+          "std": 19.761,
+          "min": 846.937,
+          "max": 905.155,
+          "median": 861.58,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdf4j": {
+          "mean": 34.089,
+          "std": 4.431,
+          "min": 26.338,
+          "max": 41.552,
+          "median": 34.263,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rdfunit": {
+          "mean": 565.514,
+          "std": 35.852,
+          "min": 521.203,
+          "max": 649.074,
+          "median": 559.01,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v1": {
+          "mean": 16329.545,
+          "std": 183.539,
+          "min": 15949.997,
+          "max": 16619.876,
+          "median": 16291.187,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "rudof_v2": {
+          "mean": 60.914,
+          "std": 0.81,
+          "min": 59.678,
+          "max": 62.842,
+          "median": 60.781,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        },
+        "topbraid": {
+          "mean": 66.678,
+          "std": 8.769,
+          "min": 57.229,
+          "max": 82.897,
+          "median": 65.434,
+          "count": 10,
+          "totalIters": 10,
+          "status": "SUCCESS",
+          "counts": {
+            "OK": 10
+          }
+        }
+      }
+    }
+  }
+}

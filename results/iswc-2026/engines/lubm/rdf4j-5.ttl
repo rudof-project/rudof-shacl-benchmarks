@@ -1,0 +1,4 @@
+
+_:226a46475b57db4393841259c7c3b9a51a01 a <http://www.w3.org/ns/shacl#ValidationReport>;
+  <http://www.w3.org/ns/shacl#conforms> true;
+  <http://rdf4j.org/schema/rdf4j#truncated> false .
