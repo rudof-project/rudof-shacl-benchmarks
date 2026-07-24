@@ -1,0 +1,28 @@
+<urn:uuid:71b7ee6d-2e0c-11b2-804f-02ffcb639822>
+        a       <http://rdfunit.aksw.org/ns/core#TestExecution> , <http://www.w3.org/ns/shacl#ValidationReport> , <http://www.w3.org/ns/prov#Activity> ;
+        <http://rdfunit.aksw.org/ns/core#executionType>
+                "shaclTestCaseResult" ;
+        <http://rdfunit.aksw.org/ns/core#source>
+                <custom> ;
+        <http://rdfunit.aksw.org/ns/core#testsError>
+                "0"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://rdfunit.aksw.org/ns/core#testsFailed>
+                "0"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://rdfunit.aksw.org/ns/core#testsRun>
+                "139"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://rdfunit.aksw.org/ns/core#testsSuceedded>
+                "139"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://rdfunit.aksw.org/ns/core#testsTimeout>
+                "0"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://rdfunit.aksw.org/ns/core#totalIndividualErrors>
+                "0"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+        <http://www.w3.org/ns/prov#endedAtTime>
+                "2026-07-17T11:24:40.046Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://www.w3.org/ns/prov#startedAtTime>
+                "2026-07-17T11:24:39.598Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://www.w3.org/ns/prov#wasAssociatedWith>
+                </home/alvaro/repos/rudof-shacl-benchmarks/data/dist/lubm/shapes.ttl> ;
+        <http://www.w3.org/ns/prov#wasStartedBy>
+                <http://localhost/> ;
+        <http://www.w3.org/ns/shacl#conforms>
+                true .
