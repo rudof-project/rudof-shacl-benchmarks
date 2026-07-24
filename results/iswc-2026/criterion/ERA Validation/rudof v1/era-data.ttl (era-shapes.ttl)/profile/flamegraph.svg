@@ -1,0 +1,491 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" width="1200" height="582" onload="init(evt)" viewBox="0 0 1200 582" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:fg="http://github.com/jonhoo/inferno"><!--Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples.--><!--NOTES: --><defs><linearGradient id="background" y1="0" y2="1" x1="0" x2="0"><stop stop-color="#eeeeee" offset="5%"/><stop stop-color="#eeeeb0" offset="95%"/></linearGradient></defs><style type="text/css">
+text { font-family:monospace; font-size:12px }
+#title { text-anchor:middle; font-size:17px; }
+#matched { text-anchor:end; }
+#search { text-anchor:end; opacity:0.1; cursor:pointer; }
+#search:hover, #search.show { opacity:1; }
+#subtitle { text-anchor:middle; font-color:rgb(160,160,160); }
+#unzoom { cursor:pointer; }
+#frames > *:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+.hide { display:none; }
+.parent { opacity:0.5; }
+</style><script type="text/ecmascript"><![CDATA[
+        var nametype = 'Function:';
+        var fontsize = 12;
+        var fontwidth = 0.59;
+        var xpad = 10;
+        var inverted = false;
+        var searchcolor = 'rgb(230,0,230)';
+        var fluiddrawing = true;
+        var truncate_text_right = false;
+    ]]><![CDATA["use strict";
+var details, searchbtn, unzoombtn, matchedtxt, svg, searching, frames, known_font_width;
+function init(evt) {
+    details = document.getElementById("details").firstChild;
+    searchbtn = document.getElementById("search");
+    unzoombtn = document.getElementById("unzoom");
+    matchedtxt = document.getElementById("matched");
+    svg = document.getElementsByTagName("svg")[0];
+    frames = document.getElementById("frames");
+    known_font_width = get_monospace_width(frames);
+    total_samples = parseInt(frames.attributes.total_samples.value);
+    searching = 0;
+
+    // Use GET parameters to restore a flamegraph's state.
+    var restore_state = function() {
+        var params = get_params();
+        if (params.x && params.y)
+            zoom(find_group(document.querySelector('[*|x="' + params.x + '"][y="' + params.y + '"]')));
+        if (params.s)
+            search(params.s);
+    };
+
+    if (fluiddrawing) {
+        // Make width dynamic so the SVG fits its parent's width.
+        svg.removeAttribute("width");
+        // Edge requires us to have a viewBox that gets updated with size changes.
+        var isEdge = /Edge\/\d./i.test(navigator.userAgent);
+        if (!isEdge) {
+            svg.removeAttribute("viewBox");
+        }
+        var update_for_width_change = function() {
+            if (isEdge) {
+                svg.attributes.viewBox.value = "0 0 " + svg.width.baseVal.value + " " + svg.height.baseVal.value;
+            }
+
+            // Keep consistent padding on left and right of frames container.
+            frames.attributes.width.value = svg.width.baseVal.value - xpad * 2;
+
+            // Text truncation needs to be adjusted for the current width.
+            update_text_for_elements(frames.children);
+
+            // Keep search elements at a fixed distance from right edge.
+            var svgWidth = svg.width.baseVal.value;
+            searchbtn.attributes.x.value = svgWidth - xpad;
+            matchedtxt.attributes.x.value = svgWidth - xpad;
+        };
+        window.addEventListener('resize', function() {
+            update_for_width_change();
+        });
+        // This needs to be done asynchronously for Safari to work.
+        setTimeout(function() {
+            unzoom();
+            update_for_width_change();
+            restore_state();
+        }, 0);
+    } else {
+        restore_state();
+    }
+}
+// event listeners
+window.addEventListener("click", function(e) {
+    var target = find_group(e.target);
+    if (target) {
+        if (target.nodeName == "a") {
+            if (e.ctrlKey === false) return;
+            e.preventDefault();
+        }
+        if (target.classList.contains("parent")) unzoom();
+        zoom(target);
+
+        // set parameters for zoom state
+        var el = target.querySelector("rect");
+        if (el && el.attributes && el.attributes.y && el.attributes["fg:x"]) {
+            var params = get_params()
+            params.x = el.attributes["fg:x"].value;
+            params.y = el.attributes.y.value;
+            history.replaceState(null, null, parse_params(params));
+        }
+    }
+    else if (e.target.id == "unzoom") {
+        unzoom();
+
+        // remove zoom state
+        var params = get_params();
+        if (params.x) delete params.x;
+        if (params.y) delete params.y;
+        history.replaceState(null, null, parse_params(params));
+    }
+    else if (e.target.id == "search") search_prompt();
+}, false)
+// mouse-over for info
+// show
+window.addEventListener("mouseover", function(e) {
+    var target = find_group(e.target);
+    if (target) details.nodeValue = nametype + " " + g_to_text(target);
+}, false)
+// clear
+window.addEventListener("mouseout", function(e) {
+    var target = find_group(e.target);
+    if (target) details.nodeValue = ' ';
+}, false)
+// ctrl-F for search
+window.addEventListener("keydown",function (e) {
+    if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+        e.preventDefault();
+        search_prompt();
+    }
+}, false)
+// functions
+function get_params() {
+    var params = {};
+    var paramsarr = window.location.search.substr(1).split('&');
+    for (var i = 0; i < paramsarr.length; ++i) {
+        var tmp = paramsarr[i].split("=");
+        if (!tmp[0] || !tmp[1]) continue;
+        params[tmp[0]]  = decodeURIComponent(tmp[1]);
+    }
+    return params;
+}
+function parse_params(params) {
+    var uri = "?";
+    for (var key in params) {
+        uri += key + '=' + encodeURIComponent(params[key]) + '&';
+    }
+    if (uri.slice(-1) == "&")
+        uri = uri.substring(0, uri.length - 1);
+    if (uri == '?')
+        uri = window.location.href.split('?')[0];
+    return uri;
+}
+function find_child(node, selector) {
+    var children = node.querySelectorAll(selector);
+    if (children.length) return children[0];
+    return;
+}
+function find_group(node) {
+    var parent = node.parentElement;
+    if (!parent) return;
+    if (parent.id == "frames") return node;
+    return find_group(parent);
+}
+function orig_save(e, attr, val) {
+    if (e.attributes["fg:orig_" + attr] != undefined) return;
+    if (e.attributes[attr] == undefined) return;
+    if (val == undefined) val = e.attributes[attr].value;
+    e.setAttribute("fg:orig_" + attr, val);
+}
+function orig_load(e, attr) {
+    if (e.attributes["fg:orig_"+attr] == undefined) return;
+    e.attributes[attr].value = e.attributes["fg:orig_" + attr].value;
+    e.removeAttribute("fg:orig_" + attr);
+}
+function g_to_text(e) {
+    var text = find_child(e, "title").firstChild.nodeValue;
+    return (text)
+}
+function g_to_func(e) {
+    var func = g_to_text(e);
+    // if there's any manipulation we want to do to the function
+    // name before it's searched, do it here before returning.
+    return (func);
+}
+function get_monospace_width(frames) {
+    // Given the id="frames" element, return the width of text characters if
+    // this is a monospace font, otherwise return 0.
+    text = find_child(frames.children[0], "text");
+    originalContent = text.textContent;
+    text.textContent = "!";
+    bangWidth = text.getComputedTextLength();
+    text.textContent = "W";
+    wWidth = text.getComputedTextLength();
+    text.textContent = originalContent;
+    if (bangWidth === wWidth) {
+        return bangWidth;
+    } else {
+        return 0;
+    }
+}
+function update_text_for_elements(elements) {
+    // In order to render quickly in the browser, you want to do one pass of
+    // reading attributes, and one pass of mutating attributes. See
+    // https://web.dev/avoid-large-complex-layouts-and-layout-thrashing/ for details.
+
+    // Fall back to inefficient calculation, if we're variable-width font.
+    // TODO This should be optimized somehow too.
+    if (known_font_width === 0) {
+        for (var i = 0; i < elements.length; i++) {
+            update_text(elements[i]);
+        }
+        return;
+    }
+
+    var textElemNewAttributes = [];
+    for (var i = 0; i < elements.length; i++) {
+        var e = elements[i];
+        var r = find_child(e, "rect");
+        var t = find_child(e, "text");
+        var w = parseFloat(r.attributes.width.value) * frames.attributes.width.value / 100 - 3;
+        var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+        var newX = format_percent((parseFloat(r.attributes.x.value) + (100 * 3 / frames.attributes.width.value)));
+
+        // Smaller than this size won't fit anything
+        if (w < 2 * known_font_width) {
+            textElemNewAttributes.push([newX, ""]);
+            continue;
+        }
+
+        // Fit in full text width
+        if (txt.length * known_font_width < w) {
+            textElemNewAttributes.push([newX, txt]);
+            continue;
+        }
+
+        var substringLength = Math.floor(w / known_font_width) - 2;
+        if (truncate_text_right) {
+            // Truncate the right side of the text.
+            textElemNewAttributes.push([newX, txt.substring(0, substringLength) + ".."]);
+            continue;
+        } else {
+            // Truncate the left side of the text.
+            textElemNewAttributes.push([newX, ".." + txt.substring(txt.length - substringLength, txt.length)]);
+            continue;
+        }
+    }
+
+    console.assert(textElemNewAttributes.length === elements.length, "Resize failed, please file a bug at https://github.com/jonhoo/inferno/");
+
+    // Now that we know new textContent, set it all in one go so we don't refresh a bazillion times.
+    for (var i = 0; i < elements.length; i++) {
+        var e = elements[i];
+        var values = textElemNewAttributes[i];
+        var t = find_child(e, "text");
+        t.attributes.x.value = values[0];
+        t.textContent = values[1];
+    }
+}
+
+function update_text(e) {
+    var r = find_child(e, "rect");
+    var t = find_child(e, "text");
+    var w = parseFloat(r.attributes.width.value) * frames.attributes.width.value / 100 - 3;
+    var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+    t.attributes.x.value = format_percent((parseFloat(r.attributes.x.value) + (100 * 3 / frames.attributes.width.value)));
+
+    // Smaller than this size won't fit anything
+    if (w < 2 * fontsize * fontwidth) {
+        t.textContent = "";
+        return;
+    }
+    t.textContent = txt;
+    // Fit in full text width
+    if (t.getComputedTextLength() < w)
+        return;
+    if (truncate_text_right) {
+        // Truncate the right side of the text.
+        for (var x = txt.length - 2; x > 0; x--) {
+            if (t.getSubStringLength(0, x + 2) <= w) {
+                t.textContent = txt.substring(0, x) + "..";
+                return;
+            }
+        }
+    } else {
+        // Truncate the left side of the text.
+        for (var x = 2; x < txt.length; x++) {
+            if (t.getSubStringLength(x - 2, txt.length) <= w) {
+                t.textContent = ".." + txt.substring(x, txt.length);
+                return;
+            }
+        }
+    }
+    t.textContent = "";
+}
+// zoom
+function zoom_reset(e) {
+    if (e.tagName == "rect") {
+        e.attributes.x.value = format_percent(100 * parseInt(e.attributes["fg:x"].value) / total_samples);
+        e.attributes.width.value = format_percent(100 * parseInt(e.attributes["fg:w"].value) / total_samples);
+    }
+    if (e.childNodes == undefined) return;
+    for(var i = 0, c = e.childNodes; i < c.length; i++) {
+        zoom_reset(c[i]);
+    }
+}
+function zoom_child(e, x, zoomed_width_samples) {
+    if (e.tagName == "text") {
+        var parent_x = parseFloat(find_child(e.parentNode, "rect[x]").attributes.x.value);
+        e.attributes.x.value = format_percent(parent_x + (100 * 3 / frames.attributes.width.value));
+    } else if (e.tagName == "rect") {
+        e.attributes.x.value = format_percent(100 * (parseInt(e.attributes["fg:x"].value) - x) / zoomed_width_samples);
+        e.attributes.width.value = format_percent(100 * parseInt(e.attributes["fg:w"].value) / zoomed_width_samples);
+    }
+    if (e.childNodes == undefined) return;
+    for(var i = 0, c = e.childNodes; i < c.length; i++) {
+        zoom_child(c[i], x, zoomed_width_samples);
+    }
+}
+function zoom_parent(e) {
+    if (e.attributes) {
+        if (e.attributes.x != undefined) {
+            e.attributes.x.value = "0.0%";
+        }
+        if (e.attributes.width != undefined) {
+            e.attributes.width.value = "100.0%";
+        }
+    }
+    if (e.childNodes == undefined) return;
+    for(var i = 0, c = e.childNodes; i < c.length; i++) {
+        zoom_parent(c[i]);
+    }
+}
+function zoom(node) {
+    var attr = find_child(node, "rect").attributes;
+    var width = parseInt(attr["fg:w"].value);
+    var xmin = parseInt(attr["fg:x"].value);
+    var xmax = xmin + width;
+    var ymin = parseFloat(attr.y.value);
+    unzoombtn.classList.remove("hide");
+    var el = frames.children;
+    var to_update_text = [];
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
+        var a = find_child(e, "rect").attributes;
+        var ex = parseInt(a["fg:x"].value);
+        var ew = parseInt(a["fg:w"].value);
+        // Is it an ancestor
+        if (!inverted) {
+            var upstack = parseFloat(a.y.value) > ymin;
+        } else {
+            var upstack = parseFloat(a.y.value) < ymin;
+        }
+        if (upstack) {
+            // Direct ancestor
+            if (ex <= xmin && (ex+ew) >= xmax) {
+                e.classList.add("parent");
+                zoom_parent(e);
+                to_update_text.push(e);
+            }
+            // not in current path
+            else
+                e.classList.add("hide");
+        }
+        // Children maybe
+        else {
+            // no common path
+            if (ex < xmin || ex >= xmax) {
+                e.classList.add("hide");
+            }
+            else {
+                zoom_child(e, xmin, width);
+                to_update_text.push(e);
+            }
+        }
+    }
+    update_text_for_elements(to_update_text);
+}
+function unzoom() {
+    unzoombtn.classList.add("hide");
+    var el = frames.children;
+    for(var i = 0; i < el.length; i++) {
+        el[i].classList.remove("parent");
+        el[i].classList.remove("hide");
+        zoom_reset(el[i]);
+    }
+    update_text_for_elements(el);
+}
+// search
+function reset_search() {
+    var el = document.querySelectorAll("#frames rect");
+    for (var i = 0; i < el.length; i++) {
+        orig_load(el[i], "fill")
+    }
+    var params = get_params();
+    delete params.s;
+    history.replaceState(null, null, parse_params(params));
+}
+function search_prompt() {
+    if (!searching) {
+        var term = prompt("Enter a search term (regexp " +
+            "allowed, eg: ^ext4_)", "");
+        if (term != null) {
+            search(term)
+        }
+    } else {
+        reset_search();
+        searching = 0;
+        searchbtn.classList.remove("show");
+        searchbtn.firstChild.nodeValue = "Search"
+        matchedtxt.classList.add("hide");
+        matchedtxt.firstChild.nodeValue = ""
+    }
+}
+function search(term) {
+    var re = new RegExp(term);
+    var el = frames.children;
+    var matches = new Object();
+    var maxwidth = 0;
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
+        // Skip over frames which are either not visible, or below the zoomed-to frame
+        if (e.classList.contains("hide") || e.classList.contains("parent")) {
+            continue;
+        }
+        var func = g_to_func(e);
+        var rect = find_child(e, "rect");
+        if (func == null || rect == null)
+            continue;
+        // Save max width. Only works as we have a root frame
+        var w = parseInt(rect.attributes["fg:w"].value);
+        if (w > maxwidth)
+            maxwidth = w;
+        if (func.match(re)) {
+            // highlight
+            var x = parseInt(rect.attributes["fg:x"].value);
+            orig_save(rect, "fill");
+            rect.attributes.fill.value = searchcolor;
+            // remember matches
+            if (matches[x] == undefined) {
+                matches[x] = w;
+            } else {
+                if (w > matches[x]) {
+                    // overwrite with parent
+                    matches[x] = w;
+                }
+            }
+            searching = 1;
+        }
+    }
+    if (!searching)
+        return;
+    var params = get_params();
+    params.s = term;
+    history.replaceState(null, null, parse_params(params));
+
+    searchbtn.classList.add("show");
+    searchbtn.firstChild.nodeValue = "Reset Search";
+    // calculate percent matched, excluding vertical overlap
+    var count = 0;
+    var lastx = -1;
+    var lastw = 0;
+    var keys = Array();
+    for (k in matches) {
+        if (matches.hasOwnProperty(k))
+            keys.push(k);
+    }
+    // sort the matched frames by their x location
+    // ascending, then width descending
+    keys.sort(function(a, b){
+        return a - b;
+    });
+    // Step through frames saving only the biggest bottom-up frames
+    // thanks to the sort order. This relies on the tree property
+    // where children are always smaller than their parents.
+    for (var k in keys) {
+        var x = parseInt(keys[k]);
+        var w = matches[keys[k]];
+        if (x >= lastx + lastw) {
+            count += w;
+            lastx = x;
+            lastw = w;
+        }
+    }
+    // display matched percent
+    matchedtxt.classList.remove("hide");
+    var pct = 100 * count / maxwidth;
+    if (pct != 100) pct = pct.toFixed(1);
+    matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+}
+function format_percent(n) {
+    return n.toFixed(4) + "%";
+}
+]]></script><rect x="0" y="0" width="100%" height="582" fill="url(#background)"/><text id="title" fill="rgb(0,0,0)" x="50.0000%" y="24.00">Flame Graph</text><text id="details" fill="rgb(0,0,0)" x="10" y="565.00"> </text><text id="unzoom" class="hide" fill="rgb(0,0,0)" x="10" y="24.00">Reset Zoom</text><text id="search" fill="rgb(0,0,0)" x="1190" y="24.00">Search</text><text id="matched" fill="rgb(0,0,0)" x="1190" y="565.00"> </text><svg id="frames" x="10" width="1180" total_samples="27808"><g><title>oxiri::IriParser&lt;O,_&gt;::parse_authority (3 samples, 0.01%)</title><rect x="0.0144%" y="165" width="0.0108%" height="15" fill="rgb(230,163,18)" fg:x="4" fg:w="3"/><text x="0.2644%" y="175.50"></text></g><g><title>oxttl::lexer::N3Lexer::recognize_iri (8 samples, 0.03%)</title><rect x="0.0144%" y="197" width="0.0288%" height="15" fill="rgb(216,125,14)" fg:x="4" fg:w="8"/><text x="0.2644%" y="207.50"></text></g><g><title>oxiri::Iri&lt;T&gt;::resolve (8 samples, 0.03%)</title><rect x="0.0144%" y="181" width="0.0288%" height="15" fill="rgb(218,130,14)" fg:x="4" fg:w="8"/><text x="0.2644%" y="191.50"></text></g><g><title>oxiri::IriParser&lt;O,_&gt;::parse_path (5 samples, 0.02%)</title><rect x="0.0252%" y="165" width="0.0180%" height="15" fill="rgb(222,16,37)" fg:x="7" fg:w="5"/><text x="0.2752%" y="175.50"></text></g><g><title>&lt;oxttl::lexer::N3Lexer as oxttl::toolkit::lexer::TokenRecognizer&gt;::recognize_next_token (12 samples, 0.04%)</title><rect x="0.0108%" y="213" width="0.0432%" height="15" fill="rgb(240,82,26)" fg:x="3" fg:w="12"/><text x="0.2608%" y="223.50"></text></g><g><title>oxttl::lexer::N3Lexer::recognize_optional_pn_local (3 samples, 0.01%)</title><rect x="0.0432%" y="197" width="0.0108%" height="15" fill="rgb(231,80,23)" fg:x="12" fg:w="3"/><text x="0.2932%" y="207.50"></text></g><g><title>&lt;oxttl::turtle::ReaderTurtleParser&lt;R&gt; as core::iter::traits::iterator::Iterator&gt;::next (15 samples, 0.05%)</title><rect x="0.0036%" y="261" width="0.0539%" height="15" fill="rgb(221,77,0)" fg:x="1" fg:w="15"/><text x="0.2536%" y="271.50"></text></g><g><title>&lt;oxttl::toolkit::parser::ReaderIterator&lt;R,RR&gt; as core::iter::traits::iterator::Iterator&gt;::next (15 samples, 0.05%)</title><rect x="0.0036%" y="245" width="0.0539%" height="15" fill="rgb(223,165,30)" fg:x="1" fg:w="15"/><text x="0.2536%" y="255.50"></text></g><g><title>oxttl::toolkit::lexer::Lexer&lt;B,R&gt;::parse_next (13 samples, 0.05%)</title><rect x="0.0108%" y="229" width="0.0467%" height="15" fill="rgb(218,114,12)" fg:x="3" fg:w="13"/><text x="0.2608%" y="239.50"></text></g><g><title>oxrdf::dataset::Dataset::insert_encoded (16 samples, 0.06%)</title><rect x="0.0575%" y="261" width="0.0575%" height="15" fill="rgb(251,157,21)" fg:x="16" fg:w="16"/><text x="0.3075%" y="271.50"></text></g><g><title>alloc::collections::btree::map::BTreeMap&lt;K,V,A&gt;::insert (15 samples, 0.05%)</title><rect x="0.0611%" y="245" width="0.0539%" height="15" fill="rgb(207,108,18)" fg:x="17" fg:w="15"/><text x="0.3111%" y="255.50"></text></g><g><title>alloc::collections::btree::search::&lt;impl alloc::collections::btree::node::NodeRef&lt;BorrowType,K,V,alloc::collections::btree::node::marker::LeafOrInternal&gt;&gt;::search_tree (13 samples, 0.05%)</title><rect x="0.0683%" y="229" width="0.0467%" height="15" fill="rgb(243,122,40)" fg:x="19" fg:w="13"/><text x="0.3183%" y="239.50"></text></g><g><title>&lt;rudof_v1::rudof::RudofV1Engine as common::rudof::RudofEngine&gt;::load_data (36 samples, 0.13%)</title><rect x="0.0000%" y="325" width="0.1295%" height="15" fill="rgb(205,46,32)" fg:x="0" fg:w="36"/><text x="0.2500%" y="335.50"></text></g><g><title>rudof_lib::rudof::Rudof::read_data (36 samples, 0.13%)</title><rect x="0.0000%" y="309" width="0.1295%" height="15" fill="rgb(233,182,29)" fg:x="0" fg:w="36"/><text x="0.2500%" y="319.50"></text></g><g><title>sparql_service::srdf_data::rdf_data::RdfData::merge_from_reader (36 samples, 0.13%)</title><rect x="0.0000%" y="293" width="0.1295%" height="15" fill="rgb(241,109,13)" fg:x="0" fg:w="36"/><text x="0.2500%" y="303.50"></text></g><g><title>srdf::srdf_graph::srdfgraph::SRDFGraph::merge_from_reader (36 samples, 0.13%)</title><rect x="0.0000%" y="277" width="0.1295%" height="15" fill="rgb(216,112,26)" fg:x="0" fg:w="36"/><text x="0.2500%" y="287.50"></text></g><g><title>oxrdf::dataset::GraphViewMut::encode_triple (4 samples, 0.01%)</title><rect x="0.1151%" y="261" width="0.0144%" height="15" fill="rgb(246,159,10)" fg:x="32" fg:w="4"/><text x="0.3651%" y="271.50"></text></g><g><title>oxrdf::interning::Interner::get_or_intern (3 samples, 0.01%)</title><rect x="0.1187%" y="245" width="0.0108%" height="15" fill="rgb(244,47,5)" fg:x="33" fg:w="3"/><text x="0.3687%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (3 samples, 0.01%)</title><rect x="0.1331%" y="213" width="0.0108%" height="15" fill="rgb(220,139,25)" fg:x="37" fg:w="3"/><text x="0.3831%" y="223.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (3 samples, 0.01%)</title><rect x="0.1331%" y="197" width="0.0108%" height="15" fill="rgb(206,63,9)" fg:x="37" fg:w="3"/><text x="0.3831%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.1331%" y="181" width="0.0108%" height="15" fill="rgb(220,178,20)" fg:x="37" fg:w="3"/><text x="0.3831%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.1331%" y="165" width="0.0108%" height="15" fill="rgb(219,123,23)" fg:x="37" fg:w="3"/><text x="0.3831%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.1331%" y="149" width="0.0108%" height="15" fill="rgb(211,10,37)" fg:x="37" fg:w="3"/><text x="0.3831%" y="159.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (49 samples, 0.18%)</title><rect x="0.1546%" y="117" width="0.1762%" height="15" fill="rgb(232,12,53)" fg:x="43" fg:w="49"/><text x="0.4046%" y="127.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (17 samples, 0.06%)</title><rect x="0.2697%" y="101" width="0.0611%" height="15" fill="rgb(208,106,30)" fg:x="75" fg:w="17"/><text x="0.5197%" y="111.50"></text></g><g><title>oxrdf::interning::InternedLiteral::decode_from (8 samples, 0.03%)</title><rect x="0.3021%" y="85" width="0.0288%" height="15" fill="rgb(223,200,40)" fg:x="84" fg:w="8"/><text x="0.5521%" y="95.50"></text></g><g><title>__rustc::__rdl_alloc (3 samples, 0.01%)</title><rect x="0.4495%" y="101" width="0.0108%" height="15" fill="rgb(215,136,25)" fg:x="125" fg:w="3"/><text x="0.6995%" y="111.50"></text></g><g><title>core::ops::function::FnMut::call_mut (38 samples, 0.14%)</title><rect x="0.3308%" y="117" width="0.1367%" height="15" fill="rgb(215,97,50)" fg:x="92" fg:w="38"/><text x="0.5808%" y="127.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Map&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (98 samples, 0.35%)</title><rect x="0.1438%" y="213" width="0.3524%" height="15" fill="rgb(241,160,53)" fg:x="40" fg:w="98"/><text x="0.3938%" y="223.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (98 samples, 0.35%)</title><rect x="0.1438%" y="197" width="0.3524%" height="15" fill="rgb(213,2,45)" fg:x="40" fg:w="98"/><text x="0.3938%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (98 samples, 0.35%)</title><rect x="0.1438%" y="181" width="0.3524%" height="15" fill="rgb(240,158,23)" fg:x="40" fg:w="98"/><text x="0.3938%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (98 samples, 0.35%)</title><rect x="0.1438%" y="165" width="0.3524%" height="15" fill="rgb(224,124,51)" fg:x="40" fg:w="98"/><text x="0.3938%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (98 samples, 0.35%)</title><rect x="0.1438%" y="149" width="0.3524%" height="15" fill="rgb(225,182,16)" fg:x="40" fg:w="98"/><text x="0.3938%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (98 samples, 0.35%)</title><rect x="0.1438%" y="133" width="0.3524%" height="15" fill="rgb(229,40,19)" fg:x="40" fg:w="98"/><text x="0.3938%" y="143.50"></text></g><g><title>core::ptr::drop_in_place&lt;oxrdf::triple::Triple&gt; (8 samples, 0.03%)</title><rect x="0.4675%" y="117" width="0.0288%" height="15" fill="rgb(207,183,54)" fg:x="130" fg:w="8"/><text x="0.7175%" y="127.50"></text></g><g><title>oxrdf::interning::InternedBlankNode::decode_from (4 samples, 0.01%)</title><rect x="0.5286%" y="117" width="0.0144%" height="15" fill="rgb(231,138,33)" fg:x="147" fg:w="4"/><text x="0.7786%" y="127.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (23 samples, 0.08%)</title><rect x="0.4999%" y="133" width="0.0827%" height="15" fill="rgb(220,80,45)" fg:x="139" fg:w="23"/><text x="0.7499%" y="143.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (11 samples, 0.04%)</title><rect x="0.5430%" y="117" width="0.0396%" height="15" fill="rgb(216,209,23)" fg:x="151" fg:w="11"/><text x="0.7930%" y="127.50"></text></g><g><title>oxrdf::interning::InternedLiteral::decode_from (4 samples, 0.01%)</title><rect x="0.5682%" y="101" width="0.0144%" height="15" fill="rgb(235,17,3)" fg:x="158" fg:w="4"/><text x="0.8182%" y="111.50"></text></g><g><title>core::ops::function::FnMut::call_mut (14 samples, 0.05%)</title><rect x="0.5826%" y="133" width="0.0503%" height="15" fill="rgb(213,94,43)" fg:x="162" fg:w="14"/><text x="0.8326%" y="143.50"></text></g><g><title>oxrdf::blank_node::BlankNodeRef::into_owned (3 samples, 0.01%)</title><rect x="0.6221%" y="117" width="0.0108%" height="15" fill="rgb(247,228,54)" fg:x="173" fg:w="3"/><text x="0.8721%" y="127.50"></text></g><g><title>core::fmt::write (3 samples, 0.01%)</title><rect x="0.6221%" y="101" width="0.0108%" height="15" fill="rgb(220,119,43)" fg:x="173" fg:w="3"/><text x="0.8721%" y="111.50"></text></g><g><title>&lt;u128 as core::fmt::LowerHex&gt;::fmt (3 samples, 0.01%)</title><rect x="0.6221%" y="85" width="0.0108%" height="15" fill="rgb(253,17,24)" fg:x="173" fg:w="3"/><text x="0.8721%" y="95.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (45 samples, 0.16%)</title><rect x="0.4963%" y="197" width="0.1618%" height="15" fill="rgb(231,113,16)" fg:x="138" fg:w="45"/><text x="0.7463%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (45 samples, 0.16%)</title><rect x="0.4963%" y="181" width="0.1618%" height="15" fill="rgb(211,134,32)" fg:x="138" fg:w="45"/><text x="0.7463%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (45 samples, 0.16%)</title><rect x="0.4963%" y="165" width="0.1618%" height="15" fill="rgb(236,18,48)" fg:x="138" fg:w="45"/><text x="0.7463%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (45 samples, 0.16%)</title><rect x="0.4963%" y="149" width="0.1618%" height="15" fill="rgb(224,138,12)" fg:x="138" fg:w="45"/><text x="0.7463%" y="159.50"></text></g><g><title>core::ptr::drop_in_place&lt;oxrdf::triple::Triple&gt; (7 samples, 0.03%)</title><rect x="0.6329%" y="133" width="0.0252%" height="15" fill="rgb(210,84,29)" fg:x="176" fg:w="7"/><text x="0.8829%" y="143.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::ParserPropertyValues&lt;RDF,P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (46 samples, 0.17%)</title><rect x="0.4963%" y="213" width="0.1654%" height="15" fill="rgb(227,228,49)" fg:x="138" fg:w="46"/><text x="0.7463%" y="223.50"></text></g><g><title>&lt;shacl_rdf::rdf_to_shacl::shacl_parser::QualifiedValueShapeSiblings&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (5 samples, 0.02%)</title><rect x="0.6617%" y="197" width="0.0180%" height="15" fill="rgb(246,162,48)" fg:x="184" fg:w="5"/><text x="0.9117%" y="207.50"></text></g><g><title>srdf::neighs_rdf::NeighsRDF::object_for (5 samples, 0.02%)</title><rect x="0.6617%" y="181" width="0.0180%" height="15" fill="rgb(220,76,10)" fg:x="184" fg:w="5"/><text x="0.9117%" y="191.50"></text></g><g><title>srdf::neighs_rdf::NeighsRDF::objects_for (5 samples, 0.02%)</title><rect x="0.6617%" y="165" width="0.0180%" height="15" fill="rgb(206,200,15)" fg:x="184" fg:w="5"/><text x="0.9117%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.6617%" y="149" width="0.0180%" height="15" fill="rgb(224,103,51)" fg:x="184" fg:w="5"/><text x="0.9117%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.6617%" y="133" width="0.0180%" height="15" fill="rgb(211,187,18)" fg:x="184" fg:w="5"/><text x="0.9117%" y="143.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.6617%" y="117" width="0.0180%" height="15" fill="rgb(236,185,28)" fg:x="184" fg:w="5"/><text x="0.9117%" y="127.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (3 samples, 0.01%)</title><rect x="0.6797%" y="181" width="0.0108%" height="15" fill="rgb(219,181,30)" fg:x="189" fg:w="3"/><text x="0.9297%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.6797%" y="165" width="0.0108%" height="15" fill="rgb(213,54,40)" fg:x="189" fg:w="3"/><text x="0.9297%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.6797%" y="149" width="0.0108%" height="15" fill="rgb(242,155,21)" fg:x="189" fg:w="3"/><text x="0.9297%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (3 samples, 0.01%)</title><rect x="0.6797%" y="133" width="0.0108%" height="15" fill="rgb(243,160,37)" fg:x="189" fg:w="3"/><text x="0.9297%" y="143.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (11 samples, 0.04%)</title><rect x="0.6797%" y="197" width="0.0396%" height="15" fill="rgb(233,58,26)" fg:x="189" fg:w="11"/><text x="0.9297%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Then&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="0.6904%" y="181" width="0.0288%" height="15" fill="rgb(227,191,15)" fg:x="192" fg:w="8"/><text x="0.9404%" y="191.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="0.6904%" y="165" width="0.0288%" height="15" fill="rgb(223,31,13)" fg:x="192" fg:w="8"/><text x="0.9404%" y="175.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="0.6904%" y="149" width="0.0288%" height="15" fill="rgb(233,17,1)" fg:x="192" fg:w="8"/><text x="0.9404%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.6904%" y="133" width="0.0288%" height="15" fill="rgb(251,226,33)" fg:x="192" fg:w="8"/><text x="0.9404%" y="143.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.6904%" y="117" width="0.0288%" height="15" fill="rgb(225,148,10)" fg:x="192" fg:w="8"/><text x="0.9404%" y="127.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.6904%" y="101" width="0.0288%" height="15" fill="rgb(216,138,24)" fg:x="192" fg:w="8"/><text x="0.9404%" y="111.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (7 samples, 0.03%)</title><rect x="0.6940%" y="85" width="0.0252%" height="15" fill="rgb(247,111,19)" fg:x="193" fg:w="7"/><text x="0.9440%" y="95.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Optional&lt;P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (5 samples, 0.02%)</title><rect x="0.7192%" y="197" width="0.0180%" height="15" fill="rgb(241,156,36)" fg:x="200" fg:w="5"/><text x="0.9692%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (5 samples, 0.02%)</title><rect x="0.7192%" y="181" width="0.0180%" height="15" fill="rgb(226,223,16)" fg:x="200" fg:w="5"/><text x="0.9692%" y="191.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (5 samples, 0.02%)</title><rect x="0.7192%" y="165" width="0.0180%" height="15" fill="rgb(217,50,5)" fg:x="200" fg:w="5"/><text x="0.9692%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.7192%" y="149" width="0.0180%" height="15" fill="rgb(252,202,38)" fg:x="200" fg:w="5"/><text x="0.9692%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.7192%" y="133" width="0.0180%" height="15" fill="rgb(242,101,12)" fg:x="200" fg:w="5"/><text x="0.9692%" y="143.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (5 samples, 0.02%)</title><rect x="0.7192%" y="117" width="0.0180%" height="15" fill="rgb(241,226,41)" fg:x="200" fg:w="5"/><text x="0.9692%" y="127.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (5 samples, 0.02%)</title><rect x="0.7408%" y="117" width="0.0180%" height="15" fill="rgb(239,193,42)" fg:x="206" fg:w="5"/><text x="0.9908%" y="127.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.7372%" y="197" width="0.0252%" height="15" fill="rgb(233,170,46)" fg:x="205" fg:w="7"/><text x="0.9872%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.7372%" y="181" width="0.0252%" height="15" fill="rgb(225,146,22)" fg:x="205" fg:w="7"/><text x="0.9872%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.7372%" y="165" width="0.0252%" height="15" fill="rgb(231,6,0)" fg:x="205" fg:w="7"/><text x="0.9872%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.7372%" y="149" width="0.0252%" height="15" fill="rgb(215,37,32)" fg:x="205" fg:w="7"/><text x="0.9872%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.7372%" y="133" width="0.0252%" height="15" fill="rgb(248,131,53)" fg:x="205" fg:w="7"/><text x="0.9872%" y="143.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (4 samples, 0.01%)</title><rect x="0.7624%" y="197" width="0.0144%" height="15" fill="rgb(243,198,23)" fg:x="212" fg:w="4"/><text x="1.0124%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="0.7624%" y="181" width="0.0144%" height="15" fill="rgb(237,156,54)" fg:x="212" fg:w="4"/><text x="1.0124%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="0.7624%" y="165" width="0.0144%" height="15" fill="rgb(210,36,11)" fg:x="212" fg:w="4"/><text x="1.0124%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="0.7624%" y="149" width="0.0144%" height="15" fill="rgb(208,61,17)" fg:x="212" fg:w="4"/><text x="1.0124%" y="159.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (4 samples, 0.01%)</title><rect x="0.7624%" y="133" width="0.0144%" height="15" fill="rgb(236,174,6)" fg:x="212" fg:w="4"/><text x="1.0124%" y="143.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (11 samples, 0.04%)</title><rect x="0.7768%" y="69" width="0.0396%" height="15" fill="rgb(253,163,45)" fg:x="216" fg:w="11"/><text x="1.0268%" y="79.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (3 samples, 0.01%)</title><rect x="0.8055%" y="53" width="0.0108%" height="15" fill="rgb(207,26,44)" fg:x="224" fg:w="3"/><text x="1.0555%" y="63.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::CombineParsers&lt;P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (196 samples, 0.70%)</title><rect x="0.1295%" y="261" width="0.7048%" height="15" fill="rgb(206,189,32)" fg:x="36" fg:w="196"/><text x="0.3795%" y="271.50"></text></g><g><title>core::ops::function::FnOnce::call_once (195 samples, 0.70%)</title><rect x="0.1331%" y="245" width="0.7012%" height="15" fill="rgb(236,109,33)" fg:x="37" fg:w="195"/><text x="0.3831%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Opaque&lt;F,RDF,O&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl::{{closure}} (195 samples, 0.70%)</title><rect x="0.1331%" y="229" width="0.7012%" height="15" fill="rgb(212,117,50)" fg:x="37" fg:w="195"/><text x="0.3831%" y="239.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Then&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (48 samples, 0.17%)</title><rect x="0.6617%" y="213" width="0.1726%" height="15" fill="rgb(228,145,19)" fg:x="184" fg:w="48"/><text x="0.9117%" y="223.50"></text></g><g><title>core::ops::function::FnOnce::call_once (16 samples, 0.06%)</title><rect x="0.7768%" y="197" width="0.0575%" height="15" fill="rgb(235,201,9)" fg:x="216" fg:w="16"/><text x="1.0268%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Opaque&lt;F,RDF,O&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl::{{closure}} (16 samples, 0.06%)</title><rect x="0.7768%" y="181" width="0.0575%" height="15" fill="rgb(246,160,54)" fg:x="216" fg:w="16"/><text x="1.0268%" y="191.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Optional&lt;P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (16 samples, 0.06%)</title><rect x="0.7768%" y="165" width="0.0575%" height="15" fill="rgb(247,128,45)" fg:x="216" fg:w="16"/><text x="1.0268%" y="175.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (16 samples, 0.06%)</title><rect x="0.7768%" y="149" width="0.0575%" height="15" fill="rgb(254,116,33)" fg:x="216" fg:w="16"/><text x="1.0268%" y="159.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (16 samples, 0.06%)</title><rect x="0.7768%" y="133" width="0.0575%" height="15" fill="rgb(209,207,36)" fg:x="216" fg:w="16"/><text x="1.0268%" y="143.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (16 samples, 0.06%)</title><rect x="0.7768%" y="117" width="0.0575%" height="15" fill="rgb(215,75,12)" fg:x="216" fg:w="16"/><text x="1.0268%" y="127.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (16 samples, 0.06%)</title><rect x="0.7768%" y="101" width="0.0575%" height="15" fill="rgb(225,102,51)" fg:x="216" fg:w="16"/><text x="1.0268%" y="111.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (16 samples, 0.06%)</title><rect x="0.7768%" y="85" width="0.0575%" height="15" fill="rgb(247,104,35)" fg:x="216" fg:w="16"/><text x="1.0268%" y="95.50"></text></g><g><title>core::ops::function::FnMut::call_mut (5 samples, 0.02%)</title><rect x="0.8163%" y="69" width="0.0180%" height="15" fill="rgb(225,186,22)" fg:x="227" fg:w="5"/><text x="1.0663%" y="79.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (8 samples, 0.03%)</title><rect x="0.8415%" y="165" width="0.0288%" height="15" fill="rgb(239,130,28)" fg:x="234" fg:w="8"/><text x="1.0915%" y="175.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (4 samples, 0.01%)</title><rect x="0.8559%" y="149" width="0.0144%" height="15" fill="rgb(252,228,26)" fg:x="238" fg:w="4"/><text x="1.1059%" y="159.50"></text></g><g><title>oxrdf::interning::InternedLiteral::decode_from (3 samples, 0.01%)</title><rect x="0.8595%" y="133" width="0.0108%" height="15" fill="rgb(237,150,10)" fg:x="239" fg:w="3"/><text x="1.1095%" y="143.50"></text></g><g><title>core::ops::function::FnMut::call_mut (3 samples, 0.01%)</title><rect x="0.8703%" y="165" width="0.0108%" height="15" fill="rgb(228,167,41)" fg:x="242" fg:w="3"/><text x="1.1203%" y="175.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (14 samples, 0.05%)</title><rect x="0.8343%" y="245" width="0.0503%" height="15" fill="rgb(209,77,32)" fg:x="232" fg:w="14"/><text x="1.0843%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (14 samples, 0.05%)</title><rect x="0.8343%" y="229" width="0.0503%" height="15" fill="rgb(237,88,7)" fg:x="232" fg:w="14"/><text x="1.0843%" y="239.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (14 samples, 0.05%)</title><rect x="0.8343%" y="213" width="0.0503%" height="15" fill="rgb(212,109,45)" fg:x="232" fg:w="14"/><text x="1.0843%" y="223.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (14 samples, 0.05%)</title><rect x="0.8343%" y="197" width="0.0503%" height="15" fill="rgb(235,53,18)" fg:x="232" fg:w="14"/><text x="1.0843%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (14 samples, 0.05%)</title><rect x="0.8343%" y="181" width="0.0503%" height="15" fill="rgb(227,116,52)" fg:x="232" fg:w="14"/><text x="1.0843%" y="191.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (7 samples, 0.03%)</title><rect x="0.8882%" y="181" width="0.0252%" height="15" fill="rgb(240,102,35)" fg:x="247" fg:w="7"/><text x="1.1382%" y="191.50"></text></g><g><title>core::ops::function::FnMut::call_mut (5 samples, 0.02%)</title><rect x="0.9134%" y="181" width="0.0180%" height="15" fill="rgb(227,4,7)" fg:x="254" fg:w="5"/><text x="1.1634%" y="191.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::SubjectsPropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (14 samples, 0.05%)</title><rect x="0.8846%" y="245" width="0.0503%" height="15" fill="rgb(234,110,30)" fg:x="246" fg:w="14"/><text x="1.1346%" y="255.50"></text></g><g><title>&lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter (14 samples, 0.05%)</title><rect x="0.8846%" y="229" width="0.0503%" height="15" fill="rgb(208,25,51)" fg:x="246" fg:w="14"/><text x="1.1346%" y="239.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::next (14 samples, 0.05%)</title><rect x="0.8846%" y="213" width="0.0503%" height="15" fill="rgb(210,6,39)" fg:x="246" fg:w="14"/><text x="1.1346%" y="223.50"></text></g><g><title>core::iter::adapters::flatten::and_then_or_clear (14 samples, 0.05%)</title><rect x="0.8846%" y="197" width="0.0503%" height="15" fill="rgb(229,83,32)" fg:x="246" fg:w="14"/><text x="1.1346%" y="207.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (3 samples, 0.01%)</title><rect x="0.9350%" y="133" width="0.0108%" height="15" fill="rgb(207,123,21)" fg:x="260" fg:w="3"/><text x="1.1850%" y="143.50"></text></g><g><title>core::ops::function::FnMut::call_mut (3 samples, 0.01%)</title><rect x="0.9458%" y="133" width="0.0108%" height="15" fill="rgb(218,129,12)" fg:x="263" fg:w="3"/><text x="1.1958%" y="143.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::CombineVec&lt;P1,P2&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (35 samples, 0.13%)</title><rect x="0.8343%" y="261" width="0.1259%" height="15" fill="rgb(217,83,42)" fg:x="232" fg:w="35"/><text x="1.0843%" y="271.50"></text></g><g><title>core::ops::function::FnOnce::call_once (7 samples, 0.03%)</title><rect x="0.9350%" y="245" width="0.0252%" height="15" fill="rgb(209,16,0)" fg:x="260" fg:w="7"/><text x="1.1850%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Opaque&lt;F,RDF,O&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl::{{closure}} (7 samples, 0.03%)</title><rect x="0.9350%" y="229" width="0.0252%" height="15" fill="rgb(246,75,12)" fg:x="260" fg:w="7"/><text x="1.1850%" y="239.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9350%" y="213" width="0.0252%" height="15" fill="rgb(226,213,24)" fg:x="260" fg:w="7"/><text x="1.1850%" y="223.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9350%" y="197" width="0.0252%" height="15" fill="rgb(235,224,45)" fg:x="260" fg:w="7"/><text x="1.1850%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9350%" y="181" width="0.0252%" height="15" fill="rgb(226,118,12)" fg:x="260" fg:w="7"/><text x="1.1850%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9350%" y="165" width="0.0252%" height="15" fill="rgb(242,162,52)" fg:x="260" fg:w="7"/><text x="1.1850%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9350%" y="149" width="0.0252%" height="15" fill="rgb(242,186,10)" fg:x="260" fg:w="7"/><text x="1.1850%" y="159.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (6 samples, 0.02%)</title><rect x="0.9602%" y="181" width="0.0216%" height="15" fill="rgb(218,28,3)" fg:x="267" fg:w="6"/><text x="1.2102%" y="191.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (3 samples, 0.01%)</title><rect x="0.9709%" y="165" width="0.0108%" height="15" fill="rgb(243,116,10)" fg:x="270" fg:w="3"/><text x="1.2209%" y="175.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::FlatMap&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="0.9602%" y="261" width="0.0288%" height="15" fill="rgb(246,217,14)" fg:x="267" fg:w="8"/><text x="1.2102%" y="271.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="0.9602%" y="245" width="0.0288%" height="15" fill="rgb(217,3,9)" fg:x="267" fg:w="8"/><text x="1.2102%" y="255.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.9602%" y="229" width="0.0288%" height="15" fill="rgb(246,164,7)" fg:x="267" fg:w="8"/><text x="1.2102%" y="239.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.9602%" y="213" width="0.0288%" height="15" fill="rgb(208,130,17)" fg:x="267" fg:w="8"/><text x="1.2102%" y="223.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="0.9602%" y="197" width="0.0288%" height="15" fill="rgb(250,140,40)" fg:x="267" fg:w="8"/><text x="1.2102%" y="207.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (5 samples, 0.02%)</title><rect x="0.9889%" y="133" width="0.0180%" height="15" fill="rgb(238,153,1)" fg:x="275" fg:w="5"/><text x="1.2389%" y="143.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Optional&lt;P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9889%" y="261" width="0.0252%" height="15" fill="rgb(250,61,30)" fg:x="275" fg:w="7"/><text x="1.2389%" y="271.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Opaque&lt;F,RDF,O&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl::{{closure}} (7 samples, 0.03%)</title><rect x="0.9889%" y="245" width="0.0252%" height="15" fill="rgb(244,152,43)" fg:x="275" fg:w="7"/><text x="1.2389%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Map&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9889%" y="229" width="0.0252%" height="15" fill="rgb(250,158,38)" fg:x="275" fg:w="7"/><text x="1.2389%" y="239.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9889%" y="213" width="0.0252%" height="15" fill="rgb(214,203,27)" fg:x="275" fg:w="7"/><text x="1.2389%" y="223.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="0.9889%" y="197" width="0.0252%" height="15" fill="rgb(222,229,54)" fg:x="275" fg:w="7"/><text x="1.2389%" y="207.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9889%" y="181" width="0.0252%" height="15" fill="rgb(239,63,22)" fg:x="275" fg:w="7"/><text x="1.2389%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9889%" y="165" width="0.0252%" height="15" fill="rgb(209,183,22)" fg:x="275" fg:w="7"/><text x="1.2389%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="0.9889%" y="149" width="0.0252%" height="15" fill="rgb(242,142,5)" fg:x="275" fg:w="7"/><text x="1.2389%" y="159.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (5 samples, 0.02%)</title><rect x="1.0141%" y="181" width="0.0180%" height="15" fill="rgb(231,181,1)" fg:x="282" fg:w="5"/><text x="1.2641%" y="191.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="1.0141%" y="261" width="0.0288%" height="15" fill="rgb(240,54,25)" fg:x="282" fg:w="8"/><text x="1.2641%" y="271.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (8 samples, 0.03%)</title><rect x="1.0141%" y="245" width="0.0288%" height="15" fill="rgb(250,207,13)" fg:x="282" fg:w="8"/><text x="1.2641%" y="255.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="1.0141%" y="229" width="0.0288%" height="15" fill="rgb(212,94,10)" fg:x="282" fg:w="8"/><text x="1.2641%" y="239.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="1.0141%" y="213" width="0.0288%" height="15" fill="rgb(234,46,22)" fg:x="282" fg:w="8"/><text x="1.2641%" y="223.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (8 samples, 0.03%)</title><rect x="1.0141%" y="197" width="0.0288%" height="15" fill="rgb(241,173,5)" fg:x="282" fg:w="8"/><text x="1.2641%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (4 samples, 0.01%)</title><rect x="1.0429%" y="261" width="0.0144%" height="15" fill="rgb(234,56,30)" fg:x="290" fg:w="4"/><text x="1.2929%" y="271.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="1.0429%" y="245" width="0.0144%" height="15" fill="rgb(235,160,47)" fg:x="290" fg:w="4"/><text x="1.2929%" y="255.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="1.0429%" y="229" width="0.0144%" height="15" fill="rgb(220,156,8)" fg:x="290" fg:w="4"/><text x="1.2929%" y="239.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (4 samples, 0.01%)</title><rect x="1.0429%" y="213" width="0.0144%" height="15" fill="rgb(206,88,29)" fg:x="290" fg:w="4"/><text x="1.2929%" y="223.50"></text></g><g><title>core::ops::function::FnMut::call_mut (3 samples, 0.01%)</title><rect x="1.0465%" y="197" width="0.0108%" height="15" fill="rgb(207,35,4)" fg:x="291" fg:w="3"/><text x="1.2965%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::ShaclPathParser&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (4 samples, 0.01%)</title><rect x="1.0572%" y="261" width="0.0144%" height="15" fill="rgb(211,162,10)" fg:x="294" fg:w="4"/><text x="1.3072%" y="271.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::RDFList&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (4 samples, 0.01%)</title><rect x="1.0572%" y="245" width="0.0144%" height="15" fill="rgb(209,90,21)" fg:x="294" fg:w="4"/><text x="1.3072%" y="255.50"></text></g><g><title>srdf::srdf_parser::rdf_node_parser::parse_list (4 samples, 0.01%)</title><rect x="1.0572%" y="229" width="0.0144%" height="15" fill="rgb(213,181,31)" fg:x="294" fg:w="4"/><text x="1.3072%" y="239.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Optional&lt;P&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="1.0716%" y="213" width="0.0252%" height="15" fill="rgb(219,222,4)" fg:x="298" fg:w="7"/><text x="1.3216%" y="223.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValue&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="1.0716%" y="197" width="0.0252%" height="15" fill="rgb(223,104,40)" fg:x="298" fg:w="7"/><text x="1.3216%" y="207.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::PropertyValues&lt;RDF&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (7 samples, 0.03%)</title><rect x="1.0716%" y="181" width="0.0252%" height="15" fill="rgb(241,219,47)" fg:x="298" fg:w="7"/><text x="1.3216%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="1.0716%" y="165" width="0.0252%" height="15" fill="rgb(210,174,53)" fg:x="298" fg:w="7"/><text x="1.3216%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="1.0716%" y="149" width="0.0252%" height="15" fill="rgb(228,194,2)" fg:x="298" fg:w="7"/><text x="1.3216%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (7 samples, 0.03%)</title><rect x="1.0716%" y="133" width="0.0252%" height="15" fill="rgb(221,40,35)" fg:x="298" fg:w="7"/><text x="1.3216%" y="143.50"></text></g><g><title>core::ops::function::FnMut::call_mut (5 samples, 0.02%)</title><rect x="1.0788%" y="117" width="0.0180%" height="15" fill="rgb(222,193,13)" fg:x="300" fg:w="5"/><text x="1.3288%" y="127.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Or&lt;P1,P2&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (271 samples, 0.97%)</title><rect x="0.1295%" y="277" width="0.9745%" height="15" fill="rgb(219,198,17)" fg:x="36" fg:w="271"/><text x="0.3795%" y="287.50"></text></g><g><title>core::ops::function::FnOnce::call_once (9 samples, 0.03%)</title><rect x="1.0716%" y="261" width="0.0324%" height="15" fill="rgb(235,105,22)" fg:x="298" fg:w="9"/><text x="1.3216%" y="271.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Opaque&lt;F,RDF,O&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl::{{closure}} (9 samples, 0.03%)</title><rect x="1.0716%" y="245" width="0.0324%" height="15" fill="rgb(214,70,0)" fg:x="298" fg:w="9"/><text x="1.3216%" y="255.50"></text></g><g><title>&lt;srdf::srdf_parser::rdf_node_parser::Then&lt;P,F&gt; as srdf::srdf_parser::rdf_node_parser::RDFNodeParse&lt;RDF&gt;&gt;::parse_impl (9 samples, 0.03%)</title><rect x="1.0716%" y="229" width="0.0324%" height="15" fill="rgb(231,102,48)" fg:x="298" fg:w="9"/><text x="1.3216%" y="239.50"></text></g><g><title>shacl_rdf::rdf_to_shacl::shacl_parser::ShaclParser&lt;RDF&gt;::parse (272 samples, 0.98%)</title><rect x="0.1295%" y="293" width="0.9781%" height="15" fill="rgb(215,216,17)" fg:x="36" fg:w="272"/><text x="0.3795%" y="303.50"></text></g><g><title>&lt;rudof_v1::rudof::RudofV1Engine as common::rudof::RudofEngine&gt;::load_shapes (274 samples, 0.99%)</title><rect x="0.1295%" y="325" width="0.9853%" height="15" fill="rgb(245,21,4)" fg:x="36" fg:w="274"/><text x="0.3795%" y="335.50"></text></g><g><title>rudof_lib::rudof::Rudof::read_shacl (274 samples, 0.99%)</title><rect x="0.1295%" y="309" width="0.9853%" height="15" fill="rgb(228,213,32)" fg:x="36" fg:w="274"/><text x="0.3795%" y="319.50"></text></g><g><title>core::hash::BuildHasher::hash_one (3 samples, 0.01%)</title><rect x="1.1256%" y="213" width="0.0108%" height="15" fill="rgb(222,207,11)" fg:x="313" fg:w="3"/><text x="1.3756%" y="223.50"></text></g><g><title>hashbrown::map::HashMap&lt;K,V,S,A&gt;::insert (6 samples, 0.02%)</title><rect x="1.1220%" y="229" width="0.0216%" height="15" fill="rgb(214,224,7)" fg:x="312" fg:w="6"/><text x="1.3720%" y="239.50"></text></g><g><title>oxrdf::interning::InternedBlankNode::decode_from (2,173 samples, 7.81%)</title><rect x="35.6840%" y="101" width="7.8143%" height="15" fill="rgb(244,226,10)" fg:x="9923" fg:w="2173"/><text x="35.9340%" y="111.50">oxrdf::inte..</text></g><g><title>core::hash::BuildHasher::hash_one (242 samples, 0.87%)</title><rect x="42.6280%" y="85" width="0.8703%" height="15" fill="rgb(238,203,48)" fg:x="11854" fg:w="242"/><text x="42.8780%" y="95.50"></text></g><g><title>&lt;core::hash::sip::Hasher&lt;S&gt; as core::hash::Hasher&gt;::write (83 samples, 0.30%)</title><rect x="43.1998%" y="69" width="0.2985%" height="15" fill="rgb(254,127,1)" fg:x="12013" fg:w="83"/><text x="43.4498%" y="79.50"></text></g><g><title>oxrdf::interning::InternedBlankNode::decode_from (1,364 samples, 4.91%)</title><rect x="55.9371%" y="85" width="4.9051%" height="15" fill="rgb(226,73,36)" fg:x="15555" fg:w="1364"/><text x="56.1871%" y="95.50">oxrdf:..</text></g><g><title>core::hash::BuildHasher::hash_one (103 samples, 0.37%)</title><rect x="60.4718%" y="69" width="0.3704%" height="15" fill="rgb(208,104,3)" fg:x="16816" fg:w="103"/><text x="60.7218%" y="79.50"></text></g><g><title>&lt;core::hash::sip::Hasher&lt;S&gt; as core::hash::Hasher&gt;::write (32 samples, 0.12%)</title><rect x="60.7271%" y="53" width="0.1151%" height="15" fill="rgb(253,180,50)" fg:x="16887" fg:w="32"/><text x="60.9771%" y="63.50"></text></g><g><title>oxrdf::interning::InternedLiteral::decode_from (2,267 samples, 8.15%)</title><rect x="60.8422%" y="85" width="8.1523%" height="15" fill="rgb(218,207,31)" fg:x="16919" fg:w="2267"/><text x="61.0922%" y="95.50">oxrdf::inte..</text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (18,452 samples, 66.36%)</title><rect x="2.8445%" y="117" width="66.3550%" height="15" fill="rgb(211,156,34)" fg:x="791" fg:w="18452"/><text x="3.0945%" y="127.50">&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next</text></g><g><title>oxrdf::interning::InternedTerm::decode_from (7,147 samples, 25.70%)</title><rect x="43.4983%" y="101" width="25.7012%" height="15" fill="rgb(237,120,2)" fg:x="12096" fg:w="7147"/><text x="43.7483%" y="111.50">oxrdf::interning::InternedTerm::decode_fr..</text></g><g><title>oxrdf::interning::InternedTriple::encoded_into (57 samples, 0.20%)</title><rect x="68.9945%" y="85" width="0.2050%" height="15" fill="rgb(230,10,22)" fg:x="19186" fg:w="57"/><text x="69.2445%" y="95.50"></text></g><g><title>__rustc::__rdl_alloc (568 samples, 2.04%)</title><rect x="87.7050%" y="101" width="2.0426%" height="15" fill="rgb(221,79,39)" fg:x="24389" fg:w="568"/><text x="87.9550%" y="111.50">_..</text></g><g><title>&lt;core::fmt::Formatter&gt;::pad_integral (165 samples, 0.59%)</title><rect x="93.4443%" y="53" width="0.5934%" height="15" fill="rgb(207,156,38)" fg:x="25985" fg:w="165"/><text x="93.6943%" y="63.50"></text></g><g><title>&lt;core::fmt::Formatter&gt;::pad_integral::write_prefix (33 samples, 0.12%)</title><rect x="93.9190%" y="37" width="0.1187%" height="15" fill="rgb(218,169,2)" fg:x="26117" fg:w="33"/><text x="94.1690%" y="47.50"></text></g><g><title>core::ops::function::FnMut::call_mut (6,957 samples, 25.02%)</title><rect x="69.1995%" y="117" width="25.0180%" height="15" fill="rgb(251,154,29)" fg:x="19243" fg:w="6957"/><text x="69.4495%" y="127.50">core::ops::function::FnMut::call_mut</text></g><g><title>oxrdf::blank_node::BlankNodeRef::into_owned (1,243 samples, 4.47%)</title><rect x="89.7476%" y="101" width="4.4699%" height="15" fill="rgb(228,165,19)" fg:x="24957" fg:w="1243"/><text x="89.9976%" y="111.50">oxrdf..</text></g><g><title>core::fmt::write (1,077 samples, 3.87%)</title><rect x="90.3445%" y="85" width="3.8730%" height="15" fill="rgb(249,187,3)" fg:x="25123" fg:w="1077"/><text x="90.5945%" y="95.50">core..</text></g><g><title>&lt;u128 as core::fmt::LowerHex&gt;::fmt (963 samples, 3.46%)</title><rect x="90.7545%" y="69" width="3.4630%" height="15" fill="rgb(249,193,41)" fg:x="25237" fg:w="963"/><text x="91.0045%" y="79.50">&lt;u1..</text></g><g><title>&lt;std::io::default_write_fmt::Adapter&lt;T&gt; as core::fmt::Write&gt;::write_str (50 samples, 0.18%)</title><rect x="94.0377%" y="53" width="0.1798%" height="15" fill="rgb(228,142,13)" fg:x="26150" fg:w="50"/><text x="94.2877%" y="63.50"></text></g><g><title>core::ptr::drop_in_place&lt;oxrdf::triple::Triple&gt; (1,114 samples, 4.01%)</title><rect x="94.2175%" y="117" width="4.0060%" height="15" fill="rgb(243,202,46)" fg:x="26200" fg:w="1114"/><text x="94.4675%" y="127.50">core..</text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (27,429 samples, 98.64%)</title><rect x="1.1579%" y="133" width="98.6371%" height="15" fill="rgb(240,202,39)" fg:x="322" fg:w="27429"/><text x="1.4079%" y="143.50">&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold</text></g><g><title>oxrdf::graph::Graph::graph_mut (436 samples, 1.57%)</title><rect x="98.2271%" y="117" width="1.5679%" height="15" fill="rgb(226,53,22)" fg:x="27315" fg:w="436"/><text x="98.4771%" y="127.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (27,439 samples, 98.67%)</title><rect x="1.1507%" y="165" width="98.6730%" height="15" fill="rgb(218,197,6)" fg:x="320" fg:w="27439"/><text x="1.4007%" y="175.50">&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold</text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (27,439 samples, 98.67%)</title><rect x="1.1507%" y="149" width="98.6730%" height="15" fill="rgb(233,73,27)" fg:x="320" fg:w="27439"/><text x="1.4007%" y="159.50">&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold</text></g><g><title>&lt;srdf::srdf_graph::srdfgraph::SRDFGraph as srdf::neighs_rdf::NeighsRDF&gt;::triples_matching (8 samples, 0.03%)</title><rect x="99.7950%" y="133" width="0.0288%" height="15" fill="rgb(239,85,34)" fg:x="27751" fg:w="8"/><text x="100.0450%" y="143.50"></text></g><g><title>&lt;srdf::srdf_graph::srdfgraph::SRDFGraph as srdf::neighs_rdf::NeighsRDF&gt;::triples (7 samples, 0.03%)</title><rect x="99.7986%" y="117" width="0.0252%" height="15" fill="rgb(211,91,17)" fg:x="27752" fg:w="7"/><text x="100.0486%" y="127.50"></text></g><g><title>&lt;&amp;oxrdf::graph::Graph as core::iter::traits::collect::IntoIterator&gt;::into_iter (7 samples, 0.03%)</title><rect x="99.7986%" y="101" width="0.0252%" height="15" fill="rgb(253,192,1)" fg:x="27752" fg:w="7"/><text x="100.0486%" y="111.50"></text></g><g><title>alloc::collections::btree::navigate::&lt;impl alloc::collections::btree::node::NodeRef&lt;BorrowType,K,V,alloc::collections::btree::node::marker::LeafOrInternal&gt;&gt;::find_leaf_edges_spanning_range (5 samples, 0.02%)</title><rect x="99.8058%" y="85" width="0.0180%" height="15" fill="rgb(216,80,10)" fg:x="27754" fg:w="5"/><text x="100.0558%" y="95.50"></text></g><g><title>alloc::collections::btree::search::&lt;impl alloc::collections::btree::node::NodeRef&lt;BorrowType,K,V,Type&gt;&gt;::find_key_index (3 samples, 0.01%)</title><rect x="99.8130%" y="69" width="0.0108%" height="15" fill="rgb(212,198,52)" fg:x="27756" fg:w="3"/><text x="100.0630%" y="79.50"></text></g><g><title>&lt;hashbrown::map::HashMap&lt;K,V,S,A&gt; as core::iter::traits::collect::Extend&lt;(K,V)&gt;&gt;::extend (27,441 samples, 98.68%)</title><rect x="1.1472%" y="181" width="98.6802%" height="15" fill="rgb(248,119,23)" fg:x="319" fg:w="27441"/><text x="1.3972%" y="191.50">&lt;hashbrown::map::HashMap&lt;K,V,S,A&gt; as core::iter::traits::collect::Extend&lt;(K,V)&gt;&gt;::extend</text></g><g><title>&lt;shacl_ir::compiled::shape::ShapeIR as shacl_validation::shape_validation::Validate&lt;S&gt;&gt;::validate (27,454 samples, 98.73%)</title><rect x="1.1148%" y="261" width="98.7270%" height="15" fill="rgb(248,74,50)" fg:x="310" fg:w="27454"/><text x="1.3648%" y="271.50">&lt;shacl_ir::compiled::shape::ShapeIR as shacl_validation::shape_validation::Validate&lt;S&gt;&gt;::validate</text></g><g><title>hashbrown::raw::RawIterRange&lt;T&gt;::fold_impl (27,453 samples, 98.72%)</title><rect x="1.1184%" y="245" width="98.7234%" height="15" fill="rgb(215,77,52)" fg:x="311" fg:w="27453"/><text x="1.3684%" y="255.50">hashbrown::raw::RawIterRange&lt;T&gt;::fold_impl</text></g><g><title>shacl_validation::shacl_engine::engine::Engine::path (27,446 samples, 98.70%)</title><rect x="1.1436%" y="229" width="98.6982%" height="15" fill="rgb(250,178,2)" fg:x="318" fg:w="27446"/><text x="1.3936%" y="239.50">shacl_validation::shacl_engine::engine::Engine::path</text></g><g><title>srdf::neighs_rdf::NeighsRDF::objects_for_shacl_path (27,446 samples, 98.70%)</title><rect x="1.1436%" y="213" width="98.6982%" height="15" fill="rgb(241,9,45)" fg:x="318" fg:w="27446"/><text x="1.3936%" y="223.50">srdf::neighs_rdf::NeighsRDF::objects_for_shacl_path</text></g><g><title>srdf::neighs_rdf::NeighsRDF::objects_for (27,445 samples, 98.69%)</title><rect x="1.1472%" y="197" width="98.6946%" height="15" fill="rgb(206,112,39)" fg:x="319" fg:w="27445"/><text x="1.3972%" y="207.50">srdf::neighs_rdf::NeighsRDF::objects_for</text></g><g><title>alloc::fmt::format::format_inner (3 samples, 0.01%)</title><rect x="99.8310%" y="181" width="0.0108%" height="15" fill="rgb(247,121,6)" fg:x="27761" fg:w="3"/><text x="100.0810%" y="191.50"></text></g><g><title>core::fmt::write (3 samples, 0.01%)</title><rect x="99.8310%" y="165" width="0.0108%" height="15" fill="rgb(253,32,2)" fg:x="27761" fg:w="3"/><text x="100.0810%" y="175.50"></text></g><g><title>&lt;oxrdf::triple::NamedOrBlankNode as core::fmt::Display&gt;::fmt (3 samples, 0.01%)</title><rect x="99.8310%" y="149" width="0.0108%" height="15" fill="rgb(242,89,5)" fg:x="27761" fg:w="3"/><text x="100.0810%" y="159.50"></text></g><g><title>core::fmt::write (3 samples, 0.01%)</title><rect x="99.8310%" y="133" width="0.0108%" height="15" fill="rgb(247,134,43)" fg:x="27761" fg:w="3"/><text x="100.0810%" y="143.50"></text></g><g><title>oxrdf::interning::InternedBlankNode::decode_from (3 samples, 0.01%)</title><rect x="99.8921%" y="101" width="0.0108%" height="15" fill="rgb(248,5,18)" fg:x="27778" fg:w="3"/><text x="100.1421%" y="111.50"></text></g><g><title>&lt;oxrdf::dataset::GraphViewIter as core::iter::traits::iterator::Iterator&gt;::next (23 samples, 0.08%)</title><rect x="99.8490%" y="117" width="0.0827%" height="15" fill="rgb(243,136,36)" fg:x="27766" fg:w="23"/><text x="100.0990%" y="127.50"></text></g><g><title>oxrdf::interning::InternedTerm::decode_from (8 samples, 0.03%)</title><rect x="99.9029%" y="101" width="0.0288%" height="15" fill="rgb(237,171,51)" fg:x="27781" fg:w="8"/><text x="100.1529%" y="111.50"></text></g><g><title>&lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter (34 samples, 0.12%)</title><rect x="99.8418%" y="245" width="0.1223%" height="15" fill="rgb(221,107,44)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="255.50"></text></g><g><title>&lt;core::iter::adapters::flatten::FlatMap&lt;I,U,F&gt; as core::iter::traits::iterator::Iterator&gt;::next (34 samples, 0.12%)</title><rect x="99.8418%" y="229" width="0.1223%" height="15" fill="rgb(212,30,15)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="239.50"></text></g><g><title>&lt;shacl_validation::shacl_engine::native::NativeEngine as shacl_validation::shacl_engine::engine::Engine&lt;S&gt;&gt;::target_class (34 samples, 0.12%)</title><rect x="99.8418%" y="213" width="0.1223%" height="15" fill="rgb(245,67,25)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="223.50"></text></g><g><title>srdf::neighs_rdf::NeighsRDF::shacl_instances_of (34 samples, 0.12%)</title><rect x="99.8418%" y="197" width="0.1223%" height="15" fill="rgb(223,28,44)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="207.50"></text></g><g><title>&lt;hashbrown::map::HashMap&lt;K,V,S,A&gt; as core::iter::traits::collect::Extend&lt;(K,V)&gt;&gt;::extend (34 samples, 0.12%)</title><rect x="99.8418%" y="181" width="0.1223%" height="15" fill="rgb(216,131,22)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="191.50"></text></g><g><title>&lt;core::iter::adapters::chain::Chain&lt;A,B&gt; as core::iter::traits::iterator::Iterator&gt;::fold (34 samples, 0.12%)</title><rect x="99.8418%" y="165" width="0.1223%" height="15" fill="rgb(233,53,35)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="175.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (34 samples, 0.12%)</title><rect x="99.8418%" y="149" width="0.1223%" height="15" fill="rgb(225,22,34)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="159.50"></text></g><g><title>&lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold (34 samples, 0.12%)</title><rect x="99.8418%" y="133" width="0.1223%" height="15" fill="rgb(253,173,8)" fg:x="27764" fg:w="34"/><text x="100.0918%" y="143.50"></text></g><g><title>core::ops::function::FnMut::call_mut (8 samples, 0.03%)</title><rect x="99.9353%" y="117" width="0.0288%" height="15" fill="rgb(214,107,48)" fg:x="27790" fg:w="8"/><text x="100.1853%" y="127.50"></text></g><g><title>&lt;shacl_validation::shacl_processor::GraphValidation as shacl_validation::shacl_processor::ShaclProcessor&lt;sparql_service::srdf_data::rdf_data::RdfData&gt;&gt;::validate (27,489 samples, 98.85%)</title><rect x="1.1148%" y="293" width="98.8528%" height="15" fill="rgb(235,88,44)" fg:x="310" fg:w="27489"/><text x="1.3648%" y="303.50">&lt;shacl_validation::shacl_processor::GraphValidation as shacl_validation::shacl_processor::ShaclProcessor&lt;sparql_service::srdf_data::rdf_data::RdfData&gt;&gt;::validate</text></g><g><title>&lt;shacl_ir::compiled::shape::ShapeIR as shacl_validation::shape_validation::Validate&lt;S&gt;&gt;::validate (27,489 samples, 98.85%)</title><rect x="1.1148%" y="277" width="98.8528%" height="15" fill="rgb(210,146,43)" fg:x="310" fg:w="27489"/><text x="1.3648%" y="287.50">&lt;shacl_ir::compiled::shape::ShapeIR as shacl_validation::shape_validation::Validate&lt;S&gt;&gt;::validate</text></g><g><title>shacl_validation::shacl_engine::engine::Engine::focus_nodes (35 samples, 0.13%)</title><rect x="99.8418%" y="261" width="0.1259%" height="15" fill="rgb(251,145,1)" fg:x="27764" fg:w="35"/><text x="100.0918%" y="271.50"></text></g><g><title>era-c9d2987e6ff (27,803 samples, 99.98%)</title><rect x="0.0000%" y="517" width="99.9820%" height="15" fill="rgb(236,30,31)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="527.50">era-c9d2987e6ff</text></g><g><title>_start (27,803 samples, 99.98%)</title><rect x="0.0000%" y="501" width="99.9820%" height="15" fill="rgb(211,34,29)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="511.50">_start</text></g><g><title>__libc_start_main_alias_2 (27,803 samples, 99.98%)</title><rect x="0.0000%" y="485" width="99.9820%" height="15" fill="rgb(216,153,21)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="495.50">__libc_start_main_alias_2</text></g><g><title>__libc_start_call_main (27,803 samples, 99.98%)</title><rect x="0.0000%" y="469" width="99.9820%" height="15" fill="rgb(214,33,37)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="479.50">__libc_start_call_main</text></g><g><title>main (27,803 samples, 99.98%)</title><rect x="0.0000%" y="453" width="99.9820%" height="15" fill="rgb(215,14,22)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="463.50">main</text></g><g><title>std::rt::lang_start_internal (27,803 samples, 99.98%)</title><rect x="0.0000%" y="437" width="99.9820%" height="15" fill="rgb(238,84,6)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="447.50">std::rt::lang_start_internal</text></g><g><title>std::rt::lang_start::{{closure}} (27,803 samples, 99.98%)</title><rect x="0.0000%" y="421" width="99.9820%" height="15" fill="rgb(243,99,37)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="431.50">std::rt::lang_start::{{closure}}</text></g><g><title>std::sys::backtrace::__rust_begin_short_backtrace (27,803 samples, 99.98%)</title><rect x="0.0000%" y="405" width="99.9820%" height="15" fill="rgb(221,186,35)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="415.50">std::sys::backtrace::__rust_begin_short_backtrace</text></g><g><title>era::main (27,803 samples, 99.98%)</title><rect x="0.0000%" y="389" width="99.9820%" height="15" fill="rgb(234,33,23)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="399.50">era::main</text></g><g><title>criterion::benchmark_group::BenchmarkGroup&lt;M&gt;::bench_function (27,803 samples, 99.98%)</title><rect x="0.0000%" y="373" width="99.9820%" height="15" fill="rgb(217,209,52)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="383.50">criterion::benchmark_group::BenchmarkGroup&lt;M&gt;::bench_function</text></g><g><title>&lt;criterion::routine::Function&lt;M,F,T&gt; as criterion::routine::Routine&lt;M,T&gt;&gt;::warm_up (27,803 samples, 99.98%)</title><rect x="0.0000%" y="357" width="99.9820%" height="15" fill="rgb(247,79,46)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="367.50">&lt;criterion::routine::Function&lt;M,F,T&gt; as criterion::routine::Routine&lt;M,T&gt;&gt;::warm_up</text></g><g><title>criterion::bencher::Bencher&lt;M&gt;::iter_batched (27,803 samples, 99.98%)</title><rect x="0.0000%" y="341" width="99.9820%" height="15" fill="rgb(232,155,15)" fg:x="0" fg:w="27803"/><text x="0.2500%" y="351.50">criterion::bencher::Bencher&lt;M&gt;::iter_batched</text></g><g><title>&lt;rudof_v1::rudof::RudofV1Engine as common::rudof::RudofEngine&gt;::validate (27,493 samples, 98.87%)</title><rect x="1.1148%" y="325" width="98.8672%" height="15" fill="rgb(250,14,42)" fg:x="310" fg:w="27493"/><text x="1.3648%" y="335.50">&lt;rudof_v1::rudof::RudofV1Engine as common::rudof::RudofEngine&gt;::validate</text></g><g><title>rudof_lib::rudof::Rudof::validate_shacl (27,493 samples, 98.87%)</title><rect x="1.1148%" y="309" width="98.8672%" height="15" fill="rgb(252,171,51)" fg:x="310" fg:w="27493"/><text x="1.3648%" y="319.50">rudof_lib::rudof::Rudof::validate_shacl</text></g><g><title>all (27,808 samples, 100%)</title><rect x="0.0000%" y="533" width="100.0000%" height="15" fill="rgb(244,200,52)" fg:x="0" fg:w="27808"/><text x="0.2500%" y="543.50"></text></g><g><title>reqwest-interna (5 samples, 0.02%)</title><rect x="99.9820%" y="517" width="0.0180%" height="15" fill="rgb(231,163,29)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="527.50"></text></g><g><title>__GI___clone (5 samples, 0.02%)</title><rect x="99.9820%" y="501" width="0.0180%" height="15" fill="rgb(241,39,30)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="511.50"></text></g><g><title>start_thread (5 samples, 0.02%)</title><rect x="99.9820%" y="485" width="0.0180%" height="15" fill="rgb(215,41,21)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="495.50"></text></g><g><title>&lt;std::sys::thread::unix::Thread&gt;::new::thread_start (5 samples, 0.02%)</title><rect x="99.9820%" y="469" width="0.0180%" height="15" fill="rgb(205,40,11)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="479.50"></text></g><g><title>core::ops::function::FnOnce::call_once{{vtable.shim}} (5 samples, 0.02%)</title><rect x="99.9820%" y="453" width="0.0180%" height="15" fill="rgb(211,157,49)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="463.50"></text></g><g><title>std::sys::backtrace::__rust_begin_short_backtrace (5 samples, 0.02%)</title><rect x="99.9820%" y="437" width="0.0180%" height="15" fill="rgb(224,124,8)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="447.50"></text></g><g><title>tokio::runtime::runtime::Runtime::block_on (5 samples, 0.02%)</title><rect x="99.9820%" y="421" width="0.0180%" height="15" fill="rgb(209,52,42)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="431.50"></text></g><g><title>tokio::runtime::scheduler::current_thread::CurrentThread::block_on (5 samples, 0.02%)</title><rect x="99.9820%" y="405" width="0.0180%" height="15" fill="rgb(248,113,41)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="415.50"></text></g><g><title>tokio::runtime::context::scoped::Scoped&lt;T&gt;::set (5 samples, 0.02%)</title><rect x="99.9820%" y="389" width="0.0180%" height="15" fill="rgb(239,97,16)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="399.50"></text></g><g><title>reqwest::blocking::client::ClientHandle::new::{{closure}}::{{closure}} (5 samples, 0.02%)</title><rect x="99.9820%" y="373" width="0.0180%" height="15" fill="rgb(217,4,0)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="383.50"></text></g><g><title>reqwest::async_impl::client::ClientBuilder::build (5 samples, 0.02%)</title><rect x="99.9820%" y="357" width="0.0180%" height="15" fill="rgb(228,58,53)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="367.50"></text></g><g><title>rustls_native_certs::load_native_certs (5 samples, 0.02%)</title><rect x="99.9820%" y="341" width="0.0180%" height="15" fill="rgb(238,99,21)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="351.50"></text></g><g><title>rustls_native_certs::CertPaths::load (5 samples, 0.02%)</title><rect x="99.9820%" y="325" width="0.0180%" height="15" fill="rgb(251,225,41)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="335.50"></text></g><g><title>rustls_native_certs::load_pem_certs (5 samples, 0.02%)</title><rect x="99.9820%" y="309" width="0.0180%" height="15" fill="rgb(246,81,51)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="319.50"></text></g><g><title>rustls_pki_types::pem::from_buf_inner (5 samples, 0.02%)</title><rect x="99.9820%" y="293" width="0.0180%" height="15" fill="rgb(235,144,13)" fg:x="27803" fg:w="5"/><text x="100.2320%" y="303.50"></text></g><g><title>rustls_pki_types::pem::read (3 samples, 0.01%)</title><rect x="99.9892%" y="277" width="0.0108%" height="15" fill="rgb(206,222,53)" fg:x="27805" fg:w="3"/><text x="100.2392%" y="287.50"></text></g><g><title>rustls_pki_types::base64::decode_public (3 samples, 0.01%)</title><rect x="99.9892%" y="261" width="0.0108%" height="15" fill="rgb(247,182,27)" fg:x="27805" fg:w="3"/><text x="100.2392%" y="271.50"></text></g></svg></svg>
